@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.15 2006-12-29 17:01:08 douggreen Exp $
+// $Id: coder.module,v 1.16 2006-12-29 18:26:28 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -288,13 +288,15 @@ function do_coder_reviews($reviews, $name, $filename) {
     // read the file
     $orig_lines = file($filepath);
 
-    // remove comments (original code from code-style.pl)
-    $lines = array();
-    foreach ($orig_lines as $lineno => $line) {
-      // strip comment characters
-      $line = preg_replace('/\/\/[^:].*/', '', $line);
-      $line = preg_replace('/\/\*.*\*\//', '', $line);
+    // strip single line comments
+    $lines = preg_replace('/(\/\/[^:].*|\/\*.*\*\/)/', '', $orig_lines);
 
+    // replace strings inside quotes with less complicated strings
+    $lines = preg_replace('/"[^"]*"/', '""', $lines);
+    $lines = preg_replace('/\'[^\']*\'/', '\'\'', $lines);
+
+    // remove multi-comments (original code from code-style.pl)
+    foreach ($lines as $lineno => $line) {
       // catch multi-line comments
       if (isset($comment)) {
         if (preg_match('/.*\*\//', $line)) {
