@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.12 2006-12-29 18:39:55 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.13 2006-12-29 18:54:31 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -9,6 +9,7 @@
 
 function coder_drupal_reviews() {
   $rules = array(
+/*
     array(
       '#type' => 'regex',
       '#value' => '\t',
@@ -68,6 +69,13 @@ function coder_drupal_reviews() {
       '#type' => 'regex',
       '#value' => '^\s*{',
       '#warning' => t('curly braces { should end a line, not start one'),
+    ),
+*/
+    array(
+      '#type' => 'regex',
+      '#value' => '[a-z][A-Z]',
+      '#case' => 1,
+      '#warning' => t('do not use mixed case (camelCase), use lower case and _'),
     ),
   );
 
