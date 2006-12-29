@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.9 2006-12-29 17:01:08 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.10 2006-12-29 17:13:07 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -56,12 +56,17 @@ function coder_drupal_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '}\s*else',
-      '#warning' => t('else should be on next line'),
+      '#warning' => t('else statements should begin on a new line'),
     ),
     array(
       '#type' => 'regex',
       '#value' => '[,][^ \n\r]',
       '#warning' => t('missing space after comma'),
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '^\s*{',
+      '#warning' => t('curly braces { should end a line, not start one'),
     ),
   );
 
@@ -74,7 +79,7 @@ function coder_drupal_reviews() {
   return $reviews;
 }
 
-function _coder_drupal_callback($lines, &$results, &$tmp) {
+function _coder_drupal_callback($orig_lines, $lines, &$results, &$tmp) {
   for ($lineno = -1; $last = array_slice($lines, $lineno); $lineno --) {
     $lastline = $last[0];
     if (preg_match('/\S/', $lastline)) {
