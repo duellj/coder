@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.5 2006-12-29 18:39:12 douggreen Exp $
+// $Id: coder_security.inc,v 1.6 2006-12-29 18:39:55 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -8,7 +8,6 @@
  */
 
 function coder_security_reviews() {
-  $xys = $REQUEST_URI;
   $rules = array(
     array(
       '#type' => 'regex',

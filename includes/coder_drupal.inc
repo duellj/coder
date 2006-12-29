@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.11 2006-12-29 18:39:12 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.12 2006-12-29 18:39:55 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
