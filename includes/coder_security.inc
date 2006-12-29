@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.1 2006-12-29 06:40:04 douggreen Exp $
+// $Id: coder_security.inc,v 1.2 2006-12-29 08:01:57 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -37,4 +37,3 @@ function _coder_security_callback($lines, &$results, &$tmp) {
 
   // TODO: parse the file looking for missing stuff
 }
-?>

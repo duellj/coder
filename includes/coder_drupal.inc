@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.5 2006-12-29 07:43:24 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.6 2006-12-29 08:01:57 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -26,18 +26,18 @@ function coder_drupal_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '\){',
+      '#value' => '\){', // #coder_ignore
       '#warning' => t('use a space between the closing parenthesis and the open bracket'),
     ),
     array(
       '#type' => 'regex',
-      '#value' => '(\S=>|=>\S)',
+      '#value' => '(\S=>|=>\S)', // #coder_ignore
       '#warning' => t('Arrays should be formatted with a space separating each element and assignment operator'),
     ),
     array(
       '#type' => 'regex',
       '#value' => '<\?(?!php)',
-      '#warning' => t('Always use <?php ?> to delimit PHP code, not the <? ?> shorthand'),
+      '#warning' => t('Always use <?php ?> to delimit PHP code, not the <? ?> shorthand'), // #coder_ignore
     ),
     array(
       '#type' => 'grep',
@@ -76,4 +76,3 @@ function _coder_drupal_callback($lines, &$results, &$tmp) {
     $results[$lineno] = theme('coder_warning', $lineno, t('the final ?> should be omitted from all code files'));
   }
 }
-?>
