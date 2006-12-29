@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.20 2006-12-29 20:31:51 douggreen Exp $
+// $Id: coder.module,v 1.21 2006-12-29 21:13:47 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -249,7 +249,6 @@ function coder_page() {
     foreach ($modules as $name => $checked) {
       if ($checked) {
         // process this one file
-        unset($includefiles);
         $filename = $files[$name];
         $results = do_coder_reviews($reviews, $name, $filename);
         $output .= theme('coder', $name, $filename, $results);
