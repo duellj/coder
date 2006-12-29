@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.7 2006-12-29 14:38:22 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.8 2006-12-29 16:47:12 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -16,12 +16,12 @@ function coder_drupal_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '\s(if|elseif|while|foreach|for)\(',
+      '#value' => '\s(if|elseif|while|foreach|switch|return|for)\(',
       '#warning' => t('Control statements should have one space between the control keyword and opening parenthesis'),
     ),
     array(
       '#type' => 'regex',
-      '#value' => '\s\w(?!(if|elseif|while|foreach|for))\s\(',
+      '#value' => '\s\w(?!(if|elseif|while|foreach|switch|return|for))\s\(',
       '#warning' => t('Functions should be called with no spaces between the function name'),
     ),
     array(

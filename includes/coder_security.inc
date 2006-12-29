@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.2 2006-12-29 08:01:57 douggreen Exp $
+// $Id: coder_security.inc,v 1.3 2006-12-29 16:47:12 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -29,7 +29,7 @@ function coder_security_reviews() {
   return $reviews;
 }
 
-function _coder_security_callback($lines, &$results, &$tmp) {
+function _coder_security_callback($orig_lines, $lines, &$results, &$tmp) {
   if (!isset($tmp['tokens'])) {
     $source = implode('', $lines);
     $tmp['tokens'] = token_get_all($source);
