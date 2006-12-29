@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.8 2006-12-29 06:39:07 douggreen Exp $
+// $Id: coder.module,v 1.9 2006-12-29 07:28:36 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -161,7 +161,7 @@ function coder_settings() {
     if (!$active && $module->status) {
       $name .= ' (active)';
     }
-    $module_options[$module->name] = $name;
+    $module_options[$module->name] = l($name, "admin/coder/$name");
     if ($module->status) {
       $default_coder_modules[] = $module->name;
     }
