@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.10 2006-12-29 17:13:07 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.11 2006-12-29 18:39:12 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -41,6 +41,7 @@ function coder_drupal_reviews() {
     ),
     array(
       '#type' => 'grep',
+      '#original' => 1,
       '#value' => '\$Id',
       '#warning' => t('Include the Id CVS keyword in each file'),
     ),
