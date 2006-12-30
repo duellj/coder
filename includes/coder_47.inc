@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_47.inc,v 1.5 2006-12-30 17:00:44 douggreen Exp $
+// $Id: coder_47.inc,v 1.6 2006-12-30 17:21:35 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.6 -> 4.7 upgrades
@@ -47,7 +47,7 @@ function coder_47_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '\s(strlen|strtolower|strtoupper|substr|ucfirst)\s*\(',
-      '#warning' => t('in most cases, replace the string funciton with the drupal_ equivalent string functions'),
+      '#warning' => t('in most cases, replace the string function with the drupal_ equivalent string functions'),
     ),
     array(
       '#type' => 'regex',
