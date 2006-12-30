@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.23 2006-12-30 00:26:14 douggreen Exp $
+// $Id: coder.module,v 1.24 2006-12-30 00:54:20 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -421,7 +421,7 @@ function do_coder_review_grep($rule, $lines, &$results, &$tmp) {
 function do_coder_review_callback($rule, $orig_lines, $lines, &$results, &$tmp) {
   if ($function = $rule['#value']) {
     if (function_exists($function)) {
-      call_user_func($function, $orig_lines, $lines, &$results, &$tmp);
+      call_user_func_array($function, array($orig_lines, $lines, &$results, &$tmp));
     }
   }
 }
