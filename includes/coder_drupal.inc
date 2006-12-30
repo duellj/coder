@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.14 2006-12-29 18:56:33 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.15 2006-12-30 12:24:37 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -76,14 +76,12 @@ function coder_drupal_reviews() {
       '#warning' => t('do not use mixed case (camelCase), use lower case and _'),
     ),
   );
-
-  $reviews = array();
-  $reviews['drupal'] = array(
+  $review = array(
     '#title' => t('Drupal Coding Standards'),
     '#link' => 'http://drupal.org/node/318',
     '#rules' => $rules,
   );
-  return $reviews;
+  return array('drupal' => $review);
 }
 
 function _coder_drupal_callback($orig_lines, $lines, &$results, &$tmp) {

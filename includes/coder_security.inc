@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.6 2006-12-29 18:39:55 douggreen Exp $
+// $Id: coder_security.inc,v 1.7 2006-12-30 12:24:37 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -30,14 +30,12 @@ function coder_security_reviews() {
       '#warning' => t('the use of REQUEST_URI is prone to XSS exploits and does not work on IIS; use request_uri() instead'),
     ),
   );
-
-  $reviews = array();
-  $reviews['security'] = array(
+  $review = array(
     '#title' => t('Handle text in a secure fashion'),
     '#link' => 'http://drupal.org/node/28984',
     '#rules' => $rules,
   );
-  return $reviews;
+  return array('security' => $review);
 }
 
 function _coder_security_callback($orig_lines, $lines, &$results, &$tmp) {
