@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.15 2006-12-30 12:24:37 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.16 2006-12-30 14:01:35 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -84,7 +84,7 @@ function coder_drupal_reviews() {
   return array('drupal' => $review);
 }
 
-function _coder_drupal_callback($orig_lines, $lines, &$results, &$tmp) {
+function _coder_drupal_callback(&$coder_args, $rule, $lines, &$results) {
   for ($lineno = -1; $last = array_slice($lines, $lineno); $lineno --) {
     $lastline = $last[0];
     if (preg_match('/\S/', $lastline)) {
