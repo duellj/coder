@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.16 2006-12-30 14:01:35 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.17 2006-12-31 13:23:57 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -33,6 +33,11 @@ function coder_drupal_reviews() {
       '#type' => 'regex',
       '#value' => '(\S=>|=>\S)',
       '#warning' => t('Arrays should be formatted with a space separating each element and assignment operator'),
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '(\.\'\'|\'\'\.|\.""|\."")',
+      '#warning' => t('string concatenation should be formatted with a space separating the operators (dot .) and terms (\'string\')'),
     ),
     array(
       '#type' => 'regex',
