@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.7 2006-12-31 13:23:57 douggreen Exp $
+// $Id: coder_50.inc,v 1.8 2006-12-31 18:25:54 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -43,6 +43,12 @@ function coder_50_reviews() {
     array(
       '#type' => 'callback',
       '#value' => _coder_50_callback,
+    ),
+    array(
+      '#type' => 'regex',
+      '#original' => 1,
+      '#value' => '\stheme_add_style\s*\(',
+      '#warning' => t('Replace theme_add_style() with drupal_add_css()'),
     ),
   );
   $review = array(
