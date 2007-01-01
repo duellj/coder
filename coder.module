@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.32 2007-01-01 03:01:20 douggreen Exp $
+// $Id: coder.module,v 1.33 2007-01-01 06:50:13 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -130,8 +130,8 @@ function coder_menu($may_cache) {
 function coder_form_alter($form_id, &$form) {
   if ($form_id == 'system_modules') {
     if (user_access('view code review')) {
-      foreach ($form['name'] as $name => &$data) {
-        $data['#value'] = l($data['#value'], "admin/coder/$name");
+      foreach ($form['name'] as $name => $data) {
+        $form['name'][$name]['#value'] = l($data['#value'], "admin/coder/$name");
       }
     }
   }
