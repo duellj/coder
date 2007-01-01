@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.8 2006-12-30 14:01:35 douggreen Exp $
+// $Id: coder_security.inc,v 1.9 2007-01-01 03:01:21 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -12,37 +12,63 @@ function coder_security_reviews() {
     array(
       '#type' => 'regex',
       '#value' => 'l\(check_plain\(',
-      '#warning' => t('l() already contains a check_plain() call by default'),
+      '#warning_callback' => '_coder_security_l_check_plain_warning',
     ),
-    array(
+/*  array(
       '#type' => 'callback',
       '#value' => _coder_security_callback,
-    ),
+    ), */
     array(
       '#type' => 'regex',
       '#value' => '\$REQUEST_URI',
-      '#warning' => t('the use of REQUEST_URI is prone to XSS exploits and does not work on IIS; use request_uri() instead'),
+      '#case' => 1,
+      '#warning_callback' => '_coder_security_request_uri_warning',
     ),
     array(
       '#type' => 'regex',
       '#original' => 1,
+      '#case' => 1,
       '#value' => '\"REQUEST_URI\"|\'REQUEST_URI\'',
-      '#warning' => t('the use of REQUEST_URI is prone to XSS exploits and does not work on IIS; use request_uri() instead'),
+      '#warning_callback' => '_coder_security_request_uri_warning',
     ),
   );
   $review = array(
-    '#title' => t('Handle text in a secure fashion'),
+    '#title' => 'Handle text in a secure fashion',
     '#link' => 'http://drupal.org/node/28984',
     '#rules' => $rules,
   );
   return array('security' => $review);
 }
 
-function _coder_security_callback(&$coder_args, $rule, $lines, &$results) {
-/*
+
+/**
+ * Define the warning callbacks
+ */
+
+/* function _coder_security_callback(&$coder_args, $rule, $lines, &$results) {
   if (!isset($coder_args['#tokens'])) {
     $source = implode('', $lines);
     $coder_args['#tokens'] = token_get_all($source);
   }
-*/
+} */
+
+/**
+ * Define the warning callbacks
+ */
+
+function _coder_security_l_check_plain_warning() {
+  return t('!l() already contains a !check_plain() call by default',
+    array(
+      '!l' => theme('drupalapi', 'l'),
+      '!check_plain' => theme('drupalapi', 'check_plain'),
+    )
+  );
+}
+
+function _coder_security_request_uri_warning() {
+  return t('the use of REQUEST_URI is prone to XSS exploits and does not work on IIS; use !request_uri() instead',
+    array(
+      '!request_uri' => theme('drupalapi', 'request_uri'),
+    )
+  );
 }
