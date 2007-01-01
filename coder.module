@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.33 2007-01-01 06:50:13 douggreen Exp $
+// $Id: coder.module,v 1.34 2007-01-01 13:16:06 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -104,14 +104,14 @@ function coder_menu($may_cache) {
   if ($may_cache) {
     $items[] = array(
       'path' => 'admin/coder',
-      'title' => t('Code Review'),
+      'title' => t('Code review'),
       'callback' => 'coder_page',
       'access' => user_access('view code review'),
     );
     if (function_exists('drupal_system_listing')) {
       $items[] = array(
         'path' => 'admin/settings/coder',
-        'title' => t('Code Review'),
+        'title' => t('Code review'),
         'description' => t('Select code review plugins and modules'),
         'callback' => 'drupal_get_form',
         'callback arguments' => 'coder_admin_settings',
