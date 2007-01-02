@@ -1,4 +1,4 @@
-/* $Id: README.txt,v 1.2 2006-12-29 03:47:16 douggreen Exp $ */
+/* $Id: README.txt,v 1.3 2007-01-02 14:13:15 douggreen Exp $ */
 
 Developer Module that assists with code review and version upgrade that
 supports a plug-in extensible hook system so contributed modules can
@@ -17,17 +17,10 @@ Copy coder.module to your module directory and then enable on the admin
 modules page.  Enable the modules that admin/settings/coder works on,
 then view the coder results page at admin/coder.
 
-The built-in rules are not complete.  This is a work in progress.
-
 Todo
 ----
- - add page argument so that someone can visit admin/coder/modulename
-   and see the results for the one modulename
  - display text in a pretty fashion, rather than just line numbers
- - complete the drupal built-in review
- - add the security built-in review
- - add the 50 built-in review
- - add the 47 built-in review (low priority, may not be done)
+ - improve the security reviews
 
 Author
 ------
