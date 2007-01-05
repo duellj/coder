@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.9 2007-01-01 03:01:21 douggreen Exp $
+// $Id: coder_50.inc,v 1.10 2007-01-05 03:31:36 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -66,7 +66,7 @@ function _coder_50_callback(&$coder_args, $rule, $lines, &$results) {
   $filename = $coder_args['#filename'];
   if (substr($filename, -7) == '.module') {
     // make sure that a .info file exists
-    $filename = drupal_substr(realpath($filename), 0, -7) . '.info';
+    $filename = drupal_substr(realpath($filename), 0, -7) .'.info';
     if (!file_exists($filename)) {
       $results[0] = theme('coder_warning', $lineno, t('All modules now need to have a modulename.info file'));
     }
