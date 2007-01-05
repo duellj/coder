@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.38 2007-01-03 05:16:41 douggreen Exp $
+// $Id: coder.module,v 1.39 2007-01-05 02:38:45 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -424,9 +424,6 @@ function do_coder_review($coder_args, $review) {
 function do_coder_review_regex(&$coder_args, $rule, $lines, &$results) {
   if ($regex = $rule['#value']) {
     $regex = '/'. $regex .'/';
-    if (!isset($rule['#case'])) {
-      $regex .= 'i';
-    }
     foreach ($lines as $lineno => $line) {
       if (preg_match($regex, $line)) {
         _coder_error($results, $rule, $lineno, $line);
@@ -465,9 +462,6 @@ function _coder_error_msg(&$results, $warning, $lineno = -1, $line = '') {
 function do_coder_review_grep(&$coder_args, $rule, $lines, &$results) {
   if ($regex = $rule['#value']) {
     $regex = '/'. $regex .'/';
-    if (!isset($rule['#case'])) {
-      $regex .= 'i';
-    }
     foreach ($lines as $lineno => $line) {
       if (preg_match($regex, $line)) {
         return;
