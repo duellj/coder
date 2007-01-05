@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.22 2007-01-05 06:34:18 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.23 2007-01-05 13:38:14 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -78,9 +78,15 @@ function coder_drupal_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '(?-i)([a-z]+[A-Z]+([a-z]*[A-Z]*)*)+',
-      '#not' => '^(stdClass)$',
+      '#value' => '(?-i)(([a-z]+[A-Z]+([a-z]*[A-Z]*)*)|([A-Z]+[a-z]+([A-Z]*[a-z]*)*))',
+      '#not' => '(?-i)^(stdClass|StdClass)$',
       '#warning' => 'do not use mixed case (camelCase), use lower case and _',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '\s(stdclass)\s*\(',
+      '#not' => '^(?-i)stdClass$',
+      '#warning' => 'use stdClass caseCapitalization, it\'s the one exception to the mixed case style standard',
     ),
   );
   $review = array(
