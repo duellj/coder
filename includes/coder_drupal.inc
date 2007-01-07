@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.23 2007-01-05 13:38:14 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.24 2007-01-07 23:22:30 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -109,6 +109,6 @@ function _coder_drupal_callback(&$coder_args, $rule, $lines, &$results) {
     }
   }
   if ($last && $lastline && preg_match('/\?>/i', $lastline)) {
-    _coder_error($results, 'the final ?> should be omitted from all code files', count($lines));
+    _coder_error_msg($results, 'the final ?> should be omitted from all code files', count($lines));
   }
 }

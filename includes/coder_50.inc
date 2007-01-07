@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.10 2007-01-05 03:31:36 douggreen Exp $
+// $Id: coder_50.inc,v 1.11 2007-01-07 23:22:30 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -96,9 +96,10 @@ function _coder_50_drupal_mail_wrapper_warning() {
 }
 
 function _coder_50_message_na_warning() {
-  return t('The function !message_na() was removed, remove it from your modules as well and replace it with t(\'n/a\')',
+  return t('The function !message_na() was removed, remove it from your modules as well and replace it with !t(\'n/a\')',
     array(
       '!message_na' => theme('drupalapi', 'message_na', '4.7'),
+      '!t' => theme('drupalapi', 't'),
     )
   );
 }
