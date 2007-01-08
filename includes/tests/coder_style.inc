@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.1 2007-01-05 13:38:14 douggreen Exp $
+// $Id: coder_style.inc,v 1.2 2007-01-08 03:18:24 douggreen Exp $
 
 /** @file
  * This include file implements tests for the Drupal Standards
@@ -22,4 +22,9 @@ function coder_test_stdclass() {
 
 function coderCamelCase() {
   $camelCaseVar = 'whatever';
+}
+
+function coder_test_two_errors_on_same_line() {
+  if('test=' . $test == 'test='){
+  }
 }
