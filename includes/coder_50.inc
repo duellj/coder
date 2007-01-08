@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.11 2007-01-07 23:22:30 douggreen Exp $
+// $Id: coder_50.inc,v 1.12 2007-01-08 12:55:36 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -36,7 +36,7 @@ function coder_50_reviews() {
       '#type' => 'regex',
       '#original' => 1,
       '#value' => '\$_POST\s*\[\s*[\'"]?op[\'"]?\s*\]',
-      '#warning' => '_POST[op] deprecated in favor of $form_values[op]',
+      '#warning' => '$_POST[\'op\'] deprecated in favor of $form_values[\'op\']',
     ),
     array(
       '#type' => 'callback',
