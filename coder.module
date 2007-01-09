@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.48 2007-01-08 03:45:11 douggreen Exp $
+// $Id: coder.module,v 1.49 2007-01-09 00:35:56 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -552,7 +552,7 @@ function theme_coder($name, $filename, $results) {
 
 function theme_coder_warning($warning, $lineno = 0, $line = '') {
   if ($lineno) {
-    $warning = t('Line @number: @warning', array('@number' => $lineno, '@warning' => $warning));
+    $warning = t('Line @number: !warning', array('@number' => $lineno, '!warning' => $warning));
     if ($line && !variable_get('coder_nocode', 0)) {
       $warning .= '<pre>'. check_plain($line) .'</pre>';
     }
