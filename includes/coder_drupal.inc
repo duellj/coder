@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.25 2007-01-08 01:18:54 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.26 2007-01-11 11:02:20 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -42,7 +42,8 @@ function coder_drupal_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '<\?(?!php)',
+      '#value' => '<\?(\w+)',
+      '#not' => '^(php|xml)$',
       '#warning' => 'Always use &lt;?php ?&gt; to delimit PHP code, not the &lt;? ?&gt; shorthand',
     ),
     array(
