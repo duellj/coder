@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.49 2007-01-09 00:35:56 douggreen Exp $
+// $Id: coder.module,v 1.50 2007-01-12 21:21:33 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -99,7 +99,7 @@ function coder_menu($may_cache) {
 
   if ($may_cache) {
     $items[] = array(
-      'path' => 'admin/coder',
+      'path' => 'coder',
       'title' => t('Code review'),
       'callback' => 'coder_page',
       'access' => user_access('view code review'),
