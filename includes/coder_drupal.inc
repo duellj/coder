@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_drupal.inc,v 1.27 2007-01-13 03:34:37 douggreen Exp $
+// $Id: coder_drupal.inc,v 1.28 2007-01-13 18:39:43 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -8,6 +8,7 @@
  */
 
 function coder_drupal_reviews() {
+  $br = 'br';
   $rules = array(
     array(
       '#type' => 'regex',
@@ -88,6 +89,12 @@ function coder_drupal_reviews() {
       '#value' => '\s(stdclass)\s*\(',
       '#not' => '^(?-i)stdClass$',
       '#warning' => 'use stdClass caseCapitalization, it\'s the one exception to the mixed case style standard',
+    ),
+    array(
+      '#type' => 'regex',
+      '#html' => 1,
+      '#value' => '<'. $br .'>', // NOTE: use $br only to avoid a warning
+      '#warning' => 'use &lt;br /&gt; instead of &lt;br&gt;',
     ),
   );
   $review = array(
