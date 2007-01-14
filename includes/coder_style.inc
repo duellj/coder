@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.2 2007-01-14 15:55:02 douggreen Exp $
+// $Id: coder_style.inc,v 1.3 2007-01-14 16:21:07 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -100,7 +100,7 @@ function coder_style_reviews() {
       '#type' => 'regex',
       '#source' => 'html',
       '#value' => '(?-i)<[A-Z]+',
-      '#warning' => 'use lowercase html tags to comply with XHTML standards',
+      '#warning_callback' => '_coder_style_xhtml_warning',
     ),
   );
   $review = array(
@@ -181,4 +181,16 @@ function _coder_style_core_global_regex() {
     $coreglobalregex = implode('|', $coreglobalvars);
   }
   return $coreglobalregex;
+}
+
+/**
+ * Define the warning callbacks
+ */
+
+function _coder_style_xhtml_warning() {
+  return t('use lowercase html tags to comply with !XHTML',
+    array(
+      '!XHTML' => l('XHTML', 'http://www.w3.org/TR/xhtml1/#h-4.2'),
+    )
+  );
 }
