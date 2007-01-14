@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.12 2007-01-08 12:55:36 douggreen Exp $
+// $Id: coder_50.inc,v 1.13 2007-01-14 15:23:09 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -34,7 +34,7 @@ function coder_50_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#original' => 1,
+      '#source' => 'all',
       '#value' => '\$_POST\s*\[\s*[\'"]?op[\'"]?\s*\]',
       '#warning' => '$_POST[\'op\'] deprecated in favor of $form_values[\'op\']',
     ),
@@ -44,7 +44,7 @@ function coder_50_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#original' => 1,
+      '#source' => 'all',
       '#value' => '\stheme_add_style\s*\(',
       '#warning_callback' => '_coder_50_theme_add_style_warning',
     ),

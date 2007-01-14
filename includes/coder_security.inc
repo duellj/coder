@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.10 2007-01-05 02:38:45 douggreen Exp $
+// $Id: coder_security.inc,v 1.11 2007-01-14 15:23:09 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -25,7 +25,7 @@ function coder_security_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#original' => 1,
+      '#source' => 'all',
       '#value' => '(?-i)\"REQUEST_URI\"|\'REQUEST_URI\'',
       '#warning_callback' => '_coder_security_request_uri_warning',
     ),

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_47.inc,v 1.7 2007-01-01 03:01:21 douggreen Exp $
+// $Id: coder_47.inc,v 1.8 2007-01-14 15:23:09 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.6 -> 4.7 upgrades
@@ -61,13 +61,13 @@ function coder_47_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#original' => 1,
+      '#source' => 'all',
       '#value' => '\svariable_get\s*\(\s*[\'"]+file_directory_temp[\'"]+\s*,',
       '#warning_callback' => '_coder_47_file_directory_temp_warning',
     ),
     array(
       '#type' => 'regex',
-      '#original' => 1,
+      '#source' => 'all',
       '#value' => '\svariable_get\s*\(\s*[\'"]+file_directory_path[\'"]+\s*,',
       '#warning_callback' => '_coder_47_file_directory_path_warning',
     ),
