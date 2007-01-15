@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.54 2007-01-14 15:23:09 douggreen Exp $
+// $Id: coder.module,v 1.55 2007-01-15 15:55:47 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -598,9 +598,9 @@ function _coder_error(&$results, $rule, $lineno = -1, $line = '', $original = ''
       $warning = $rule['#warning_callback']();
     }
     else { // if this happens, there is an error in the rule definition
-      $warning = t('please !report this !warning',
+      $warning = t('please <a href="@report">report</a> this !warning',
         array(
-          '!report' => l('report', 'http://drupal.org/node/add/project_issue/coder/bug'),
+          '@report' => 'http://drupal.org/node/add/project_issue/coder/bug',
           '!warning' => $rule['#warning_callback'],
         )
       );

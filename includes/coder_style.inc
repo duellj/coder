@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.3 2007-01-14 16:21:07 douggreen Exp $
+// $Id: coder_style.inc,v 1.4 2007-01-15 15:55:47 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -188,9 +188,9 @@ function _coder_style_core_global_regex() {
  */
 
 function _coder_style_xhtml_warning() {
-  return t('use lowercase html tags to comply with !XHTML',
+  return t('use lowercase html tags to comply with <a href="@XHTML">XHTML</a>',
     array(
-      '!XHTML' => l('XHTML', 'http://www.w3.org/TR/xhtml1/#h-4.2'),
+      '@XHTML' => 'http://www.w3.org/TR/xhtml1/#h-4.2',
     )
   );
 }
