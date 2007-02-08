@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.1 2007-01-14 15:23:09 douggreen Exp $
+// $Id: coder_style.inc,v 1.2 2007-02-08 22:35:14 douggreen Exp $
 
 /** @file
  * This include file implements tests for the Drupal Standards
@@ -56,6 +56,16 @@ function coder_heredoc() {
 <br><!-- a php error and not a camelCase error -->
 <B><!-- an uppercase XHTML error -->
 __EOD__;
+}
+
+function coder_dot() {
+  if ($file = file_check_upload($fieldname . '_upload')) { // not ok
+  }
+  $v .= 'bugger'; // ok
+  $a = $v .'bugger'; // ok
+  $a = $v ."bugger"; // ok
+  $a = $v.'bugger'; // not ok
+  $a = $some_func().'bugger'; // not ok
 }
 
 // should generate an error about the trailing php close

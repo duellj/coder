@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.4 2007-01-15 15:55:47 douggreen Exp $
+// $Id: coder_style.inc,v 1.5 2007-02-08 22:35:14 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -22,7 +22,7 @@ function coder_style_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '\s(\w+)\s\(',
+      '#value' => '[\s\(](\w+)\s\(',
       '#not' => '^(if|elseif|while|foreach|switch|return|for)$',
       '#warning' => 'Functions should be called with no spaces between the function name',
     ),
@@ -39,7 +39,12 @@ function coder_style_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '(\.\s\'\'|\'\'\s\.|\.\s""|\.\s"")',
-      '#warning' => 'string concatenation should be formatted with a space separating the operators (dot .) and terms (\'string\')',
+      '#warning' => 'string concatenation should be formatted without a space separating the operators (dot .) and a quote',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '([^\'\"\s0-9]\.|\.[^\'\"\=\s0-9])',
+      '#warning' => 'string concatenation should be formatted with a space separating the operators (dot .) and non-quote terms',
     ),
     array(
       '#type' => 'regex',
@@ -108,7 +113,7 @@ function coder_style_reviews() {
     '#link' => 'http://drupal.org/node/318',
     '#rules' => $rules,
   );
-  return array('drupal' => $review);
+  return array('style' => $review);
 }
 
 /**
