@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.15 2007-02-08 22:35:14 douggreen Exp $
+// $Id: coder_50.inc,v 1.16 2007-02-12 23:18:11 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -42,6 +42,7 @@ function coder_50_reviews() {
       '#source' => 'all',
       '#value' => '\$_POST\s*\[\s*[\'"]?op[\'"]?\s*\]',
       '#warning' => '$_POST[\'op\'] deprecated in favor of $form_values[\'op\']',
+      '#severity' => 'normal',
     ),
     array(
       '#type' => 'callback',
@@ -64,6 +65,7 @@ function coder_50_reviews() {
     '#title' => t('Converting 4.7.x modules to 5.x'),
     '#link' => 'http://drupal.org/node/64279',
     '#rules' => $rules,
+    '#severity' => 'critical',
   );
   return array('upgrade50' => $review);
 }

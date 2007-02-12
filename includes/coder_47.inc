@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_47.inc,v 1.9 2007-02-08 22:35:14 douggreen Exp $
+// $Id: coder_47.inc,v 1.10 2007-02-12 23:18:11 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.6 -> 4.7 upgrades
@@ -48,6 +48,7 @@ function coder_47_reviews() {
       '#type' => 'regex',
       '#value' => '[\s\(](strlen|strtolower|strtoupper|substr|ucfirst)\s*\(',
       '#warning' => 'in most cases, replace the string function with the drupal_ equivalent string functions',
+      '#severity' => 'minor',
     ),
     array(
       '#type' => 'regex',
@@ -101,6 +102,7 @@ function coder_47_reviews() {
     '#title' => t('Converting 4.6.x modules to 4.7.x'),
     '#link' => 'http://drupal.org/node/22218',
     '#rules' => $rules,
+    '#severity' => 'critical',
   );
   return array('upgrade47' => $review);
 }
