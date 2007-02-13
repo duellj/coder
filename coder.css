@@ -1,0 +1,12 @@
+/* $Id: coder.css,v 1.1 2007-02-13 04:43:39 douggreen Exp $ */
+
+.coder-normal {
+}
+
+.coder-minor {
+  background-color: #ffd;
+}
+
+.coder-critical {
+  background-color: #ffe7dd;
+}
