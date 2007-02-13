@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_47.inc,v 1.10 2007-02-12 23:18:11 douggreen Exp $
+// $Id: coder_47.inc,v 1.11 2007-02-13 04:42:45 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.6 -> 4.7 upgrades

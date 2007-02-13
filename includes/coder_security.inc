@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.11 2007-01-14 15:23:09 douggreen Exp $
+// $Id: coder_security.inc,v 1.12 2007-02-13 04:42:45 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -34,6 +34,7 @@ function coder_security_reviews() {
     '#title' => 'Handle text in a secure fashion',
     '#link' => 'http://drupal.org/node/28984',
     '#rules' => $rules,
+    '#severity' => 'critical',
   );
   return array('security' => $review);
 }
@@ -43,7 +44,7 @@ function coder_security_reviews() {
  * Define the warning callbacks
  */
 
-/* function _coder_security_callback(&$coder_args, $rule, $lines, &$results) {
+/* function _coder_security_callback(&$coder_args, $review, $rule, $lines, &$results) {
   if (!isset($coder_args['#tokens'])) {
     $source = implode('', $lines);
     $coder_args['#tokens'] = token_get_all($source);
