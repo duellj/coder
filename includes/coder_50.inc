@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.19 2007-04-07 17:28:03 douggreen Exp $
+// $Id: coder_50.inc,v 1.20 2007-04-07 21:20:20 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -81,8 +81,9 @@ function _coder_50_callback(&$coder_args, $review, $rule, $lines, &$results) {
     // make sure that a .info file exists
     $filename = drupal_substr(realpath($filename), 0, -7) .'.info';
     if (!file_exists($filename)) {
-      $severity_name = _coder_severity_name($review, $rule);
-      $results[0] = theme('coder_warning', $severity_name, $lineno, t('All modules now need to have a <a href="@info">modulename.info file</a>', array('@info' => 'http://drupal.org/node/101009')));
+      $severity_name = _coder_severity_name($coder_args, $review, $rule);
+      $warning = t('All modules now need to have a <a href="@info">modulename.info file</a>', array('@info' => 'http://drupal.org/node/101009'));
+      $results[0] = theme('coder_warning', $warning, $severity_name);
     }
   }
 }
