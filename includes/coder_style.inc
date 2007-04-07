@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.9 2007-04-07 17:28:03 douggreen Exp $
+// $Id: coder_style.inc,v 1.10 2007-04-07 18:26:03 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -187,6 +187,9 @@ function _coder_style_core_global_regex() {
       'nid',
       'recent_activity',
       'tag',
+
+      // from the Drupal 6 includes/ directory
+      'language',
     );
     $coreglobalregex = implode('|', $coreglobalvars);
   }
