@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.3 2007-04-07 16:08:33 douggreen Exp $
+// $Id: coder_style.inc,v 1.4 2007-04-07 17:28:04 douggreen Exp $
 
 /** @file
  * This include file implements tests for the Drupal Standards
@@ -47,7 +47,7 @@ function coder_multiline_quote() { // from Drupal5 block.module
 }
 
 function coder_break() {
-  print '<br>'; // should generate an error
+  print '<br>'; // should generate an error, and will throw performance warning
   ?><br><?php // should also generate an error
 }
 
@@ -63,7 +63,7 @@ function coder_dot() {
   }
   $v .= 'bugger'; // ok
   $a = $v .'bugger'; // ok
-  $a = $v ."bugger"; // ok
+  $a = $v ."bugger"; // ok, but will throw performance warning
   $a = $v.'bugger'; // not ok
   $a = $some_func().'bugger'; // not ok
 }

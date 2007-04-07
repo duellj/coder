@@ -1,4 +1,4 @@
-/* $Id: coder.css,v 1.3 2007-04-07 16:08:32 douggreen Exp $ */
+/* $Id: coder.css,v 1.4 2007-04-07 17:28:03 douggreen Exp $ */
 
 img.coder {
   padding: 2px;
@@ -13,4 +13,27 @@ img.coder {
 
 .coder-critical {
   background-color: #ffe7dd;
+}
+
+.coder code {
+  font-size: 12px;
+}
+
+code.bad {
+  color: red;
+}
+
+code.good {
+  color: green;
+}
+
+.coder-description {
+  display: none;
+  padding: 5px 5px 5px 5px;
+  margin: 0px 0px 5px 0px;
+  border: 1px solid #888888;
+}
+
+.coder-settings {
+  padding-top: 2em;
 }

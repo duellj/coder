@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_security.inc,v 1.13 2007-04-07 16:08:32 douggreen Exp $
+// $Id: coder_security.inc,v 1.14 2007-04-07 17:28:03 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -35,6 +35,7 @@ function coder_security_reviews() {
     '#link' => 'http://drupal.org/node/28984',
     '#rules' => $rules,
     '#severity' => 'critical',
+    '#description' => t('very basic, needs work, but what it finds is good'),
   );
   return array('security' => $review);
 }

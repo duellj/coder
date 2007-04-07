@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.18 2007-04-07 16:08:32 douggreen Exp $
+// $Id: coder_50.inc,v 1.19 2007-04-07 17:28:03 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -46,7 +46,7 @@ function coder_50_reviews() {
     ),
     array(
       '#type' => 'callback',
-      '#value' => _coder_50_callback,
+      '#value' => '_coder_50_callback',
     ),
     array(
       '#type' => 'regex',
