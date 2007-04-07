@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.7 2007-02-13 04:42:45 douggreen Exp $
+// $Id: coder_style.inc,v 1.8 2007-04-07 16:08:32 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -107,6 +107,7 @@ function coder_style_reviews() {
       '#source' => 'html',
       '#value' => '(?-i)<[A-Z]+',
       '#warning_callback' => '_coder_style_xhtml_warning',
+      '#severity' => 'minor',
     ),
   );
   $review = array(

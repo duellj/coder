@@ -1,4 +1,4 @@
-// $Id: coder.js,v 1.1 2007-02-13 01:29:20 douggreen Exp $
+// $Id: coder.js,v 1.2 2007-04-07 16:08:32 douggreen Exp $
 
 if (Drupal.jsEnabled) {
   jQuery.fn.extend({
