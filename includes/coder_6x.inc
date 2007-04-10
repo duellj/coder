@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.4 2007-04-10 13:25:10 douggreen Exp $
+// $Id: coder_6x.inc,v 1.5 2007-04-10 13:31:33 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -134,7 +134,7 @@ function _coder_6x_hook_theme_warning() {
 }
 
 function _coder_6x_url_l_warning() {
-  return t('!url() and !l() arguments changed, you may use this <a href="@script">conversion script</a> but be forewarned that the script is good, but not perfect',
+  return t('!url() and !l() arguments changed, if you have a lot of these use <a href="@script">this conversion script</a>',
     array(
       '!url' => theme('drupalapi', 'url'),
       '!l' => theme('drupalapi', 'l'),
