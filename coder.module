@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.66 2007-04-08 23:15:53 douggreen Exp $
+// $Id: coder.module,v 1.67 2007-04-29 23:52:01 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -811,7 +811,7 @@ function _coder_read_and_parse_file(&$coder_args) {
                   $char = $content[$pos];
                   if ($char == "\n") {
                     $pos --;
-                    if (preg_match('/^\s+(\w+)/', $heredoc, $match)) {
+                    if (preg_match('/^\s*(\w+)/', $heredoc, $match)) {
                       $in_heredoc = $match[1];
                       $in_heredoc_length = drupal_strlen($in_heredoc);
                     }

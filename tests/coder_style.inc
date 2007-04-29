@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.4 2007-04-07 17:28:04 douggreen Exp $
+// $Id: coder_style.inc,v 1.5 2007-04-29 23:52:01 douggreen Exp $
 
 /** @file
  * This include file implements tests for the Drupal Standards
@@ -55,6 +55,9 @@ function coder_heredoc() {
   $var = <<< __EOD__
 <br><!-- a php error and not a camelCase error -->
 <B><!-- an uppercase XHTML error -->
+__EOD__;
+  $var = <<<__EOD__
+<br><!-- and again -->
 __EOD__;
 }
 
