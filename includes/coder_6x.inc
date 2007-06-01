@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.6 2007-06-01 00:47:57 douggreen Exp $
+// $Id: coder_6x.inc,v 1.7 2007-06-01 02:23:56 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -61,7 +61,7 @@ function coder_6x_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '[\s\(]cache_set\s*\(\s*\'\',\s*\'',
+      '#value' => '[\s\(]cache_set\s*\(\s*[^,]+,\s*\'',
       '#warning_callback' => '_coder_6x_cache_set_warning',
     ),
     array(
