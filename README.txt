@@ -1,4 +1,4 @@
-/* $Id: README.txt,v 1.6 2007-04-07 17:28:03 douggreen Exp $ */
+/* $Id: README.txt,v 1.7 2007-06-01 00:47:57 douggreen Exp $ */
 
 Developer Module that assists with code review and version upgrade that
 supports a plug-in extensible hook system so contributed modules can
@@ -15,7 +15,7 @@ Installation
 
 Copy coder.module to your module directory and then enable on the admin
 modules page.  Enable the modules that admin/settings/coder works on,
-then view the coder results page at admin/coder.
+then view the coder results page at coder.
 
 Author
 ------

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_50.inc,v 1.20 2007-04-07 21:20:20 douggreen Exp $
+// $Id: coder_50.inc,v 1.21 2007-06-01 00:47:57 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 4.7 -> 5.0 upgrades
@@ -36,6 +36,11 @@ function coder_50_reviews() {
       '#type' => 'regex',
       '#value' => '[\s\(]system_listing\s*\(',
       '#warning_callback' => '_coder_50_system_listing_warning',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '[\s\(]node_get_name\s*\(',
+      '#warning_callback' => '_coder_50_node_get_name_warning',
     ),
     array(
       '#type' => 'regex',
@@ -160,6 +165,15 @@ function _coder_50_form_render_warning() {
     array(
       '!form_render' => theme('drupalapi', 'form_render', '4.7'),
       '!drupal_render' => theme('drupalapi', 'drupal_render'),
+    )
+  );
+}
+
+function _coder_50_node_get_name_warning() {
+  return t('Replace !node_get_name($node) with !node_get_types(\'name\', $node)',
+    array(
+      '!node_get_name' => theme('drupalapi', 'node_get_name', '4.7'),
+      '!node_get_types' => theme('drupalapi', 'node_get_types'),
     )
   );
 }

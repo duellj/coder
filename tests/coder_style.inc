@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.5 2007-04-29 23:52:01 douggreen Exp $
+// $Id: coder_style.inc,v 1.6 2007-06-01 00:47:57 douggreen Exp $
 
 /** @file
  * This include file implements tests for the Drupal Standards

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.67 2007-04-29 23:52:01 douggreen Exp $
+// $Id: coder.module,v 1.68 2007-06-01 00:47:57 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -1186,4 +1186,8 @@ function theme_coder_warning($warning, $severity_name, $lineno = 0, $line = '') 
 
 function theme_drupalapi($function, $version = 'HEAD') {
   return l($function, "http://api.drupal.org/api/$version/function/$function");
+}
+
+function theme_phpapi($function) {
+  return l($function, "http://us.php.net/$function");
 }
