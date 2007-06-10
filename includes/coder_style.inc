@@ -1,10 +1,8 @@
 <?php
-// $Id: coder_style.inc,v 1.11 2007-06-01 00:47:57 douggreen Exp $
+// $Id: coder_style.inc,v 1.12 2007-06-10 11:08:00 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
- *
- * Todo: The rules for this review are not yet complete.
  */
 
 function coder_style_reviews() {
@@ -51,13 +49,6 @@ function coder_style_reviews() {
       '#value' => '<\?(\w+)',
       '#not' => '^(php|xml)$',
       '#warning' => 'Always use &lt;?php ?&gt; to delimit PHP code, not the &lt;? ?&gt; shorthand',
-    ),
-    array(
-      '#type' => 'grep_invert',
-      '#source' => 'all',
-      '#value' => '$Id',
-      '#case-sensitive' => true,
-      '#warning' => 'Include the CVS keyword $Id'.'$ in each file',
     ),
     array(
       '#type' => 'regex',
