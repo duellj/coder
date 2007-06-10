@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.7 2007-06-01 02:23:56 douggreen Exp $
+// $Id: coder_6x.inc,v 1.8 2007-06-10 01:53:11 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -82,7 +82,8 @@ function coder_6x_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '[\s\(]file_save_upload\s*\([^,]+\s*,\s*[^,]+\s*,',
+      '#value' => '((function)!\s+|\()file_save_upload\s*\([^,]+\s*,\s*[^,]+\s*,',
+      '#not' => 'function file_save_upload',
       '#warning_callback' => '_coder_6x_file_check_upload_warning',
     ),
     array(
