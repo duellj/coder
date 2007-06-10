@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.73 2007-06-10 11:42:37 douggreen Exp $
+// $Id: coder.module,v 1.74 2007-06-10 11:58:28 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -239,6 +239,7 @@ function _coder_settings_form($settings, &$system, &$files) {
     $system_links[$system->name] = l($display_name, "coder/$system->name");
     $files[$system->name] = $system->filename;
   }
+  asort($system_links);
 
   // display what to review options
   $form['coder_what'] = array(
