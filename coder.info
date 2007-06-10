@@ -1,5 +1,6 @@
-; $Id: coder.info,v 1.7 2007-04-07 17:28:03 douggreen Exp $
+; $Id: coder.info,v 1.8 2007-06-10 02:03:16 douggreen Exp $
 name = Coder
 description = Developer Module that assists with code review and version upgrade
 version = "$Name:  $"
 package = Development
+core = "6.x"
