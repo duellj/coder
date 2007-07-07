@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.9 2007-07-07 13:44:36 douggreen Exp $
+// $Id: coder_6x.inc,v 1.10 2007-07-07 17:01:41 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -207,6 +207,14 @@ function _coder_6x_callback(&$coder_args, $review, $rule, $lines, &$results) {
             $warning = t('New syntax for .info files, use dependencies[]');
             $results[-1] = theme('coder_warning', $warning, $severity_name, $lineno, $line);
           }
+          if (preg_match('/^core\s*=/', $line)) {
+            $core = TRUE;
+          }
+        }
+        if (!isset($core)) {
+          $severity_name = _coder_severity_name($coder_args, $review, $rule);
+          $warning = t('New syntax for .info files requires core=6.x');
+          $results[-1] = theme('coder_warning', $warning, $severity_name, $lineno, $line);
         }
       }
     }
