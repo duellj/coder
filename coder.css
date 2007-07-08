@@ -1,4 +1,4 @@
-/* $Id: coder.css,v 1.4 2007-04-07 17:28:03 douggreen Exp $ */
+/* $Id: coder.css,v 1.5 2007-07-08 21:31:15 douggreen Exp $ */
 
 img.coder {
   padding: 2px;
@@ -32,6 +32,10 @@ code.good {
   padding: 5px 5px 5px 5px;
   margin: 0px 0px 5px 0px;
   border: 1px solid #888888;
+}
+
+.coder-description code {
+  background: #edf1f3;
 }
 
 .coder-settings {
