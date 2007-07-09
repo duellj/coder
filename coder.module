@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.83 2007-07-07 19:18:46 douggreen Exp $
+// $Id: coder.module,v 1.84 2007-07-09 11:47:07 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -1261,7 +1261,11 @@ function theme_coder_warning($warning, $severity_name, $lineno = 0, $line = '') 
   // Extract description from warning
   if (is_array($warning)) {
     $description = $warning['#description'];
+    $link = $warning['#link'];
     $warning = $warning['#warning'];
+    if (isset($link)) {
+      $warning .= '  ('. l('Drupal Docs', $link) .')';
+    }
   }
   if ($lineno) {
     $warning = t('Line @number: !warning', array('@number' => $lineno, '!warning' => $warning));
