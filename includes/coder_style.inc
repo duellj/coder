@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_style.inc,v 1.15 2007-07-07 19:16:46 douggreen Exp $
+// $Id: coder_style.inc,v 1.16 2007-07-22 18:12:01 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for Drupal Standards
@@ -14,6 +14,12 @@ function coder_style_reviews() {
       '#type' => 'regex',
       '#value' => '\t',
       '#warning' => 'Use an indent of 2 spaces, with no tabs',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '^ (  )*[^ \'".]',
+      '#warning' => 'Use an indent of 2 spaces, with no tabs',
+      '#severity' => 'minor',
     ),
     array(
       '#type' => 'regex',
