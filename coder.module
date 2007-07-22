@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.84 2007-07-09 11:47:07 douggreen Exp $
+// $Id: coder.module,v 1.85 2007-07-22 11:33:31 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -782,17 +782,9 @@ function _coder_read_and_parse_file(&$coder_args) {
       $this_all_lines .= $char;
 
       if ($in_php) {
-        // look for the ending php tag which tags precedence over everything
-        if ($char == '?' && $content[$pos + 1] == '>') {
-          unset($char);
-          $in_php = 0;
-          $this_all_lines .= '>';
-          $pos ++;
-        }
-
         // when in a quoted string, look for the trailing quote
         // strip characters in the string, replacing with '' or ""
-        elseif ($in_quote) {
+        if ($in_quote) {
           if ($in_backslash) {
             $in_backslash = 0;
           }
@@ -836,6 +828,14 @@ function _coder_read_and_parse_file(&$coder_args) {
             $in_heredoc_html = '';
           }
           unset($char);
+        }
+
+        // look for the ending php tag 
+        elseif ($char == '?' && $content[$pos + 1] == '>') {
+          unset($char);
+          $in_php = 0;
+          $this_all_lines .= '>';
+          $pos ++;
         }
 
         // when in a comment look for the trailing comment
