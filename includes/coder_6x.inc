@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.11 2007-07-09 12:13:22 douggreen Exp $
+// $Id: coder_6x.inc,v 1.12 2007-08-06 17:42:46 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -233,7 +233,7 @@ function _coder_6x_callback(&$coder_args, $review, $rule, $lines, &$results) {
 
 function _coder_6x_new_menu_system_warning() {
   return array(
-    '#warning' => t('The menu system has been completely re-hauled in 6.x.'),
+    '#warning' => t('The menu system has been completely over-hauled in 6.x.'),
     '#link' => 'http://drupal.org/node/109131',
   );
 }
