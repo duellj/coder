@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.13 2007-08-11 21:57:20 douggreen Exp $
+// $Id: coder_6x.inc,v 1.14 2007-08-11 22:46:30 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -204,7 +204,7 @@ function _coder_6x_callback(&$coder_args, $review, $rule, $lines, &$results) {
     if (file_exists($filename)) {
       if ($lines = file($filename)) {
         foreach ($lines as $lineno => $line) {
-          if (preg_match('/^dependencies\s*=\s*\w+\s+\w+/', $line)) {
+          if (preg_match('/^dependencies\s*=/', $line)) {
             $severity_name = _coder_severity_name($coder_args, $review, $rule);
             $warning = t('New syntax for .info files, use dependencies[]');
             $results[-1] = theme('coder_warning', $warning, $severity_name, $lineno, $line);
