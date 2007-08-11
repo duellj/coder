@@ -1,4 +1,4 @@
-/* $Id: coder.css,v 1.5 2007-07-08 21:31:15 douggreen Exp $ */
+/* $Id: coder.css,v 1.6 2007-08-11 04:54:04 douggreen Exp $ */
 
 img.coder {
   padding: 2px;
@@ -40,4 +40,8 @@ code.good {
 
 .coder-settings {
   padding-top: 2em;
+}
+
+.admin-coder {
+  font-size: 0.9em;
 }
