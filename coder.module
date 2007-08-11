@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.87 2007-08-11 04:54:04 douggreen Exp $
+// $Id: coder.module,v 1.88 2007-08-11 21:41:38 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -1262,7 +1262,7 @@ function theme_coder($name, $filename, $results) {
 function theme_coder_warning($warning, $severity_name, $lineno = 0, $line = '') {
   // Extract description from warning
   if (is_array($warning)) {
-    $description = $warning['#description'];
+    $description = isset($warning['#description']) ? $warning['#description'] : '';
     $link = $warning['#link'];
     $warning = $warning['#warning'];
     if (isset($link)) {
@@ -1282,7 +1282,7 @@ function theme_coder_warning($warning, $severity_name, $lineno = 0, $line = '') 
   $path = drupal_get_path('module', 'coder');
   $title = t('severity: @severity', array('@severity' => $severity_name));
   $img = theme('image', $path ."/images/$severity_name.png", $title, $title, array('align' => 'right', 'class' => 'coder'), false);
-  if (isset($description)) {
+  if (!empty($description)) {
     $img .= theme('image', $path .'/images/more.png', t('click to read more'), '', array('align' => 'right', 'class' => 'coder-more'), false);
     $warning .= '<div class="coder-description">Explanation: '. $description .'</div>';
   }
