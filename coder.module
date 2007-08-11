@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.85 2007-07-22 11:33:31 douggreen Exp $
+// $Id: coder.module,v 1.86 2007-08-11 03:57:58 douggreen Exp $
 
 /** @file
  * Developer Module that assists with code review and version upgrade that
@@ -675,7 +675,7 @@ function do_coder_reviews($coder_args) {
           $stats[$key] += $result['#stats'][$key];
         }
         unset($result['#stats']);
-        $results = array_merge($results, $result);
+        $results += $result;
       }
     }
 
