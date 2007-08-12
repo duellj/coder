@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.14 2007-08-11 22:46:30 douggreen Exp $
+// $Id: coder_6x.inc,v 1.15 2007-08-12 14:02:01 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -163,6 +163,12 @@ function coder_6x_reviews() {
       '#type' => 'regex',
       '#value' => '_(help)\s*\(\s*[^,]+\)',
       '#warning_callback' => '_coder_6x_hook_help_warning',
+    ),
+    array(
+      '#type' => 'regex',
+      '#source' => 'all',
+      '#value' => '\$form\s*\[\s*[\'"]?op[\'"]?\s*\]|\$form_values\s*\[\s*[\'"]?op[\'"]?\s*\]',
+      '#warning' => 'replace $form[\'op\'] with $form_state[\'values\'][\'op\']',
     ),
   );
   $review = array(
