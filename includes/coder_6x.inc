@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.15 2007-08-12 14:02:01 douggreen Exp $
+// $Id: coder_6x.inc,v 1.16 2007-08-12 14:44:29 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -169,6 +169,18 @@ function coder_6x_reviews() {
       '#source' => 'all',
       '#value' => '\$form\s*\[\s*[\'"]?op[\'"]?\s*\]|\$form_values\s*\[\s*[\'"]?op[\'"]?\s*\]',
       '#warning' => 'replace $form[\'op\'] with $form_state[\'values\'][\'op\']',
+    ),
+    array(
+      '#type' => 'regex',
+      '#function' => '_confirm_submit$',
+      '#value' => 'return [\'"]',
+      '#warning' => 'in confirm_form, use $form_state[\'redirect\'] instead of return (remember to change function prototype to use &$form_state) ',
+    ),
+    array(
+      '#type' => 'regex',
+      '#function' => '_confirm_submit$',
+      '#value' => 'return [\'"]',
+      '#warning' => 'in confirm_form, use $form_state[\'redirect\'] instead of return (remember to change function prototype to use &$form_state) ',
     ),
   );
   $review = array(
