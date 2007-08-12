@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_6x.inc,v 1.16 2007-08-12 14:44:29 douggreen Exp $
+// $Id: coder_6x.inc,v 1.17 2007-08-12 15:44:20 douggreen Exp $
 
 /** @file
  * This include file implements coder functionality for 5.x -> 6.x upgrades
@@ -181,6 +181,13 @@ function coder_6x_reviews() {
       '#function' => '_confirm_submit$',
       '#value' => 'return [\'"]',
       '#warning' => 'in confirm_form, use $form_state[\'redirect\'] instead of return (remember to change function prototype to use &$form_state) ',
+    ),
+    array(
+      '#type' => 'regex',
+      '#source' => 'all',
+      '#function' => '_(un)?install$|_update_[0-9]+$',
+      '#value' => '\$GLOBALS\[[\'"]?db_type[\'"]?\]',
+      '#warning_callback' => '_coder_6x_schema_api_warning',
     ),
   );
   $review = array(
@@ -474,5 +481,13 @@ function _coder_6x_hook_help_warning() {
     ),
     '#link' => 'http://drupal.org/node/114774#hook-help',
     '#description' => t('Change the first two lines to <code>function yourmodule_help($path, $arg) {'."\n".' switch ($path) { ...</code>.'),
+  );
+}
+
+function _coder_6x_schema_api_warning() {
+  return array(
+    '#warning' => t('A new schema API has been added in 6.x'),
+    '#link' => 'http://drupal.org/node/146843',
+    '#description' => t('This patch caused changes to the format of hook_install(), hook_uninstall(), and hook_update_N(). No longer are switch statements done on $GLOBALS[\'db_type\']; instead, use the variety of schema API functions to perform table manipulation.'),
   );
 }
