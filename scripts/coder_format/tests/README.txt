@@ -1,4 +1,4 @@
-/* $Id: README.txt,v 1.2 2008-02-24 19:40:50 sun Exp $ */
+/* $Id: README.txt,v 1.3 2008-12-04 02:43:34 sun Exp $ */
 
 -- SUMMARY --
 
@@ -34,9 +34,9 @@ and a little bit of necessary setup. Here's what you'll need:
 
 * Download the Text_Diff package from PEAR into this directory, i.e.
 
-  tests/coder_format/
+  scripts/coder_format/tests/
 
-  ..., extract the archive and rename the folder from "Text_Diff-0.x.x" to
+  and extract the archive, and rename the folder from "Text_Diff-0.x.x" to
   "Text".
 
 * If not already done, go to admin/build/modules, and enable Coder module.
