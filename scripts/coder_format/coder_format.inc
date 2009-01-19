@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_format.inc,v 1.4 2009-01-19 00:24:17 sun Exp $
+// $Id: coder_format.inc,v 1.5 2009-01-19 03:28:08 sun Exp $
 
 
 /**
@@ -709,7 +709,8 @@ function coder_format_string($code = '') {
           // Write break to a new line.
           $result = rtrim($result);
           coder_br($result);
-          $result .= trim($text);
+          // Trailing space needed for 'break 3;'.
+          $result .= trim($text) . ' ';
           if ($in_case && !$braces_in_case[$switches]) {
             --$_coder_indent;
             $in_case = FALSE;
