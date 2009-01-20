@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.5 2009-01-19 03:28:08 sun Exp $
+// $Id: CHANGELOG.txt,v 1.6 2009-01-20 14:54:19 sun Exp $
 
 Coder_format x.x-x.x, xxxx-xx-xx
 --------------------------------
@@ -6,6 +6,7 @@ Coder_format x.x-x.x, xxxx-xx-xx
 
 Coder_format 7.x-1.x, xxxx-xx-xx
 --------------------------------
+by sun: Fixed boolean constants must be written uppercase.
 #360766 by sun: Fixed missing space for parameter to break statement.
 #246568 by sun: Updated for new string concatenation standard.
 #272089 by sun: Fixed outdated installation instructions for coder_format tests.
