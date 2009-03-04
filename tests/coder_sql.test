@@ -1,11 +1,11 @@
 <?php
-// $Id: coder_sql.test,v 1.2 2009-03-04 15:57:23 snpower Exp $
+// $Id: coder_sql.test,v 1.3 2009-03-04 17:13:35 snpower Exp $
 
 /**
  * @file
  * Set of simpletests for the sql standards review.
  */
-require_once DRUPAL_ROOT . '/coder_test_case.tinc';
+require_once dirname(__FILE__) . '/coder_test_case.tinc';
 
 class CoderSQLTest extends CoderTestCase {
   function __construct($id = NULL) {
