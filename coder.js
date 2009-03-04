@@ -1,13 +1,12 @@
-// $Id: coder.js,v 1.3 2007-04-07 17:28:03 douggreen Exp $
-
-if (Drupal.jsEnabled) {
+// $Id: coder.js,v 1.4 2009-03-04 15:57:23 snpower Exp $
+(function ($) {
   jQuery.fn.extend({
     check : function() { return this.each(function() { this.checked = true; }); },
     uncheck : function() { return this.each(function() { this.checked = false; }); }
   });
 
-  $(document).ready(
-    function() {
+  Drupal.behaviors.coderFormHandler = {
+    attach: function (context) {
       $("input:checkbox").click(
         function() {
           core = this.form.elements.namedItem("edit-coder-core");
@@ -55,5 +54,5 @@ if (Drupal.jsEnabled) {
         }
       );
     }
-  );
-}
+  };
+})(jQuery);

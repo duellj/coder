@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_format.test,v 1.2 2008-02-24 19:40:50 sun Exp $
+// $Id: coder_format.test,v 1.3 2009-03-04 15:57:23 snpower Exp $
 
 /**
  * @file
@@ -10,5 +10,5 @@
 /**
  * Load coder_format unit tests.
  */
-require_once drupal_get_path('module', 'coder') .'/scripts/coder_format/tests/all.test';
+require_once drupal_get_path('module', 'coder') . '/scripts/coder_format/tests/all.test';
 
