@@ -1,16 +1,7 @@
-; $Id: coder.info,v 1.10 2009-03-04 15:57:23 snpower Exp $
+; $Id: coder.info,v 1.11 2009-03-06 17:05:40 snpower Exp $
 name = Coder
 description = Developer Module that assists with code review and version upgrade
 package = Development
 core = 7.x
 files[] = coder.install
 files[] = coder.module
-files[] = coder.drush.inc
-files[] = includes/coder_47.inc
-files[] = includes/coder_50.inc
-files[] = includes/coder_6x.inc
-files[] = includes/coder_comment.inc
-files[] = includes/coder_i18n.inc
-files[] = includes/coder_security.inc
-files[] = includes/coder_sql.inc
-files[] = includes/coder_style.inc

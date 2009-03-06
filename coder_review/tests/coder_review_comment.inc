@@ -1,8 +1,8 @@
 <?php
 /* $Id .... $ */
 // $Id ....$
-// $Id: coder_comment.inc,v 1.2 2009-03-04 15:57:23 snpower Exp $
-// $Id: coder_comment.inc,v 1.2 2009-03-04 15:57:23 snpower Exp $ ok
+// $Id: coder_review_comment.inc,v 1.1 2009-03-06 17:05:41 snpower Exp $
+// $Id: coder_review_comment.inc,v 1.1 2009-03-06 17:05:41 snpower Exp $ ok
 /**
  * @file
  * This file implements tests for the Drupal commenting standards.
