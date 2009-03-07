@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_6x.inc,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review_6x.inc,v 1.2 2009-03-07 20:47:01 snpower Exp $
 
 /**
  * @file
@@ -103,7 +103,7 @@ function coder_review_6x_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '[\s\(]file_save_upload\s*\([^,]+\s*,\s*(\$dest|\$destination|\'\'|"")\s*',
-      '#never' => 'function file_save_upload',
+      '#never' => 'function\s+file_save_upload',
       '#warning_callback' => '_coder_review_6x_file_save_upload_warning',
     ),
     array(
