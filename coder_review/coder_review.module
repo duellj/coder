@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.4 2009-03-07 18:01:10 snpower Exp $
+// $Id: coder_review.module,v 1.5 2009-03-07 19:04:25 snpower Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -58,7 +58,7 @@ function coder_review_reviews() {
     $path = drupal_get_path('module', 'coder_review') . '/includes';
     $files = drupal_system_listing('/coder_review_.*\.inc$/', $path, 'filepath', 0);
     foreach ($files as $file) {
-      require_once DRUPAL_ROOT . '/' . $file->filename;
+      require_once DRUPAL_ROOT . '/' . $file->filepath;
       $function = $file->name . '_reviews';
       if (drupal_function_exists($function)) {
         if ($review = call_user_func($function)) {
@@ -1920,7 +1920,7 @@ function theme_coder_review_warning($warning, $severity_name, $lineno = 0, $line
   if ($severity_name) {
     $class .= " coder-$severity_name";
   }
-  $path = drupal_get_path('module', 'coder_review');
+  $path = drupal_get_path('module', 'coder');
   $title = t('severity: @severity', array('@severity' => $severity_name));
   $img = theme('image', $path . "/images/$severity_name.png", $title, $title, array('align' => 'right', 'class' => 'coder'), FALSE);
   if (!empty($description)) {
