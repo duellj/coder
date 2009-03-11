@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.drush.inc,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review.drush.inc,v 1.2 2009-03-11 03:02:52 snpower Exp $
 
 /**
  * @file
@@ -7,10 +7,20 @@
  */
 
 /**
+ * Implementation of hook_help().
+ */
+function coder_review_drush_help($path, $arg) {
+  switch ($path) {
+    case 'drush:coder review':
+      return dt('Run code reviews');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function coder_review_drush_command() {
-  $items['coder_review'] = array(
+  $items['coder review'] = array(
     'callback' => 'coder_review_drush_review',
     'description' => t('Run code reviews'),
   );
