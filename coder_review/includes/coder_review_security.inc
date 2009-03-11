@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_security.inc,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review_security.inc,v 1.2 2009-03-11 03:05:04 snpower Exp $
 
 /**
  * @file
@@ -16,7 +16,7 @@ function coder_review_security_reviews() {
   $rules = array(
     array(
       '#type' => 'regex',
-      '#value' => 'l\(check_plain\(.*',
+      '#value' => '[\s\(]l\(check_plain\(.*',
       '#never' => '[\'"]html[\'"]\s*=>\s*(TRUE|1)',
       '#source' => 'allphp',
       '#warning_callback' => '_coder_review_security_l_check_plain_warning',
