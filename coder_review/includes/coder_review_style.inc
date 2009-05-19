@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_style.inc,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review_style.inc,v 1.2 2009-05-19 21:39:03 snpower Exp $
 
 /**
  * @file
@@ -47,7 +47,7 @@ function coder_review_style_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#value' => '(\.\'\'|\'\'\.|\.""|""\.|[^\(\'\"\s0-9]\.|\.[^\)\'\"\=\s0-9])',
+      '#value' => '(\.\'\'|\'\'\.|\.""|""\.|[^\(\s0-9]\.|\.[^\)\=\s0-9])',
       '#warning' => 'String concatenation should be formatted with a space separating the operators (dot .) and the surrounding terms',
     ),
     array(
