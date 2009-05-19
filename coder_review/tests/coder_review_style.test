@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_style.test,v 1.1 2009-03-06 17:05:41 snpower Exp $
+// $Id: coder_review_style.test,v 1.2 2009-05-19 22:58:27 snpower Exp $
 
 /**
  * @file
@@ -92,6 +92,9 @@ class CoderReviewStyleTest extends CoderReviewTestCase {
     $this->assertCoderReviewFail('  $a = $v .\'string\';');
     $this->assertCoderReviewFail('  $a = $v ."string";');
     $this->assertCoderReviewFail('  $a = $v.\'string\';');
+    $this->assertCoderReviewFail('  $a = $v .  \'string\';');
+    $this->assertCoderReviewFail('  $a = $v .  "string";');
+    $this->assertCoderReviewFail('  $a = $v  . \'string\';');
     $this->assertCoderReviewFail('  $a = $some_func(). \'string\';');
     $this->assertCoderReviewPass('  $a = 1.0 * .1 * 1. * (0.1) * (1.) * (.1) * (1.0);');
   }
