@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_style.inc,v 1.3 2009-05-19 22:58:27 snpower Exp $
+// $Id: coder_review_style.inc,v 1.4 2009-05-20 12:58:48 snpower Exp $
 
 /**
  * @file
@@ -87,7 +87,7 @@ function coder_review_style_reviews() {
       '#type' => 'regex',
       '#value' => '(?-i)(function\s+|\$)(([a-z]+[A-Z]+([a-z]*[A-Z]*)*)|([A-Z]+[a-z]+([A-Z]*[a-z]*)*))',
       '#warning' => 'do not use mixed case (camelCase), use lower case and _',
-      '#filename-not' => array('test'),
+      '#class-not' => '.+',
     ),
     array(
       '#type' => 'regex',
