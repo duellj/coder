@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.12 2009-05-21 20:40:59 snpower Exp $
+// $Id: coder_review.module,v 1.13 2009-05-21 22:43:11 snpower Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -1937,11 +1937,11 @@ function theme_coder_review_warning($warning, $severity_name, $lineno = 0, $line
   // Extract description from warning.
   if (is_array($warning)) {
     $description = isset($warning['#description']) ? $warning['#description'] : '';
-    $link = $warning['#link'];
-    $warning = $warning['#warning'];
-    if (isset($link)) {
-      $warning .= '  (' . l(t('Drupal Docs'), $link) . ')';
+    $warning_msg = $warning['#warning'];
+    if (isset($warning['#link'])) {
+      $warning_msg .= '  (' . l(t('Drupal Docs'), $warning['#link']) . ')';
     }
+    $warning = $warning_msg;
   }
   if ($lineno) {
     $warning = t('Line @number: !warning', array('@number' => $lineno, '!warning' => $warning));
