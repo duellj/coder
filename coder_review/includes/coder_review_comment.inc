@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_comment.inc,v 1.2 2009-05-24 00:27:09 snpower Exp $
+// $Id: coder_review_comment.inc,v 1.3 2009-05-24 00:42:38 snpower Exp $
 
 /**
  * @file
@@ -61,7 +61,7 @@ function coder_review_comment_reviews() {
       '#type' => 'regex',
       '#source' => 'comment',
       '#value' => '\@see\s*.*',
-      '#not' => '^\@see\s*[a-zA-Z0-9_\.\-]+\(\)',
+      '#not' => '^\@see\s*[a-zA-Z0-9_\.\-:]+\(\)',
       '#warning' => '@see should always be followed by a function name with ()',
       '#severity' => 'minor',
     ),
