@@ -1,9 +1,9 @@
 <?php
-// $Id: coder_review.install,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review.install,v 1.2 2009-05-24 00:27:09 snpower Exp $
 
 /**
  * @file
- * Installation file for the coder_review module.
+ * Install, update and uninstall functions for the coder_review module.
  */
 
 /**
