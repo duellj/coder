@@ -1,5 +1,5 @@
 <?php
-// $Id: coder.module,v 1.95 2009-05-30 19:18:49 snpower Exp $
+// $Id: coder.module,v 1.96 2009-05-30 19:19:58 snpower Exp $
 
 /**
  * @file
@@ -20,7 +20,7 @@ function coder_menu() {
     $items['admin/development/coder'] = array(
       'title' => 'Coder',
       'page callback' => 'coder_display_required_module_message',
-      'description' => 'Select code review plugins and modules, and upgrade directories.',
+      'description' => 'Select code review plugins and modules, and upgrade files.',
       'access arguments' => array('administer site configuration'),
     );
   }
@@ -33,7 +33,7 @@ function coder_menu() {
 
     $items['admin/development/coder'] = array(
       'title' => 'Coder',
-      'description' => 'Select code review plugins and modules, and upgrade directories.',
+      'description' => 'Select code review plugins and modules, and upgrade files.',
       'access arguments' => array('administer site configuration'),
     );
   }
