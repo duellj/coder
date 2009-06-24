@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_comment.inc,v 1.5 2009-05-26 10:19:08 snpower Exp $
+// $Id: coder_review_comment.inc,v 1.6 2009-06-24 22:29:16 snpower Exp $
 
 /**
  * @file
@@ -68,8 +68,8 @@ function coder_review_comment_reviews() {
     array(
       '#type' => 'regex',
       '#source' => 'comment',
-      '#value' => '\@see.*$',
-      '#not' => '^\@see\s+([\w\.\-\(\)\?\/:\&=]+,\s)*[\w\.\-\(\)\?\/:\&=]+$',
+      '#value' => '\@see\s*\w+.*$',
+      '#not' => '^\@see\s+([\w\.\-\(\)\?\/:\&=]+,\s)*[\w\.\-\(\)\?\/:\&=]+?[\w\(\)\/]$',
       '#warning' => '@see references should be separated by "," followed by a single space and with no trailing punctuation',
       '#severity' => 'minor',
     ),
