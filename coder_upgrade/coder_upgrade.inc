@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.inc,v 1.1 2009-07-07 14:07:00 solotandem Exp $
+// $Id: coder_upgrade.inc,v 1.2 2009-08-03 00:11:11 solotandem Exp $
 
 /**
  * @file
@@ -25,6 +25,12 @@ define('DEADWOOD_OLD', 'coder_upgrade/old');
  * Relative to file_directory_path().
  */
 define('DEADWOOD_NEW', 'coder_upgrade/new');
+
+/**
+ * The default directory to store patch files.
+ * Relative to file_directory_path().
+ */
+define('DEADWOOD_PATCH', 'coder_upgrade/patch');
 
 /**
  * Pass a string through t() and wrap the result in html entity <p>.
