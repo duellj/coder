@@ -1,7 +1,11 @@
-// $Id: CHANGELOG.txt,v 1.4 2009-08-03 00:11:11 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.5 2009-08-04 16:10:47 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2009-08-04):
+   * Rename hook_perm and the permission.
+   * Revise API documentation.
+
 - Changes (2009-08-02):
    * Create log file and patch files.
    * Add links to log file and patch files in user interface.
