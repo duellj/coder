@@ -1,4 +1,4 @@
-// $Id: coder_review.js,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review.js,v 1.2 2009-08-08 14:38:56 snpower Exp $
 (function ($) {
   jQuery.fn.extend({
     check : function() { return this.each(function() { this.checked = true; }); },
@@ -12,8 +12,8 @@
           core = this.form.elements.namedItem("edit-coder-core");
           active = this.form.elements.namedItem("edit-coder-active-modules");
           if (this == core || this == active) {
-            modules = "input[@id^=edit-coder-modules-]";
-            themes = "input[@id^=edit-coder-themes-]";
+            modules = "input[id^=edit-coder-modules-]";
+            themes = "input[id^=edit-coder-themes-]";
             if (core.checked || active.checked) {
               $(modules).uncheck();
               $(themes).uncheck();
