@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.18 2009-08-08 15:38:10 snpower Exp $
+// $Id: coder_review.module,v 1.19 2009-08-08 15:46:41 snpower Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -847,6 +847,9 @@ function coder_review_page_form($form_state, $arg = '') {
       if (count($stats)) {
         $summary = array('files' => 0, 'minor' => 0, 'normal' => 0, 'critical' => 0);
         foreach ($stats as $stat) {
+          $summary['minor'] += $stat['minor'];
+          $summary['normal'] += $stat['normal'];
+          $summary['critical'] += $stat['critical'];
           if (isset($stat['#includes'])) {
             foreach ($stat['#includes'] as $includestat) {
               $summary['files'] ++;
