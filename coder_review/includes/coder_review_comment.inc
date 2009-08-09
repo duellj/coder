@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_comment.inc,v 1.8 2009-08-09 01:39:31 snpower Exp $
+// $Id: coder_review_comment.inc,v 1.9 2009-08-09 18:38:15 snpower Exp $
 
 /**
  * @file
@@ -17,7 +17,7 @@ function coder_review_comment_reviews() {
       '#value' => '$Id',
       '#case-sensitive' => TRUE,
       '#warning_callback' => '_coder_review_comment_Id_warning',
-      '#filename-not' => array('patch'),
+      '#filename-not' => array('\.patch'),
     ),
     array(
       '#type' => 'regex',
@@ -86,7 +86,7 @@ function coder_review_comment_reviews() {
       '#source' => 'comment',
       '#value' => '@' . 'file',
       '#warning_callback' => '_coder_review_comment_missing_file_block',
-      '#filename-not' => array('patch'),
+      '#filename-not' => array('\.patch'),
     ),
     array(
       '#type' => 'callback',

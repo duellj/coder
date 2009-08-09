@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_i18n.inc,v 1.3 2009-03-17 23:07:03 snpower Exp $
+// $Id: coder_review_i18n.inc,v 1.4 2009-08-09 18:38:15 snpower Exp $
 
 /**
  * @file
@@ -15,7 +15,7 @@ function coder_review_i18n_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '[\s\(]l\s*\(\s*["\']',
-      '#filename-not' => array('install'),
+      '#filename-not' => array('\.install'),
       '#warning_callback' => '_coder_review_i18n_l_without_t',
     ),
     array(
@@ -33,7 +33,7 @@ function coder_review_i18n_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '[\s\(]alert\s*\(\s*[\'"]',
-      '#filename' => array('js'),
+      '#filename' => array('\.js'),
       '#warning' => 'Javascript strings should be passed through Drupal.t().',
     ),
     array(

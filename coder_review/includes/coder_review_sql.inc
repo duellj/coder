@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_sql.inc,v 1.1 2009-03-06 17:05:40 snpower Exp $
+// $Id: coder_review_sql.inc,v 1.2 2009-08-09 18:38:15 snpower Exp $
 
 /**
  * @file
@@ -49,7 +49,7 @@ function coder_review_sql_reviews() {
     ),
     array(
       '#type' => 'regex',
-      '#filename' => array('install'),
+      '#filename' => array('\.install'),
       '#function' => '_update_[0-9]+$',
       '#source' => 'allphp',
       '#value' => 'db_query\s*\(\s*[\'"](UPDATE|INSERT|DELETE)\s+',

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_i18n_po.inc,v 1.1 2009-03-17 23:07:03 snpower Exp $
+// $Id: coder_review_i18n_po.inc,v 1.2 2009-08-09 18:38:15 snpower Exp $
 
 /**
  * @file
@@ -15,7 +15,7 @@ function coder_review_i18n_po_reviews() {
   $rules = array(
     array(
       '#type' => 'callback',
-      '#filename' => array('po'),
+      '#filename' => array('\.po'),
       '#value' => '_coder_review_translation_callback',
     ),
   );
