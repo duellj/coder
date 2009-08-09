@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_comment.inc,v 1.7 2009-08-08 02:09:47 snpower Exp $
+// $Id: coder_review_comment.inc,v 1.8 2009-08-09 01:39:31 snpower Exp $
 
 /**
  * @file
@@ -104,14 +104,14 @@ function coder_review_comment_reviews() {
     array(
       '#type' => 'regex',
       '#source' => 'comment',
-      '#value' => 'Implement\s+hook_\w+\(\)\s*$',
+      '#value' => 'Implements*\s+hook_\w+\(\)\s*$',
       '#warning' => 'Missing period',
       '#severity' => 'minor',
     ),
     array(
       '#type' => 'regex',
       '#source' => 'comment',
-      '#value' => 'Implement\s+hook_\w+\s*\.*$',
+      '#value' => 'Implements*\s+hook_\w+\s*\.*$',
       '#warning' => 'Missing parenthesis after function name',
       '#severity' => 'minor',
     ),
@@ -119,16 +119,16 @@ function coder_review_comment_reviews() {
     array(
       '#type' => 'regex',
       '#source' => 'comment',
-      '#value' => '^\s*\*[a-zA-Z]\s+hook_\w+',
-      '#not' => '^\s\*\sImplement\s+hook_\w+',
-      '#warning' => 'Format should be <code>* Implement hook_foo().</code>',
+      '#value' => '^\s*\*\s*[a-zA-Z\s]+\s+hook_\w+',
+      '#not' => '^\s\*\sImplements*\s+hook_\w+',
+      '#warning' => 'Format should be <code>* Implements hook_foo().</code>',
       '#severity' => 'minor',
     ),
     array(
       '#type' => 'regex',
       '#source' => 'comment',
-      '#value' => 'implement\s+hook_\w+',
-      '#warning' => '\'Implement\' should be at the start of the sentence and begin with a capitialized letter',
+      '#value' => 'implements\s+hook_\w+',
+      '#warning' => '\'Implements\' should be at the start of the sentence and begin with a capitialized letter',
       '#severity' => 'minor',
       '#case-sensitive' => TRUE,
     ),
