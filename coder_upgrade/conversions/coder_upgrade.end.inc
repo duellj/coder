@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.end.inc,v 1.1 2009-08-17 16:04:46 solotandem Exp $
+// $Id: coder_upgrade.end.inc,v 1.2 2009-08-17 16:59:00 solotandem Exp $
 
 /**
  * @file
@@ -111,7 +111,7 @@ function coder_upgrade_add_file_entries($dirname = '', $files = array(), &$items
 
   // Create list of files for registry.
   // TODO Allow for custom extensions!!!
-  $extensions = array('inc', 'install', 'module', 'php');
+  $extensions = array('inc', 'install', 'module', 'php', 'test');
   $path = $path != '' ? $path . '/' : $path;
   foreach ($files as $file) {
     if (is_array($file)) {

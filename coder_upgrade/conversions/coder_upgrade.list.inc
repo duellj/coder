@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.list.inc,v 1.3 2009-08-17 16:04:46 solotandem Exp $
+// $Id: coder_upgrade.list.inc,v 1.4 2009-08-17 16:59:00 solotandem Exp $
 
 /**
  * @file
@@ -48,6 +48,13 @@ function coder_upgrade_conversions_list() {
     'beginning' => array(),
     'middle' => array(),
     'end' => array(),
+  );
+
+  $list['middle'] = array(
+    array(
+      'name' => 'simple_changes',
+      'type' => 'parser',
+    ),
   );
 
   $list['end'] = array('end');
