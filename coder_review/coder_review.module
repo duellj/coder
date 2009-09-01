@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.23 2009-09-01 09:50:51 snpower Exp $
+// $Id: coder_review.module,v 1.24 2009-09-01 14:41:28 douggreen Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -425,7 +425,7 @@ function _coder_review_settings_form($settings, &$system, &$files) {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       'checkboxes' => array(
-        '#theme' => 'coder_table_cols',
+        '#theme' => 'coder_review_table_cols',
         '#cols' => 2,
       ),
     );
@@ -461,7 +461,7 @@ function _coder_review_settings_form($settings, &$system, &$files) {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       'checkboxes' => array(
-        '#theme' => 'coder_table_cols',
+        '#theme' => 'coder_review_table_cols',
       ),
     );
     if (isset($settings['coder_all'])) {
