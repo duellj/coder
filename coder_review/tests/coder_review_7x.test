@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.test,v 1.28 2009-09-01 09:17:15 snpower Exp $
+// $Id: coder_review_7x.test,v 1.29 2009-09-01 10:35:04 snpower Exp $
 
 /**
  * @file
@@ -421,7 +421,10 @@ class CoderReviewUpgrade7xTest extends CoderReviewTestCase {
     $this->assertCoderReviewFail('  if (drupal_execute())');
 
     // http://drupal.org/node/224333#unrendered
-    // http://drupal.org/node/224333#ahah_changes
+
+    // http://drupal.org/node/224333#ahah_now_ajax
+    $this->assertCoderReviewFail('  $form["#ahah"] = "foo";');
+    $this->assertCoderReviewFail("  \$form['#ahah'] = 'foo';");
   }
 
   function testFile7x() {

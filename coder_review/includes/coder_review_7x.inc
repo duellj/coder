@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.inc,v 1.30 2009-09-01 09:17:14 snpower Exp $
+// $Id: coder_review_7x.inc,v 1.31 2009-09-01 10:35:04 snpower Exp $
 
 /**
  * @file
@@ -571,8 +571,14 @@ function coder_review_7x_reviews() {
       ),
 
       // http://drupal.org/node/224333#unrendered --- drupal_get_form() returns an array
-      // http://drupal.org/node/224333#ahah_changes --- AHAH Processing has changed; new 'callback' member of the array, and the callback must be rewritten
 
+      // http://drupal.org/node/224333#ahah_now_ajax
+      array(
+        '#type' => 'regex',
+        '#source' => 'allphp',
+        '#value' => '[\'"]#ahah[\'"]',
+        '#warning_callback' => '_coder_review_7x_ahah_now_ajax_warning',
+      ),
 
     // File API
       // N/A - http://drupal.org/node/224333#file_load_multiple --- file_load_multiple()
@@ -1823,5 +1829,12 @@ function _coder_review_7x_no_jsenabled_warning() {
   return array(
     '#warning' => t('JavaScript variable Drupal.jsEnabled has been removed.'),
     '#link' => 'http://drupal.org/node/224333#no-jsenabled',
+  );
+}
+
+function _coder_review_7x_ahah_now_ajax_warning() {
+  return array(
+    '#warning' => t('#ahah has changed to #ajax and the call details have changed.'),
+    '#link' => 'http://drupal.org/node/224333#ahah-now-ajax',
   );
 }
