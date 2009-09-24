@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.7 2009-08-21 04:39:52 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.8 2009-09-24 12:36:43 solotandem Exp $
 
 /**
  * @file
@@ -203,7 +203,8 @@ function coder_upgrade_callback_function_calls(&$item) {
       break;
 
     case 'function_exists':
-      $name['value'] = 'drupal_function_exists';
+      // Change was reverted.
+//      $name['value'] = 'drupal_function_exists';
       break;
 
     case 'module_list':
