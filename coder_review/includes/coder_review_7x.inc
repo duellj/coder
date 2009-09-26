@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.inc,v 1.39 2009-09-26 23:20:39 sun Exp $
+// $Id: coder_review_7x.inc,v 1.40 2009-09-26 23:28:00 sun Exp $
 
 /**
  * @file
@@ -1062,9 +1062,10 @@ function _coder_review_7x_user_delete_warning() {
 
 function _coder_review_7x_hook_user_op_warning() {
   return array(
-    '#warning' => t('!hook_user() has been split into a number of smaller hooks.',
+    '#warning' => t('!hook_user() has been removed in favour of hook_user_$op functions, for example !hook_user_validate().',
       array(
-        '!hook_user()' => theme('drupalapi', 'hook_user', '7'),
+        '!hook_user()' => theme('drupalapi', 'hook_user', '6'),
+        '!hook_user_validate()' => theme('drupalapi', 'hook_user_validate', '7'),
       )
     ),
     '#link' => 'http://drupal.org/node/224333#remove_op',
