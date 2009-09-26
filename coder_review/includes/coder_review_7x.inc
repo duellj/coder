@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.inc,v 1.37 2009-09-05 11:01:10 snpower Exp $
+// $Id: coder_review_7x.inc,v 1.38 2009-09-26 23:08:28 sun Exp $
 
 /**
  * @file
@@ -237,15 +237,6 @@ function coder_review_7x_reviews() {
 
     // Menu
       // N/A - http://drupal.org/node/224333#international_item --- Added a new top level admin item, 'international'.
-
-      // http://drupal.org/node/224333#menu_file_path
-      array(
-        '#type' => 'regex',
-        '#source' => 'allphp',
-        '#function' => '_(menu|theme)$',
-        '#value' => '[\'"](file|file path|path)[\'"]',
-        '#warning_callback' => '_coder_review_7x_menu_file_path_warning',
-      ),
 
       // http://drupal.org/node/224333#menu_callback_array --- Menu callbacks should return an array; hello hook_page_alter()
 
@@ -1784,18 +1775,6 @@ function _coder_review_7x_php_permissions_warning() {
   return array(
     '#warning' => t('The "use PHP for block visibility" permission has been replaced by the more generic "use PHP for settings" permission.'),
     '#link' => 'http://drupal.org/node/224333#php_permissions',
-  );
-}
-
-function _coder_review_7x_menu_file_path_warning() {
-  return array(
-    '#warning' => t('The "file", "path" and "file path" keys have been removed from !hook_menu() and !hook_theme().',
-      array(
-        '!hook_menu()' => theme('drupalapi', 'hook_menu()', 7),
-        '!hook_theme()' => theme('drupalapi', 'hook_theme()', 7),
-      )
-    ),
-    '#link' => 'http://drupal.org/node/224333#menu_file_path',
   );
 }
 
