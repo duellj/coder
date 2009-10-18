@@ -1,6 +1,6 @@
-; $Id: coder_review.info,v 1.4 2009-05-23 23:21:27 snpower Exp $
+; $Id: coder_review.info,v 1.5 2009-10-18 12:58:25 snpower Exp $
 name = Coder Review
-description = Developer Module that assists with code review and version upgrade
+description = Developer module which reviews your code identifying coding style problems and where updates to the API are required.
 package = Development
 core = 7.x
 dependencies[] = coder

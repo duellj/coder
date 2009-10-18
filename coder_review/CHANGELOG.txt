@@ -1,10 +1,13 @@
-// $Id: CHANGELOG.txt,v 1.1 2009-10-18 12:45:36 snpower Exp $
+// $Id: CHANGELOG.txt,v 1.2 2009-10-18 12:58:25 snpower Exp $
 
 Coder Review 7.x-3.x, xxxx-xx-xx
 ---------------------------------
-#607592 (japerry, stella) :
+#607592 by japerry, stella :
  - changed menu paths.
  - updated arguments to theme() function calls and definitions.
  - changed drupal_add_css/js calls to use #attached instead.
  - changed #markup theme() calls to use #theme.
  - coding style fixes.
+#575726 by stella :
+ - changed coder_review module description.
+ - 
