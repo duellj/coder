@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.drush.inc,v 1.4 2009-10-18 12:45:36 snpower Exp $
+// $Id: coder_review.drush.inc,v 1.5 2009-10-18 13:07:47 snpower Exp $
 
 /**
  * @file
@@ -23,6 +23,7 @@ function coder_review_drush_command() {
   $items['coder review'] = array(
     'callback' => 'coder_review_drush_review',
     'description' => dt('Run code reviews'),
+    'drupal dependencies' => array('coder_review'),
   );
   return $items;
 }
