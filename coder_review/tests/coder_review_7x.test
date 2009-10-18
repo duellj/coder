@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.test,v 1.37 2009-10-18 21:28:23 snpower Exp $
+// $Id: coder_review_7x.test,v 1.38 2009-10-18 22:11:03 snpower Exp $
 
 /**
  * @file
@@ -18,6 +18,12 @@ class CoderReviewUpgrade7xTest extends CoderReviewTestCase {
       'description' => t('Tests for the coder upgrade7x review.'),
       'group' => t('Coder'),
     );
+  }
+
+  function testTestModule7x() {
+    // http://drupal.org/node/224333#block_optional
+
+    $this->runTestModuleTest();
   }
 
 
@@ -197,8 +203,6 @@ class CoderReviewUpgrade7xTest extends CoderReviewTestCase {
   }
 
   function testBlock7x() {
-    // http://drupal.org/node/224333#block_optional
-
     // http://drupal.org/node/224333#remove_op
     $this->assertCoderReviewFail("  function mymodule_block(\$op, \$delta, \$edit) {\n}");
     $this->assertCoderReviewFail("  function mymodule_block(\$delta, \$edit) {\n  if (\$op == 'list') {\n  }\n}");
