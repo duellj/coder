@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.2 2009-10-18 12:58:25 snpower Exp $
+// $Id: CHANGELOG.txt,v 1.3 2009-10-18 13:26:30 snpower Exp $
 
 Coder Review 7.x-3.x, xxxx-xx-xx
 ---------------------------------
@@ -10,4 +10,7 @@ Coder Review 7.x-3.x, xxxx-xx-xx
  - coding style fixes.
 #575726 by stella :
  - changed coder_review module description.
- - 
+#471874 by grendzy :
+ - added coder.drush.inc dependency setting
+#583136 by willmoy, matason :
+ - added 'case' to list of keywords not to enforce no space between it and (
