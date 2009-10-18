@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_test_case.tinc,v 1.4 2009-09-26 23:18:15 sun Exp $
+// $Id: coder_review_test_case.tinc,v 1.5 2009-10-18 12:45:36 snpower Exp $
 
 /**
  * @file
@@ -18,7 +18,7 @@ class CoderReviewTestCase extends DrupalUnitTestCase {
     // Only do the setUp once per test case, not once per function call.
     static $run_once;
     if (!isset($run_once)) {
-      parent::setUp();
+      parent::setUp('coder_review');
       $run_once = TRUE;
     }
   }

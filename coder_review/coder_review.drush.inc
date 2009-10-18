@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.drush.inc,v 1.3 2009-05-15 15:25:21 snpower Exp $
+// $Id: coder_review.drush.inc,v 1.4 2009-10-18 12:45:36 snpower Exp $
 
 /**
  * @file
@@ -7,7 +7,7 @@
  */
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function coder_review_drush_help($path, $arg) {
   switch ($path) {
@@ -17,7 +17,7 @@ function coder_review_drush_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  */
 function coder_review_drush_command() {
   $items['coder review'] = array(

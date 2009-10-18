@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_style.inc,v 1.7 2009-08-14 00:15:47 snpower Exp $
+// $Id: coder_review_style.inc,v 1.8 2009-10-18 12:45:36 snpower Exp $
 
 /**
  * @file
@@ -7,7 +7,7 @@
  */
 
 /**
- * Implementation of hook_reviews().
+ * Implements hook_reviews().
  */
 function coder_review_style_reviews() {
   $br = 'br';
