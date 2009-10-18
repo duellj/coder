@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.5 2009-10-18 22:11:03 snpower Exp $
+// $Id: CHANGELOG.txt,v 1.6 2009-10-18 23:05:45 snpower Exp $
 
 Coder Review 7.x-3.x, xxxx-xx-xx
 ---------------------------------
@@ -17,4 +17,6 @@ Coder Review 7.x-3.x, xxxx-xx-xx
 #565280 by snufkin :
  - added optional block module review.
 Added coder_review_test module to test for items that can't be done in a test
-file.
+   file.
+#565610 by snufkin :
+ - t and format_plural context arguments change
