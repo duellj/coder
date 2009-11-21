@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.9 2009-11-21 14:43:01 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.10 2009-11-21 14:51:19 solotandem Exp $
 
 /**
  * @file
@@ -76,12 +76,13 @@ function coder_upgrade_callback_function_calls(&$item) {
       }
       break;
 
-    case '_comment_load':
+    case '_comment_load': // DONE
       // TODO The comment_wildcard change in hook_menu.
       $name['value'] = 'comment_load';
+      break;
 
-    case 'comment_node_url':
-      $parent = $item['parent'];
+    case 'comment_node_url': // DONE
+      $parent = $item->parent;
       $temp = $editor->statementsToText($parent);
       $from = '@comment_node_url()@';
       $to = "'comment/' . \$comment->cid";
@@ -90,12 +91,12 @@ function coder_upgrade_callback_function_calls(&$item) {
       $parent->data = $temp->get(0)->data;
       break;
 
-    case 'comment_validate':
+    case 'comment_validate': // DONE
       $name['value'] = 'comment_form_validate';
       $class->setParameters($item, array('$form', '$form_state /* TODO Set these variables. */'));
       break;
 
-    case 'drupal_clone':
+    case 'drupal_clone': // DONE
       $name['value'] = 'clone';
       $item['noparens'] = 1;
       break;
