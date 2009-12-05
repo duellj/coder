@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.32 2009-12-05 18:00:23 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.33 2009-12-05 18:13:53 solotandem Exp $
 
 /**
  * @file
@@ -776,8 +776,8 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
         // Get the variable name used as the parameter.
         $parameter = $item->getParameter()->toString();
         // Make variable assignments referring to two new parameters.
-        $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // TODO Set these variables");//->get(0)->data;
-        $assign2 = $editor->textToStatements('$password = ' . $parameter . "['pass'];")->getElement(0); //->data;
+        $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // TODO Set these variables");
+        $assign2 = $editor->textToStatements('$password = ' . $parameter . "['pass'];")->getElement(0);
         coder_upgrade_debug_echo($assign1->print_r());
         // Insert the assignments before this statement.
         // Get the statement (i.e. node) this function call is part of.
@@ -791,8 +791,8 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
         $editor->setParameters($item, array('$name', '$password'));
       }
       elseif ($class == 'PGPArray') {
-        $name = $operand->getValue(-1, "'name'")->toString();
-        $password = $operand->getValue(-1, "'pass'")->toString();
+        $name = $operand->findValue("'name'")->toString();
+        $password = $operand->findValue("'pass'")->toString();
         // Set the parameters on this function call.
         $editor->setParameters($item, array($name, $password));
       }
