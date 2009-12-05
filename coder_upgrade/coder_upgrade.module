@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.module,v 1.9 2009-11-22 23:59:09 solotandem Exp $
+// $Id: coder_upgrade.module,v 1.10 2009-12-05 05:50:05 solotandem Exp $
 
 /**
  * @file
@@ -549,7 +549,7 @@ function coder_upgrade_patch_link($name) {
  *   HTML output.
  */
 function coder_upgrade_patch_display($filename) {
-  echo '<html><head><body><pre>' . file_get_contents(coder_upgrade_patch_path($filename)) . '</pre></body></head></html>';
+  echo '<html><head><body><pre>' . check_plain(file_get_contents(coder_upgrade_patch_path($filename))) . '</pre></body></head></html>';
 }
 
 /**
