@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.38 2009-12-05 22:45:36 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.39 2009-12-06 00:58:53 solotandem Exp $
 
 /**
  * @file
@@ -721,19 +721,20 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
       $value = &$return['value'];
       $array = $value->getElement(0);
       if (get_class($array) == 'PGPArray') {
-        $theme = $array->findValue($item->getParameter(0)->toString());
+        if (!($theme = $array->findValue($item->getParameter(0)->toString()))) {
+          coder_upgrade_debug_print("ERROR: theme entry not found in hook_theme");
+          return;
+        }
         $array = $theme->getElement(0);
         $arguments = $array->findValue("'arguments'");
         $keys = $arguments->getElement(0)->keysToArray();
         if (empty($keys)) {
           break;
         }
-        print_r($keys);
         // Remove the quotes surrounding the keys.
         foreach ($keys as $index => $key) {
           $keys[$index] = trim($key, "'\"");
         }
-        print_r($keys);
       }
 
       $count = $item->parameters->count();
@@ -1081,7 +1082,6 @@ function coder_upgrade_convert_access(&$node) {
  */
 function coder_upgrade_convert_install($node) {
   coder_upgrade_debug_echo("inside " . __FUNCTION__ . "\n");
-  coder_upgrade_debug_echo($name . "\n");
   $item = &$node->data;
 
   // Get body statements.
