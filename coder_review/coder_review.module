@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.26 2009-10-18 12:45:36 snpower Exp $
+// $Id: coder_review.module,v 1.27 2009-12-29 02:13:59 solotandem Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -1898,14 +1898,14 @@ function coder_review_simpletest() {
 function coder_review_theme() {
   return array(
     'coder_review' => array(
-      'arguments' => array(
+      'variables' => array(
         'name' => NULL,
         'filename' => NULL,
         'results' => NULL,
       ),
     ),
     'coder_review_warning' => array(
-      'arguments' => array(
+      'variables' => array(
         'warning' => NULL,
         'severity_name' => NULL,
         'lineno' => NULL,
@@ -1913,23 +1913,21 @@ function coder_review_theme() {
       ),
     ),
     'coder_review_warning_msg' => array(
-      'arguments' => array(
+      'variables' => array(
         'error' => NULL,
       ),
     ),
     'coder_review_table_cols' => array(
-      'arguments' => array(
-        'form' => NULL,
-      ),
+      'render element' => 'form',
     ),
     'drupalapi' => array(
-      'arguments' => array(
+      'variables' => array(
         'function' => NULL,
         'version' => substr(VERSION, 0, 1),
       ),
     ),
     'phpapi' => array(
-      'arguments' => array(
+      'variables' => array(
         'function' => NULL,
       ),
     ),
