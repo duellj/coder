@@ -1,7 +1,9 @@
-// $Id: CHANGELOG.txt,v 1.6 2009-10-18 23:05:45 snpower Exp $
+// $Id: CHANGELOG.txt,v 1.7 2010-01-02 00:12:55 davereid Exp $
 
 Coder Review 7.x-3.x, xxxx-xx-xx
 ---------------------------------
+#666714 by dereine :
+ - Fixed parameters in coder_review_drush_help().
 #607592 by japerry, stella :
  - changed menu paths.
  - updated arguments to theme() function calls and definitions.
