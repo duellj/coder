@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.install,v 1.5 2009-08-24 16:25:21 solotandem Exp $
+// $Id: coder_upgrade.install,v 1.6 2010-01-20 18:24:43 solotandem Exp $
 
 /**
  * @file
@@ -11,7 +11,7 @@
 module_load_include('inc', 'coder_upgrade', 'coder_upgrade');
 
 /**
- * Implement hook_install().
+ * Implements hook_install().
  */
 function coder_upgrade_install() {
   // Create the top-level module directory.
@@ -40,7 +40,7 @@ function coder_upgrade_install() {
 }
 
 /**
- * Implement hook_uninstall().
+ * Implements hook_uninstall().
  */
 function coder_upgrade_uninstall() {
   // Remove the module input and output directories.
@@ -58,7 +58,7 @@ function coder_upgrade_uninstall() {
 }
 
 /**
- * Implement hook_requirements().
+ * Implements hook_requirements().
  */
 function coder_upgrade_requirements($phase) {
   $requirements = array();

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.api.php,v 1.4 2009-08-17 16:04:46 solotandem Exp $
+// $Id: coder_upgrade.api.php,v 1.5 2010-01-20 18:24:43 solotandem Exp $
 
 /**
  * @file
@@ -14,7 +14,7 @@
  */
 
 /**
- * Declare upgrade sets for an API (or set of APIs).
+ * Declares upgrade sets for an API (or set of APIs).
  *
  * This hook allows contributed modules to declare upgrade sets for an API
  * supplied by their module, another contributed module, or a core module. Each
@@ -128,7 +128,7 @@ function hook_upgrades($include_routines)  {
  */
 
 /**
- * Implement hook_upgrades().
+ * Implements hook_upgrades().
  */
 function your_module_name_upgrades($include_routines)  {
   $routines = $include_routines ? your_module_name_conversions_list() : array();
@@ -141,7 +141,7 @@ function your_module_name_upgrades($include_routines)  {
 }
 
 /**
- * Return a list of conversion routine suffixes.
+ * Returns a list of conversion routine suffixes.
  *
  * The complete function name that Coder Upgrade searches for is:
  *   <your_module_name> . '_convert_' . <your_routine_name>

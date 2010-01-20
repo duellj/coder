@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.help.inc,v 1.6 2009-11-18 20:58:13 solotandem Exp $
+// $Id: coder_upgrade.help.inc,v 1.7 2010-01-20 18:24:43 solotandem Exp $
 
 /**
  * @file
@@ -9,7 +9,7 @@
  */
 
 /**
- * Implement hook_help().
+ * Implements hook_help().
  */
 function coder_upgrade_help($path) {
   $input = file_directory_path() . '/' . variable_get('coder_upgrade_dir_old', DEADWOOD_OLD);
