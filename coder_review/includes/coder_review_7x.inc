@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_7x.inc,v 1.47 2010-01-15 14:27:05 solotandem Exp $
+// $Id: coder_review_7x.inc,v 1.48 2010-01-21 19:28:29 solotandem Exp $
 
 /**
  * @file
@@ -994,9 +994,9 @@ function _coder_review_7x_optional_block_review_callback(&$coder_args, $review, 
   }
 
   // Find out the info filename and load it.
-  $pos = strpos($filename, '.');
-  $modulename = substr($filename, 0, $pos);
-  $ini = parse_ini_file($modulename .'.info');
+  $path_info = pathinfo($filename);
+  list($modulename) = explode('.', $path_info['basename'], 2);
+  $ini = parse_ini_file($path_info['dirname'] . '/' . $modulename . '.info');
 
   // Check if the dependency has been declared.
   $dependency_declared = (isset($ini['dependencies']) && is_array($ini['dependencies'])) ? in_array('block', $ini['dependencies']) : FALSE;
