@@ -1,7 +1,12 @@
-// $Id: CHANGELOG.txt,v 1.16 2010-01-20 18:24:43 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.17 2010-01-25 03:29:16 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2010-01-24):
+  * main.inc
+  * - call reader, writer::getInstance to avoid creating duplicate objects
+  * - call reader::reset to avoid excessive memory consumption
+
 - Changes (2010-01-20):
   * #690518: api.php, help.inc, inc, install: use second person tense in document comments
 
