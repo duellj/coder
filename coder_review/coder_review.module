@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.28 2010-01-21 19:28:29 solotandem Exp $
+// $Id: coder_review.module,v 1.29 2010-01-31 16:00:31 snpower Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -27,6 +27,13 @@ if (module_exists('drush')) {
 define('SEVERITY_MINOR', 1);
 define('SEVERITY_NORMAL', 5);
 define('SEVERITY_CRITICAL', 9);
+
+/**
+ * Implements hook_flush_caches().
+ */
+function coder_review_flush_caches() {
+  return array('cache_coder');
+}
 
 /**
  * Implements hook_help().
@@ -1019,7 +1026,7 @@ function _coder_review_modified() {
 function do_coder_reviews($coder_args) {
   // Load the cached results if they exist, but not for patches.
   if (empty($coder_args['#patch']) && empty($coder_args['#test'])) {
-    $cache_key = 'coder:' . implode(':', array_keys($coder_args['#reviews'])) . $coder_args['#severity'] . ':' . $coder_args['#filename'];
+    $cache_key = 'coder:' . md5(implode(':', array_keys($coder_args['#reviews']))) . $coder_args['#severity'] . ':' . $coder_args['#filename'];
     if (file_exists($filepath = realpath($coder_args['#filename']))) {
       $cache_mtime = filemtime($filepath);
       if ($cache_results = cache_get($cache_key, 'cache_coder')) {
