@@ -1,7 +1,11 @@
-// $Id: CHANGELOG.txt,v 1.17 2010-01-25 03:29:16 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.18 2010-02-03 16:45:33 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2010-02-03):
+  * list.inc
+  * - #703506: move static variable out of hook implemenation into calling routine
+ 
 - Changes (2010-01-24):
   * main.inc
   * - call reader, writer::getInstance to avoid creating duplicate objects

@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.list.inc,v 1.9 2009-12-31 02:20:36 solotandem Exp $
+// $Id: coder_upgrade.list.inc,v 1.10 2010-02-03 16:45:33 solotandem Exp $
 
 /**
  * @file
@@ -23,7 +23,12 @@
  *   conversions.
  */
 function _coder_upgrade_upgrades($include_routines = FALSE) {
-  return module_invoke_all('upgrades', $include_routines);
+  $upgrades = &drupal_static(__FUNCTION__);
+
+  if (is_null($upgrades)) {
+    $upgrades = module_invoke_all('upgrades', $include_routines);
+  }
+  return $upgrades;
 }
 
 /**
@@ -37,23 +42,19 @@ function _coder_upgrade_upgrades($include_routines = FALSE) {
  *   conversions.
  */
 function coder_upgrade_upgrades($include_routines) {
-  $_coder_upgrades = drupal_static(__FUNCTION__);
-
-  if (!isset($_coder_upgrades)) {
-    $_coder_upgrades = array();
-    $path = drupal_get_path('module', 'coder_upgrade') . '/conversions';
-    $files = drupal_system_listing('/coder_upgrade\..*\.inc$/', $path, 'filepath', 0);
-    foreach ($files as $file) {
-//      require_once DRUPAL_ROOT . '/' . $file->filepath;
-      $function = str_replace('.', '_', $file->name) . '_upgrades';
-      if (function_exists($function)) {
-        if ($upgrade = call_user_func($function, $include_routines)) {
-          $_coder_upgrades = array_merge($_coder_upgrades, $upgrade);
-        }
+  $upgrades = array();
+  $path = drupal_get_path('module', 'coder_upgrade') . '/conversions';
+  $files = drupal_system_listing('/coder_upgrade\..*\.inc$/', $path, 'filepath', 0);
+  foreach ($files as $file) {
+//    require_once DRUPAL_ROOT . '/' . $file->filepath;
+    $function = str_replace('.', '_', $file->name) . '_upgrades';
+    if (function_exists($function)) {
+      if ($upgrade = call_user_func($function, $include_routines)) {
+        $upgrades = array_merge($upgrades, $upgrade);
       }
     }
   }
-  return $_coder_upgrades;
+  return $upgrades;
 }
 
 /**
