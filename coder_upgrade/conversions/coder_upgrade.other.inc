@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.42 2010-01-01 18:53:53 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.43 2010-02-15 22:49:40 solotandem Exp $
 
 /**
  * @file
@@ -7,7 +7,7 @@
  *
  * The functions in these conversion routine files correspond to the topics in
  * the category roadmap at http://drupal.org/node/394070 that are marked with
- * a "Yes" in the Upgrade column.
+ * a green check mark in the Upgrade column.
  *
  * Copyright 2008-9 by Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
