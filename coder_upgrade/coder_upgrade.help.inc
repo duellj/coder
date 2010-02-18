@@ -1,11 +1,11 @@
 <?php
-// $Id: coder_upgrade.help.inc,v 1.7 2010-01-20 18:24:43 solotandem Exp $
+// $Id: coder_upgrade.help.inc,v 1.8 2010-02-18 16:53:56 solotandem Exp $
 
 /**
  * @file
  * Help file for the coder_upgrade module.
  *
- * Copyright 2008-9 by Jim Berry ("solotandem", http://drupal.org/user/240748)
+ * Copyright 2008-10 by Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
 
 /**

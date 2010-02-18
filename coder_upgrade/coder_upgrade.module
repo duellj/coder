@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.module,v 1.11 2009-12-31 02:20:36 solotandem Exp $
+// $Id: coder_upgrade.module,v 1.12 2010-02-18 16:53:56 solotandem Exp $
 
 /**
  * @file
@@ -14,7 +14,7 @@
  * For a list of core API changes that are handled by this module, see:
  * - http://drupal.org/node/394070
  *
- * Copyright 2008-9 by Jim Berry ("solotandem", http://drupal.org/user/240748)
+ * Copyright 2008-10 by Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
 
 module_load_include('inc', 'coder_upgrade', 'coder_upgrade');

@@ -1,7 +1,13 @@
-// $Id: CHANGELOG.txt,v 1.19 2010-02-15 22:49:40 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.20 2010-02-18 16:53:56 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2010-02-18):
+   * coder_upgrade.api.inc
+   * - update API documentation for new alter hooks
+   * other non-conversion files
+   * - update copyright years
+
 - Changes (2010-02-15):
    * coder_upgrade.list.inc
    * - correct parameters in call to drupal_system_listing (filepath is now uri)
