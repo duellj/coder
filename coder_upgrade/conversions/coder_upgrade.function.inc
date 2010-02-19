@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.function.inc,v 1.1 2010-02-15 22:49:40 solotandem Exp $
+// $Id: coder_upgrade.function.inc,v 1.2 2010-02-19 21:55:05 solotandem Exp $
 
 /**
  * @file
@@ -363,7 +363,7 @@ function coder_upgrade_convert_schema(&$node) {
    *     - value whose first operand is PGPArray (recurse into this)
    *       - if the value calls t() then remove t()
    */
-  $body->searchCallback($body, 'coder_upgrade_convert_schema_callback', 'PGPFunctionCall', 'name', 'value', 't');
+  $body->searchCallback('coder_upgrade_convert_schema_callback', 'PGPFunctionCall', 'name', 'value', 't');
 }
 
 function coder_upgrade_convert_schema_callback(&$item /*&$node*/) {

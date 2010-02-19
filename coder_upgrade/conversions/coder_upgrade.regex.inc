@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.regex.inc,v 1.1 2010-02-15 22:49:40 solotandem Exp $
+// $Id: coder_upgrade.regex.inc,v 1.2 2010-02-19 21:55:05 solotandem Exp $
 
 /**
  * @file
@@ -33,9 +33,11 @@
  */
 
 /**
+ * Implements hook_upgrade_regex_alter.
+ *
  * Upgrades text using simple regular expressions.
  */
-function coder_upgrade_convert_regex_simple_changes(&$file) {
+function coder_upgrade_upgrade_regex_alter(&$file) {
   cdp("inside " . __FUNCTION__);
   $hook = 'regex_simple_changes';
   $cur = $file;

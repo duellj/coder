@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.end.inc,v 1.4 2010-02-15 22:49:41 solotandem Exp $
+// $Id: coder_upgrade.end.inc,v 1.5 2010-02-19 21:55:05 solotandem Exp $
 
 /**
  * @file
@@ -19,7 +19,7 @@
  * @param string $dirname
  *   The name of the directory with the converted files.
  */
-function coder_upgrade_convert_end($dirname) {
+function coder_upgrade_upgrade_end_alter($dirname) { // function coder_upgrade_convert_end($dirname) {
   global $_coder_upgrade_dirname;
 
   $_coder_upgrade_dirname = $dirname;

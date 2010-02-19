@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.call.inc,v 1.1 2010-02-15 22:49:40 solotandem Exp $
+// $Id: coder_upgrade.call.inc,v 1.2 2010-02-19 21:55:05 solotandem Exp $
 
 /**
  * @file
@@ -761,7 +761,7 @@ function coder_upgrade_upgrade_call_drupal_set_title_alter(&$item, &$reader) { /
     return;
   }
   $parameters = &$item->parameters;
-  if ($call = & $parameters->search($parameters, 'PGPFunctionCall', 'name', 'value', 't')) {
+  if ($call = & $parameters->search('PGPFunctionCall', 'name', 'value', 't')) {
     $temp = $call->toString();
     cdp("temp = $temp");
     if (preg_match('#(\'|")@\w+(\'|")\s*=>\s*#', $temp)) {
