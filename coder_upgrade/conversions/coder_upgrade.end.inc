@@ -1,10 +1,11 @@
 <?php
-// $Id: coder_upgrade.end.inc,v 1.5 2010-02-19 21:55:05 solotandem Exp $
+// $Id: coder_upgrade.end.inc,v 1.6 2010-02-20 17:33:30 solotandem Exp $
 
 /**
  * @file
  * End conversion routine file for the coder_upgrade module.
- * These routines upgrade function calls using the grammar parser.
+ * These routines upgrade the converted directory after upgrade routines are
+ * applied to the files.
  *
  * The functions in this conversion routine file correspond to topics in the
  * category roadmap at http://drupal.org/node/394070 that are marked with a
@@ -14,12 +15,14 @@
  */
 
 /**
- * Applies finishing touches to the directory.
+ * Implements hook_upgrade_end_alter().
+ *
+ * Processes the directory after upgrade routines are applied to the files.
  *
  * @param string $dirname
  *   The name of the directory with the converted files.
  */
-function coder_upgrade_upgrade_end_alter($dirname) { // function coder_upgrade_convert_end($dirname) {
+function coder_upgrade_upgrade_end_alter($dirname) {
   global $_coder_upgrade_dirname;
 
   $_coder_upgrade_dirname = $dirname;
