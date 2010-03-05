@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.call.inc,v 1.7 2010-03-05 21:12:13 solotandem Exp $
+// $Id: coder_upgrade.call.inc,v 1.8 2010-03-05 21:41:19 solotandem Exp $
 
 /**
  * @file
@@ -1745,12 +1745,26 @@ function coder_upgrade_upgrade_call_theme_alter(&$item, &$reader) { // NEEDS WOR
   // Process function call.
   $name = &$item->name;
 
+  $theme = trim($item->printParameter(), "'\"");
   // http://drupal.org/node/224333#placeholder
   // theme('placeholder') has been replaced by drupal_placeholder().
-  if (trim($item->printParameter(), "'\"") == 'placeholder') { // DONE
+  if ($theme == 'placeholder') { // DONE
     $item->deleteParameter();
     $name['value'] = 'drupal_placeholder';
     return;
+  }
+  // http://drupal.org/node/224333#theme_username
+  // theme('username') parameters have changed.
+  if ($theme == 'username') {
+    $p1 = $item->printParameter(1);
+    $p1 = "array('account' => $p1)";
+    $editor->setParameter($item, 1, $p1);
+    return;
+  }
+  // http://drupal.org/node/224333##theme_pager
+  // Limit parameter has been removed.
+  if ($theme == 'pager') {
+    $item->deleteParameter(2); // Does nothing if no third parameter.
   }
 
   /*
