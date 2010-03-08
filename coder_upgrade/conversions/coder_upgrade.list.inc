@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.list.inc,v 1.13 2010-02-19 21:55:05 solotandem Exp $
+// $Id: coder_upgrade.list.inc,v 1.14 2010-03-08 21:03:36 solotandem Exp $
 
 /**
  * @file
@@ -32,6 +32,7 @@ function coder_upgrade_upgrade_info() {
     'title' => t('Core API changes from 6.x to 7.x (parser routines)'),
     'link' => 'http://drupal.org/node/394070',
     'files' => array(
+      'conversions/coder_upgrade.begin.inc',
       'conversions/coder_upgrade.call.inc',
       'conversions/coder_upgrade.db.inc',
       'conversions/coder_upgrade.end.inc',
