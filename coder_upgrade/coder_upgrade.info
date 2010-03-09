@@ -1,4 +1,4 @@
-; $Id: coder_upgrade.info,v 1.8 2010-03-08 21:03:36 solotandem Exp $
+; $Id: coder_upgrade.info,v 1.9 2010-03-09 01:47:35 solotandem Exp $
 name = "Coder Upgrade"
 
 description = "Module conversion suite -- generates code to assist with the upgrade of
@@ -24,5 +24,7 @@ files[] = conversions/coder_upgrade.list.inc
 files[] = conversions/coder_upgrade.main.inc
 ; files[] = conversions/coder_upgrade.other.inc ; Deprecated
 files[] = conversions/coder_upgrade.regex.inc
+
+configure = admin/config/development/coder/upgrade/settings
 
 core = 7.x
