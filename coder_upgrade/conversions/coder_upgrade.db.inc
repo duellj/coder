@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.db.inc,v 1.2 2010-03-08 21:03:36 solotandem Exp $
+// $Id: coder_upgrade.db.inc,v 1.3 2010-03-11 18:42:06 solotandem Exp $
 
 /**
  * @file
@@ -26,6 +26,9 @@
  * @param PGPFunctionCall $item
  */
 function coder_upgrade_upgrade_call_db_query_alter(&$item, &$reader) {
+  // Disable this routine until it is improved.
+  return;
+
   // Create helper objects.
   $editor = PGPEditor::getInstance();
 
