@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.end.inc,v 1.7 2010-03-05 21:41:19 solotandem Exp $
+// $Id: coder_upgrade.end.inc,v 1.8 2010-03-27 22:31:25 solotandem Exp $
 
 /**
  * @file
@@ -116,6 +116,7 @@ function coder_upgrade_add_file_entries($dirname = '', $files = array(), &$items
   // Create list of files for registry.
   // TODO Allow for custom extensions!!!
   $extensions = array('inc', 'install', 'module', 'php', 'test', 'upgrade');
+  $dirname .= $path != '' ? '/' . $path : '';
   $path = $path != '' ? $path . '/' : $path;
   foreach ($files as $file) {
     if (is_array($file)) {
@@ -128,7 +129,6 @@ function coder_upgrade_add_file_entries($dirname = '', $files = array(), &$items
       }
       elseif ($extension == 'info') {
         // Save the name of the .info file.
-        $dirname .= $path != '' ? '/' . $path : '';
         $info_file = $dirname . '/' . $file;
       }
     }
