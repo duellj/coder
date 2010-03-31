@@ -1,7 +1,13 @@
-// $Id: CHANGELOG.txt,v 1.36 2010-03-27 22:31:25 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.37 2010-03-31 19:43:52 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2010-03-30):
+  * coder_upgrade.call.inc
+  * - restore missed calls to PGPArray::findValue() which now trims the quotes
+  * coder_upgrade.test
+  * - refactor setup method to run the theme caching before starting the test method
+
 - Changes (2010-03-27):
   * coder_upgrade.begin.inc
   * - fix recursive calls in coder_upgrade_cache_hook_theme()
