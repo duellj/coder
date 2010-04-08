@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.install.inc,v 1.4 2010-03-08 21:03:36 solotandem Exp $
+// $Id: coder_upgrade.install.inc,v 1.5 2010-04-08 14:41:01 solotandem Exp $
 
 /**
  * @file
@@ -47,7 +47,7 @@ function coder_upgrade_convert_install_file_comment(&$reader) {
   $comments = &$reader->getComments();
   foreach ($comments as &$comment) {
     if (is_array($comment) && !empty($comment)) {
-      if (preg_match('#*\s+ @file#', $comment['value'])) {
+      if (preg_match('#\*\s*@file#', $comment['value'])) {
         // The file already includes a file comment.
         return;
       }
