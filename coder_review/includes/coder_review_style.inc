@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_style.inc,v 1.9 2009-10-18 13:26:30 snpower Exp $
+// $Id: coder_review_style.inc,v 1.10 2010-04-17 21:26:03 douggreen Exp $
 
 /**
  * @file
@@ -151,6 +151,13 @@ function coder_review_style_reviews() {
       '#type' => 'regex',
       '#value' => '\s+else\s+if\s*\(',
       '#warning' => 'Use "elseif" in place of "else if"',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '\s*[\'"]#value[\'"]\s*=>\s*t\s*\(\s*[\'"]Submit[\'"]\s*\)',
+      '#source' => 'allphp',
+      '#warning' => 'When labelling buttons, make it clear what the button does, "Submit" is too generic.',
+      '#severity' => 'minor',
     ),
   );
   $review = array(
