@@ -67,10 +67,8 @@ function coder_upgrade_start($upgrades, $extensions, $items, $recursive = TRUE) 
     $_coder_upgrade_module_name = '';
 //    $_coder_upgrade_dirname = $item['old_dir'];
 
-    if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'simpletest') === FALSE) { // if (!$is_test) {
-      // Process the directory before conversion routines are applied.
-      coder_upgrade_convert_begin($item);
-    }
+    // Process the directory before conversion routines are applied.
+    coder_upgrade_convert_begin($item);
 
     // Call main conversion loop.
     coder_upgrade_convert_dir($upgrades, $extensions, $item, $recursive);
