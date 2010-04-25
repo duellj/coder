@@ -16,7 +16,7 @@ function drush_coder_upgrade($name) {
   $form_state['values']['extensions']['list']['install'] =  'install';
 
   $form_state['values']['upgrades']['list']['coder_upgrade'] =  'coder_upgrade';
-  $form_state['values']['directories']['list'][$name] =  $name;
+  $form_state['values']['modules']['list'][$name] =  $name;
 
   drupal_form_submit('coder_upgrade_conversions_form', $form_state);
 }
