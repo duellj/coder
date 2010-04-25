@@ -641,6 +641,11 @@ function coder_upgrade_log_print($text) {
   global $log;
   static $path = '';
 
+  if (function_exists('drush_log')) {
+    drush_log($text);
+  }
+
+
   if (!$log) {
     return;
   }
@@ -673,6 +678,10 @@ function coder_upgrade_log_print($text) {
 function coder_upgrade_debug_print($text) {
   global $debug;
   static $path = '';
+
+  if (function_exists('drush_log')) {
+    drush_log($text);
+  }
 
   if (!$debug) {
     return;
