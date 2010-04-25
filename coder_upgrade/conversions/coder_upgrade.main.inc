@@ -446,6 +446,10 @@ function coder_upgrade_convert_functions(&$reader) {
     if (strpos($name, $_coder_upgrade_module_name . '_') !== 0) {
       clp("Ignoring function '$name' as its name does not begin with the module name");
       continue;
+    if (function_exists('drush_log')) {
+      drush_log($text);
+    }
+
     }
 
     // By convention, the module name should be followed by an underscore.
@@ -678,7 +682,7 @@ function coder_upgrade_debug_print($text) {
   static $path = '';
 
   if (function_exists('drush_log')) {
-    drush_log($text);
+   # drush_log($text);
   }
 
   if (!$debug) {

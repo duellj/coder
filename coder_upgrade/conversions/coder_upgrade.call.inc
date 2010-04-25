@@ -583,7 +583,7 @@ function coder_upgrade_upgrade_call_drupal_add_css_alter(&$item, &$reader) { // 
   // Process function call.
   $name = &$item->name;
   // A similar comment to that in 'drupal_add_js' below applies here.
-  cdp($item->parameters->print_r());
+#  cdp($item->parameters->print_r());
 
   $count = $item->parameters->count();
   if ($count == 1) {
@@ -2284,7 +2284,7 @@ function coder_upgrade_upgrade_call_time_alter(&$item, &$reader) { // DONE
   // Process function call.
   $name = &$item->name;
   $expression = $editor->expressionToStatement('REQUEST_TIME');
-  cdp($expression->print_r());
+#  cdp($expression->print_r());
   $item = $expression->getElement(0);
 }
 
