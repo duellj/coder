@@ -379,7 +379,7 @@ function coder_upgrade_convert_function_calls(&$reader) {
   cdp("inside " . __FUNCTION__);
   $items = &$reader->getFunctionCalls();
   foreach ($items as &$item) {
-    if (!isset($item) || !is_object($item) || !is_a($item, 'PGPFunctionCall') || $item->type != T_FUNCTION_CALL) {
+    if (!isset($item) || !is_object($item) || !($item instanceof PGPFunctionCall) || $item->type != T_FUNCTION_CALL) {
       // The reference could have been changed in another routine so that it
       // no longer refers to an ojbect.
       continue;
@@ -395,7 +395,7 @@ function coder_upgrade_convert_function_calls(&$reader) {
       // We could do the same in this function.
     }
 
-    if (!isset($item) || !is_object($item) || !is_a($item, 'PGPFunctionCall') || $item->type != T_FUNCTION_CALL) {
+    if (!isset($item) || !is_object($item) || !($item instanceof PGPFunctionCall) || $item->type != T_FUNCTION_CALL) {
       continue;
     }
     if (is_array($item->name) && in_array($item->name['type'], $types)) {
@@ -421,7 +421,7 @@ function coder_upgrade_convert_functions(&$reader) {
   $nodes = &$reader->getFunctions();
   foreach ($nodes as &$node) {
     $item = &$node->data;
-    if (!isset($item) ||!is_object($item) || !is_a($item, 'PGPClass') || $item->type != T_FUNCTION) {
+    if (!isset($item) ||!is_object($item) || !($item instanceof PGPClass) || $item->type != T_FUNCTION) {
       // The reference could have been changed in another routine so that it
       // no longer refers to an ojbect.
       continue;
@@ -463,7 +463,7 @@ function coder_upgrade_convert_functions(&$reader) {
     // We could do the same in this function.
     drupal_alter('upgrade_hook_' . $hook, $node, $reader);
 
-    if (!isset($item) ||!is_object($item) || !is_a($item, 'PGPClass') || $item->type != T_FUNCTION) {
+    if (!isset($item) ||!is_object($item) || !($item instanceof PGPClass) || $item->type != T_FUNCTION) {
       continue;
     }
     if (strpos($name, $_coder_upgrade_module_name . '_') !== 0) {
@@ -647,10 +647,10 @@ function coder_upgrade_log_print($text) {
   if (!$path) {
     $path = coder_upgrade_log_path();
   }
-  if (is_a($text, 'PGPList')) {
+  if (($text instanceof PGPList)) {
     file_put_contents($path, $text->print_r(), FILE_APPEND);
   }
-  elseif (is_a($text, 'PGPBase')) {
+  elseif (($text instanceof PGPBase)) {
     file_put_contents($path, $text->print_r(), FILE_APPEND);
   }
   elseif (is_object($text)) {
@@ -680,10 +680,10 @@ function coder_upgrade_debug_print($text) {
   if (!$path) {
     $path = coder_upgrade_debug_path();
   }
-  if (is_a($text, 'PGPList')) {
+  if (($text instanceof PGPList)) {
     file_put_contents($path, $text->print_r(), FILE_APPEND);
   }
-  elseif (is_a($text, 'PGPBase')) {
+  elseif (($text instanceof PGPBase)) {
     file_put_contents($path, $text->print_r(), FILE_APPEND);
   }
   elseif (is_object($text)) {

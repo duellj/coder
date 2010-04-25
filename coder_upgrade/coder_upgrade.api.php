@@ -274,7 +274,7 @@ function hook_upgrade_file_alter(&$reader) {
   $items = &$reader->getFunctionCalls();
   // Loop on list.
   foreach ($items as &$item) {
-    if (!isset($item) || !is_object($item) || !is_a($item, 'PGPFunctionCall') || $item->type != T_FUNCTION_CALL) {
+    if (!isset($item) || !is_object($item) || !($item instanceof PGPFunctionCall) || $item->type != T_FUNCTION_CALL) {
       /*
        * These checks are necessary as the reference (i.e. $item) could have
        * been changed in another routine so that it no longer refers to a
@@ -286,12 +286,12 @@ function hook_upgrade_file_alter(&$reader) {
     /*
      * To be a call to a class method, the function name must be an expression
      * like $this->foo() as opposed to a string or a single variable. This code
-     * checks the name is an expression (using is_a($item->name, 'PGPOperand'))
+     * checks the name is an expression (using ($item->name instanceof PGPOperand))
      * and the value element of the name object is '$this'.
      *
      * Review the grammar structure object using $item->print_r().
      */
-    if (is_a($item->name, 'PGPOperand') && $item->name->findNode('value') == '$this') {
+    if (($item->name instanceof PGPOperand) && $item->name->findNode('value') == '$this') {
       // Strip '$this->' from the name.
       $name = substr($item->name->toString(), 7);
       // Modify the function call
