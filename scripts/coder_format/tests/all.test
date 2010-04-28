@@ -1,5 +1,5 @@
 <?php
-// $Id: all.test,v 1.4 2009-06-12 22:23:42 snpower Exp $
+// $Id: all.test,v 1.4 2009/06/12 22:23:42 snpower Exp $
 
 // Load PEAR Text_Diff library.
 set_include_path(get_include_path() . PATH_SEPARATOR . drupal_get_path('module', 'coder') .'/scripts/coder_format/tests');

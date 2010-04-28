@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.other.inc,v 1.43 2010-02-15 22:49:40 solotandem Exp $
+// $Id: coder_upgrade.other.inc,v 1.43 2010/02/15 22:49:40 solotandem Exp $
 
 /**
  * @file
@@ -234,7 +234,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
    * test whether $item actually refers to a PGPFunctionCall object before
    * attempting to do any processing.
    */
-  if (!isset($item) || !($item instanceof PGPFunctionCall)) {
+  if (!isset($item) || !is_a($item, 'PGPFunctionCall')) {
     return;
   }
 
@@ -1149,7 +1149,7 @@ function coder_upgrade_convert_install($node) {
   while ($current->next != NULL) {
     $statement = &$current->data;
     cdp($statement->print_r());
-    if (($statement instanceof PGPAssignment)) {
+    if (is_a($statement, 'PGPAssignment')) {
       $text = $statement->values->toString();
       cdp($text);
       if (preg_match('(drupal_install_schema|drupal_uninstall_schema)', $text)) {
@@ -1219,7 +1219,7 @@ function coder_upgrade_convert_perm(&$node) {
 //  cdp("Printing return item DONE");
 
   $array = $value->getElement();
-  if (!($array instanceof PGPArray)) {
+  if (!is_a($array, 'PGPArray')) {
     clp("ERROR: return statement does not include an array of values in hook_perm");
     return;
   }
@@ -1394,7 +1394,7 @@ function coder_upgrade_convert_op(&$node, $callback, $op_index) {
     if (is_object($statement)) {
       cdp($statement->print_r());
     }
-    if (($statement instanceof PGPConditional)) {
+    if (is_a($statement, 'PGPConditional')) {
 //      cdp("inside PGPConditional check");
 //      cdp("statement->type = " . $statement->type);
       if ($statement->type == T_SWITCH) {
@@ -1457,7 +1457,7 @@ function coder_upgrade_extract_operations(&$conditions, $op) {
   /*
    * A condition may consist of at most two operands separated by an operator.
    */
-  if (($conditions instanceof PGPList)) {
+  if (is_a($conditions, 'PGPList')) {
     // Iterate over the conditions of the condition list.
     $current = $conditions->first();
     while ($current->next != NULL) {
@@ -1473,7 +1473,7 @@ function coder_upgrade_extract_operations(&$conditions, $op) {
             // Get the operand (object or array) of the current node.
             $element = &$current2->data;
             // Inspect the element looking for $op.
-            if (($element instanceof PGPOperand)) {
+            if (is_a($element, 'PGPOperand')) {
               // Inspect the operand looking for $op.
               $text = $element->toString();
               if (strpos($text, $op) !== FALSE) {
@@ -1535,7 +1535,7 @@ function coder_upgrade_callback_block($node, $case_node, $operation = '') {
 
   if (!$operation) {
     $case = &$case_node->data;
-    if (!($case instanceof PGPCase)) {
+    if (!is_a($case, 'PGPCase')) {
       cdp("Houston, we've got an unexpected statement");
       return;
     }
@@ -1583,7 +1583,7 @@ function coder_upgrade_callback_comment($node, $case_node, $operation = '') {
 
   if (!$operation) {
     $case = &$case_node->data;
-    if (!($case instanceof PGPCase)) {
+    if (!is_a($case, 'PGPCase')) {
       cdp("Houston, we've got an unexpected statement");
       return;
     }
@@ -1636,7 +1636,7 @@ function coder_upgrade_callback_nodeapi($node, $case_node, $operation = '') {
 
   if (!$operation) {
     $case = &$case_node->data;
-    if (!($case instanceof PGPCase)) {
+    if (!is_a($case, 'PGPCase')) {
       cdp("Houston, we've got an unexpected statement");
       return;
     }
@@ -1723,7 +1723,7 @@ function coder_upgrade_callback_node_type($node, $case_node, $operation = '') {
 
   if (!$operation) {
     $case = &$case_node->data;
-    if (!($case instanceof PGPCase)) {
+    if (!is_a($case, 'PGPCase')) {
       cdp("Houston, we've got an unexpected statement");
       return;
     }
@@ -1766,7 +1766,7 @@ function coder_upgrade_callback_user($node, $case_node, $operation = '') {
 
   if (!$operation) {
     $case = &$case_node->data;
-    if (!($case instanceof PGPCase)) {
+    if (!is_a($case, 'PGPCase')) {
       cdp("Houston, we've got an unexpected statement");
       return;
     }

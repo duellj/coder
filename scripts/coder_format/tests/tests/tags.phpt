@@ -3,7 +3,7 @@ FULL: 1
 
 --INPUT--
 <?php
-// $Id: tags.phpt,v 1.2 2008-02-24 19:40:50 sun Exp $
+// $Id: tags.phpt,v 1.2 2008/02/24 19:40:50 sun Exp $
 
 function ugly_foo() {
   $bar = bar();
@@ -17,7 +17,7 @@ function ugly_foo() {
 
 --INPUT--
 <?php
-// $Id: tags.phpt,v 1.2 2008-02-24 19:40:50 sun Exp $
+// $Id: tags.phpt,v 1.2 2008/02/24 19:40:50 sun Exp $
 
 function l() {
   ?>
@@ -27,7 +27,7 @@ function l() {
 
 --INPUT--
 <?php
-// $Id: tags.phpt,v 1.2 2008-02-24 19:40:50 sun Exp $
+// $Id: tags.phpt,v 1.2 2008/02/24 19:40:50 sun Exp $
 
 
 /**

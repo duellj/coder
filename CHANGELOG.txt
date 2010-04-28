@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.1 2009-10-18 12:45:35 snpower Exp $
+// $Id: CHANGELOG.txt,v 1.1 2009/10/18 12:45:35 snpower Exp $
 
 Coder 7.x-3.x, xxxx-xx-xx
 --------------------------

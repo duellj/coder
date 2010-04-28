@@ -1,5 +1,5 @@
 <?php
-// $Id: CoderTestCase.php,v 1.2 2008-02-24 19:40:50 sun Exp $
+// $Id: CoderTestCase.php,v 1.2 2008/02/24 19:40:50 sun Exp $
 
 require_once drupal_get_path('module', 'coder') .'/scripts/coder_format/coder_format.inc';
 

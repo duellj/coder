@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_format.inc,v 1.6 2009-01-20 14:54:19 sun Exp $
+// $Id: coder_format.inc,v 1.6 2009/01/20 14:54:19 sun Exp $
 
 
 /**

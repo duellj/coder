@@ -1,22 +1,36 @@
 <?php
+// $Id$
 
-function coder_upgrade_drush_command() {
-  return array(
-    'coder-upgrade' => array(),
-  );
+/**
+ * @file
+ * Drush support for Coder Upgrades
+ */
+
+/**
+ * Implementation of hook_drush_help().
+ */
+function coder_upgrade_drush_help($section) {
+
 }
 
-function drush_coder_upgrade($name) {
-  global $debug;
-  $debug = TRUE;
-  $form_state = array();
-  $form_state['values']['extensions']['list']['module'] =  'module';
-  $form_state['values']['extensions']['list']['inc'] =  'inc';
-  $form_state['values']['extensions']['list']['info'] =  'info';
-  $form_state['values']['extensions']['list']['install'] =  'install';
+/**
+ * Implementation of hook_drush_command().
+ */
+function coder_upgrade_drush_command() {
+  $items['coder-upgrade'] = array(
+  );
+  $items['coder-upgrade-list'] = array(
+    'description' => 'List modules available for upgrade',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_NONE,
+    'drupal dependecies' => array('coder_upgrade'),
+  );
+  return $items;
+}
 
-  $form_state['values']['upgrades']['list']['coder_upgrade'] =  'coder_upgrade';
-  $form_state['values']['modules']['list'][$name] =  $name;
-
-  drupal_form_submit('coder_upgrade_conversions_form', $form_state);
+/**
+ * List modules that are available for upgrade.
+ */
+function drush_coder_upgrade_list() {
+  $modules = coder_upgrade_module_list();
+  print_R($modules);
 }

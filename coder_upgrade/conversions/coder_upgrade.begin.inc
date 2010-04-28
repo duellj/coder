@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.begin.inc,v 1.4 2010-04-22 05:13:19 solotandem Exp $
+// $Id: coder_upgrade.begin.inc,v 1.4 2010/04/22 05:13:19 solotandem Exp $
 
 /**
  * @file
@@ -172,7 +172,7 @@ function coder_upgrade_callback_menu(&$array2, &$current2, $hook, $type, $key, $
 //  cdp("inside " . __FUNCTION__);
   global $upgrade_menu_registry;
 
-  if (!($current2 instanceof PGPNode)) {
+  if (!is_a($current2, 'PGPNode')) {
     clp("ERROR: current2 is not a PGPNode object in hook_$hook");
     return;
   }

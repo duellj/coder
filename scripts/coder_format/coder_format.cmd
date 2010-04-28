@@ -1,5 +1,5 @@
 @echo off
-rem $Id: coder_format.cmd,v 1.2 2008-02-24 19:40:50 sun Exp $
+rem $Id: coder_format.cmd,v 1.2 2008/02/24 19:40:50 sun Exp $
 
 rem Define Coder Format shell invocation script path.
 set coderFormatPath=c:\program files\coder_format
