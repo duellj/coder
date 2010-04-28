@@ -107,7 +107,7 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
         else if ($conditions[4][$key]) {
           $condition_keys[] = ':'. $conditions[4][$key];
           $operand['value'] = str_replace($condition, $conditions[4][$key] . ' ' . $conditions[5][$key] . ' :' . $conditions[4][$key], $operand['value']);
-          $item->setParameter($key + 1, $editor->expressionToStatement($conditions[6][$key]));
+          $item->insertParameter($key + 1, $editor->expressionToStatement($conditions[6][$key]));
         }
       }
       $editor->setParameter($item, 0, $operand['value']);
