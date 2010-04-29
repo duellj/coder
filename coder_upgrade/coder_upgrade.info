@@ -24,6 +24,7 @@ files[] = conversions/coder_upgrade.list.inc
 files[] = conversions/coder_upgrade.main.inc
 ; files[] = conversions/coder_upgrade.other.inc ; Deprecated
 files[] = conversions/coder_upgrade.regex.inc
+files[] = conversions/coder_upgrade.theme.inc
 
 configure = admin/config/development/coder/upgrade/settings
 

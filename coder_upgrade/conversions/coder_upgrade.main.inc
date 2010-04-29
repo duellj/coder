@@ -430,6 +430,11 @@ function coder_upgrade_convert_functions(&$reader) {
     $name = &$item->name;
     cdp("name = $name");
 
+    // Convert theme_X function calls.
+    if (strpos($name, 'theme_') === 0) {
+      drupal_alter('upgrade_theme', $node, $reader);
+      continue;
+    }
     /*
      * If the function name does not begin with the module name, then ignore it.
      * This assumes such a function would be an instance of an API hook defined
