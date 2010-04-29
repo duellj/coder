@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.db.inc,v 1.3 2010-03-11 18:42:06 solotandem Exp $
+// $Id: coder_upgrade.db.inc,v 1.3 2010/03/11 18:42:06 solotandem Exp $
 
 /**
  * @file
@@ -27,6 +27,7 @@
  */
 function coder_upgrade_upgrade_call_db_query_alter(&$item, &$reader) {
   // Disable this routine until it is improved.
+  return;
 
   // Create helper objects.
   $editor = PGPEditor::getInstance();
@@ -74,48 +75,8 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
    * Ex: taxonomy, block, etc.
    */
   $new = array();
-  // TODO trim won't work here, since it'll trim off the last ' if the string ends in '%s'
-  $sql = substr($operand['value'], 1, -1);
+  $sql = trim($operand['value'], "'\"");
   if (strpos($sql, 'SELECT') === 0) {
-    $find = '@^(SELECT.*?WHERE\s+)(.*?)$@m';
-    preg_match($find, $sql, $matches);
-    cdp($matches);
-    // Convert conditions from field = '%s' to field = :field
-    // TODO handle more complex conditions
-    if ($matches[2]) {
-      preg_match_all('/
-        (\S*)\s+([!=<>]+)\s+[\'"]?%[sdfb][\'"]? # Match field = %d
-        |
-        (\S*)\s+IN\s?\([\'"]%s[\'"]?\) # Match field IN(%s)
-        |
-        (\S*)\s+([!=<>]+)\s+(\S*) # Match field literals
-      /x', $matches[2], $conditions); 
-      foreach ($conditions[0] as $key => $condition) {
-        // field = %d condition
-        if ($conditions[1][$key]) {
-          $condition_keys[] = ':'. $conditions[1][$key];
-          $operand['value'] = str_replace($condition, $conditions[1][$key] . ' ' . $conditions[2][$key] . ' :' . $conditions[1][$key], $operand['value']);
-        }
-        // filed IN (%s) condition
-        else if ($conditions[3][$key]) {
-          $condition_keys[] = ':'. $conditions[3][$key];
-          $operand['value'] = str_replace($condition, $conditions[3][$key] . ' IN (:' . $conditions[3][$key] . ')', $operand['value']);
-          // D6 convention was to use implode(",", $array).  Now we can just pass in the array.
-          $param = $item->getParameter($key + 1)->getElement()->getParameter(1);  
-          $item->setParameter($key + 1, $param);
-        }
-        else if ($conditions[4][$key]) {
-          $condition_keys[] = ':'. $conditions[4][$key];
-          $operand['value'] = str_replace($condition, $conditions[4][$key] . ' ' . $conditions[5][$key] . ' :' . $conditions[4][$key], $operand['value']);
-          $item->insertParameter($key + 1, $editor->expressionToStatement($conditions[6][$key]));
-        }
-      }
-      $editor->setParameter($item, 0, $operand['value']);
-      $string = $editor->arrayitize($item, 1, $condition_keys, array_fill(0, count($condition_keys), "'XXX_YYY'"));
-      $temp = $editor->expressionToStatement($string);
-      $temp->getElement(0)->multiline = 0;
-      $item->setParameter(1, $temp);
-    }
     return;
   }
   elseif (strpos($sql, 'INSERT') === 0) {
@@ -123,18 +84,13 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
     $find = '@INSERT INTO\s+{(\w+)}\s+\((.*?)\)\s+VALUES\s+\((.*?)\)@';
     preg_match($find, $sql, $matches);
     cdp($matches);
-    $fields = array_combine(explode(', ', $matches[2]) , explode(', ', $matches[3]));
-
+    $fields = explode(', ', $matches[2]);
     cdp($fields);
     // TODO Values could be literals not placeholders.
     $new[] = "\$id = db_insert('{$matches[1]}')";
     $new[] = "\t->fields(array(";
-    foreach ($fields as $field => $value) {
-      
-      // Value is a placeholder
-      if (preg_match('/%[sdbf]/', $value)) {
-        $value = array_shift($values);
-      }
+    foreach ($fields as $field) {
+      $value = array_shift($values);
       $new[] = "\t\t'$field' => $value,";
     }
     $new[] = "\t))";
@@ -148,21 +104,25 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
     cdp($matches);
     $fields = explode(', ', $matches[2]);
     cdp($fields);
+    // TODO Values could be literals not placeholders.
     $new[] = "db_update('{$matches[1]}')";
     $new[] = "\t->fields(array(";
     foreach ($fields as $field) {
-      list($field,$value) = explode("=", $field);
-      // Value is a placeholder
-      if (preg_match('/%[sdbf]/', $value)) {
-        $value = array_shift($values);
-      }
+      list($field,) = explode("=", $field);
       // Trim the field for whitespace.
       $field = trim($field);
+      $value = array_shift($values);
       $new[] = "\t\t'$field' => $value,";
     }
     $new[] = "\t))";
     if ($matches[3]) {
-      $new[] = coder_upgrade_parse_sql_conditions($matches[3], $values);
+      $conditions = $matches[3]; // Explode around AND, OR
+      // TODO Parse the WHERE clause which may have more complex expressions.
+      list($condition,) = explode("=", $conditions);
+      // Trim the condition for whitespace.
+      $condition = trim($condition);
+      $value = array_shift($values);
+      $new[] = "\t->condition('$condition', $value)";
     }
     $new[] = "\t->execute();";
   }
@@ -173,7 +133,18 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
     preg_match($find, $sql, $matches);
     cdp($matches);
     $new[] = "db_delete('{$matches[1]}')";
-    $new[] = coder_upgrade_parse_sql_conditions($matches[2], $values);
+    // TODO Values could be literals not placeholders.
+    $conditions = explode(' AND ', $matches[2]); // Explode around AND, OR
+    cdp($conditions);
+    foreach ($conditions as $condition) {
+      // TODO Parse the WHERE clause which may have more complex expressions.
+      list($condition,) = explode("=", $condition);
+      // Trim the condition for whitespace.
+      $condition = trim($condition);
+      $value = array_shift($values);
+      // TODO The comparison operator is the third parameter.
+      $new[] = "\t\t->condition('$condition', $value)";
+    }
     $new[] = "\t->execute();";
   }
 
@@ -219,43 +190,4 @@ function coder_upgrade_upgrade_call_db_rewrite_sql_alter(&$item, &$reader) {
       // Add $query->addTag('node_access' /* TODO Please indicate the appropriate tag */);
     }
   }
-}
-
-/**
- * Parse sql conditions into conditional object strings.
- *
- * @param string $conditions
- * @param array $values
- */
-function coder_upgrade_parse_sql_conditions($conditions, $values) {
-  // Check for inner conditionals or function calls.  For now, we'll just use
-  // where() instead of conditionals, given the complexity of inner conditionals.
-  if (preg_match("/\((.*)\)/", $conditions, $matches)) {
-    return "\t\t->where('$conditions', " . var_dump($values) . ")";
-  }
-  // TODO handle other conjunctions besides AND.
-  $split_conditions = preg_split('/AND|OR|XOR/', $conditions);
-  if (!is_array($split_conditions)) {
-    $split_conditions = array($conditions);
-  }
-
-  foreach ($split_conditions as $condition) {
-    list($condition, $operator, $value) = preg_split('/([!=><]+|LIKE)/', $condition, -1, PREG_SPLIT_DELIM_CAPTURE);
-    if (preg_match('/%[sbdf]/', trim($value))) {
-      $value = array_shift($values);
-    }
-    // Trim the condition for whitespace.
-    $condition = trim($condition);
-    $value = trim($value);
-    // TODO handle IN and BETWEEN conditions
-    switch ($operator) {
-      case '=':
-        $parsed_conditions[] = "\t\t->condition('$condition', $value)";
-        break;
-      default:
-        $parsed_conditions[] = "\t\t->condition('$condition', $value, '$operator')";
-        break;
-    }
-  }
-  return implode("\n", $parsed_conditions);
 }
