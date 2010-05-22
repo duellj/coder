@@ -231,10 +231,13 @@ function coder_upgrade_parse_sql_conditions($conditions, $values) {
   // Check for inner conditionals or function calls.  For now, we'll just use
   // where() instead of conditionals, given the complexity of inner conditionals.
   if (preg_match("/\((.*)\)/", $conditions, $matches)) {
-    return "\t\t->where('$conditions', " . var_dump($values) . ")";
+    $output = "\t\t// TODO: Complex conditional clauses should be rewritten using the conditon() method, if possible\n";
+    $output .= "\t\t// see http://drupal.org/node/310086\n";
+    $output .= "\t\t->where('$conditions', " . ($values) . ")";
+    return $output;
   }
   // TODO handle other conjunctions besides AND.
-  $split_conditions = preg_split('/AND|OR|XOR/', $conditions);
+  $split_conditions = preg_split('/AND|OR|XOR/', $conditions, -1, PREG_SPLIT_DELIM_CAPTURE);
   if (!is_array($split_conditions)) {
     $split_conditions = array($conditions);
   }
