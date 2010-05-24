@@ -13,7 +13,7 @@ class SqlParser {
   var $symbols = array();
   var $commands = array('alter', 'create', 'drop', 'select', 'delete', 'insert', 'update');
 
-  var $operators = array('=', '<>', '<', '<=', '>', '>=', 'like', 'clike', 'slike', 'not', 'is', 'in', 'between', 'and', 'or');
+  var $operators = array('=', '!=', '<>', '<', '<=', '>', '>=', 'like', 'clike', 'slike', 'not', 'is', 'in', 'between', 'and', 'or');
 
   var $types = array('character', 'char', 'varchar', 'nchar', 'bit', 'numeric', 'decimal', 'dec', 'integer', 'int', 'smallint', 'float', 'real', 'double', 'date', 'time', 'timestamp', 'interval', 'bool', 'boolean', 'set', 'enum', 'text');
 
@@ -94,6 +94,7 @@ class SqlParser {
     return (($this->token == 'real_val') ||
       ($this->token == 'int_val') ||
       ($this->token == 'text_val') ||
+      ($this->token == 'placeholder') ||
       ($this->token == 'NULL'));
   }
     
@@ -1513,6 +1514,15 @@ class Lexer {
                 }
                 //$bail = TRUE;
                 break;
+              // String placeholder
+              case '%':
+                if ($this->get() == 's') {
+                  $this->unget();
+                  $state = 20;
+                  break 3;
+                }
+                $this->unget();
+                break;
               case $quote:
                 $this->tokText = stripslashes(substr($this->string, ($this->tokStart+1), ($this->tokLen-2)));
                 $bail = TRUE;
@@ -1619,6 +1629,7 @@ class Lexer {
             // Check if this is actually an incomplete string.
             if ($this->get() != $quote) {
               $state = 12;
+              break;
             }
           }
           $this->tokText = substr($this->string, $this->tokStart, $this->tokLen);
