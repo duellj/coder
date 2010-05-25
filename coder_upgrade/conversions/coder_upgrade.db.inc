@@ -60,6 +60,9 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   // Create helper objects.
   $editor = PGPEditor::getInstance();
 
+  module_load_include('inc', 'coder_upgrade', 'conversions/sql_parser');
+  $sql_parser = new SqlParser();
+
   // TODO Parse the values - the other parameters
   // TODO The parameter could be an array variable or expression
   // See http://drupalcode.org/viewvc/drupal/drupal/modules/simpletest/tests/database_test.test?revision=1.80&view=markup
@@ -76,6 +79,51 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   $new = array();
   // TODO trim won't work here, since it'll trim off the last ' if the string ends in '%s'
   $sql = substr($operand['value'], 1, -1);
+  $parsed_sql = $sql_parser->parse(str_replace(array("{", "}"), array(), $sql));
+  dpm($parsed_sql);
+
+  $new = array();
+  switch ($parsed_sql['command']) {
+    case 'select':
+      break;
+
+    case 'insert':
+      $new[] = '$id = db_insert(\'' . $parsed_sql['table_names'][0] . '\')';
+      $new[] = "\t->fields(array(";
+      foreach ($parsed_sql['column_names'] as $key => $column) {
+        if ($parsed_sql['values'][$key]['type'] == 'placeholder') {
+          $value = array_shift($values);
+        }
+        else {
+          $value = $parsed_sql['values'][$key]['value'];
+        }
+        $new[] = "\t\t'$column' => $value,";
+      }
+      $new[] = "\t))";
+      $new[] = "\t->execute();";
+      break;
+
+    case 'update':
+      $new[] = "db_update('" . $parsed_sql['table_names'][0] . "')";
+      $new[] = "\t->fields(array(";
+      foreach ($parsed_sql['column_names'] as $key => $column) {
+        if ($parsed_sql['values'][$key]['type'] == 'placeholder') {
+          $value = array_shift($values);
+        }
+        else {
+          $value = $parsed_sql['values'][$key]['value'];
+        }
+        $new[] = "\t\t'$column' => $value,";
+      }
+      break;
+
+    case 'delete':
+      break;
+  }
+
+  // TODO: remove
+  unset($new);
+
   if (strpos($sql, 'SELECT') === 0) {
     $find = '@^(SELECT.*?WHERE\s+)(.*?)$@m';
     preg_match($find, $sql, $matches);
@@ -261,4 +309,46 @@ function coder_upgrade_parse_sql_conditions($conditions, $values) {
     }
   }
   return implode("\n", $parsed_conditions);
+}
+
+/**
+ * Transform parsed sql into conditional object strings.
+ *
+ * @param $conditionals
+ *   Parsed conditional array.
+ * @param $level
+ *   Level of conditional statements.
+ *
+ * @return
+ *   Array of  conditional object strings.
+ */
+function coder_upgrade_convert_conditional($conditionals, $level = 1) {
+  $return = array();
+
+  // Convert main conjunction
+  switch ($conditionals['op']) {
+    case 'or':
+      $return[] = "\tcondition(";
+      $return[] = "\t\tdb_or()->";
+      break;
+    case 'xor':
+      $return[] = "\tcondition(";
+      $return[] = "\t\tdb_xor()->";
+      break;
+  }
+
+  // Convert conditional fragment
+  array_push($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_1']));
+  array_push($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_2']));
+
+  return $return;
+}
+
+function coder_upgrade_convert_conditional_fragment($fragment, $level = 1) {
+  $return = array();
+  if ($fragment['arg_1']['type'] == 'subclause') {
+    array_push($return, coder_upgrade_convert_conditional($fragment['arg_1']['value'], $level + 1));
+  }
+  else {
+  }
 }
