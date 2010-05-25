@@ -79,8 +79,9 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   $new = array();
   // TODO trim won't work here, since it'll trim off the last ' if the string ends in '%s'
   $sql = substr($operand['value'], 1, -1);
+  dpm($sql);
+  dpm('$values = ' . print_r($values, 1));
   $parsed_sql = $sql_parser->parse(str_replace(array("{", "}"), array(), $sql));
-  dpm($parsed_sql);
 
   $new = array();
   switch ($parsed_sql['command']) {
@@ -89,34 +90,14 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
 
     case 'insert':
       $new[] = '$id = db_insert(\'' . $parsed_sql['table_names'][0] . '\')';
-      $new[] = "\t->fields(array(";
-      foreach ($parsed_sql['column_names'] as $key => $column) {
-        if ($parsed_sql['values'][$key]['type'] == 'placeholder') {
-          $value = array_shift($values);
-        }
-        else {
-          $value = $parsed_sql['values'][$key]['value'];
-        }
-        $new[] = "\t\t'$column' => $value,";
-      }
-      $new[] = "\t))";
+      $new = array_merge($new, coder_upgrade_convert_fields($parsed_sql['column_names'], $parsed_sql['values'], $values));
       $new[] = "\t->execute();";
       break;
 
     case 'update':
       $new[] = "db_update('" . $parsed_sql['table_names'][0] . "')";
-      $new[] = "\t->fields(array(";
-      foreach ($parsed_sql['column_names'] as $key => $column) {
-        if ($parsed_sql['values'][$key]['type'] == 'placeholder') {
-          $value = array_shift($values);
-        }
-        else {
-          $value = $parsed_sql['values'][$key]['value'];
-        }
-        $new[] = "\t\t'$column' => $value,";
-      }
-      $new[] = "\t)";
-      $new += coder_upgrade_convert_conditional($parsed_sql['where_clause'], $values);
+      $new = array_merge($new, coder_upgrade_convert_fields($parsed_sql['column_names'], $parsed_sql['values'], $values));
+      $new = array_merge($new, coder_upgrade_convert_conditional($parsed_sql['where_clause'], $values));
       $new[] = "\t->execute();";
       break;
 
@@ -124,6 +105,7 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
       break;
   }
   dpm(join($new, "\n"));
+  dpm("\n");
 
   // TODO: remove
   unset($new);
@@ -315,6 +297,22 @@ function coder_upgrade_parse_sql_conditions($conditions, $values) {
   return implode("\n", $parsed_conditions);
 }
 
+function coder_upgrade_convert_fields($fields, $field_values = array(), &$passed_values = array()) {
+  $new = array();
+  $new[] = "\t->fields(array(";
+  foreach ($fields as $key => $column) {
+    if ($field_values[$key]['type'] == 'placeholder') {
+      $value = array_shift($passed_values);
+    }
+    else {
+      $value = $parsed_sql['values'][$key]['value'];
+    }
+    $new[] = "\t\t'$column' => $value,";
+  }
+  $new[] = "\t))";
+  return $new;
+}
+
 /**
  * Transform parsed sql into conditional object strings.
  *
@@ -330,27 +328,38 @@ function coder_upgrade_parse_sql_conditions($conditions, $values) {
  */
 function coder_upgrade_convert_conditional($conditionals, &$values, $level = 1) {
   $return = array();
+  $closing_parenthesis = FALSE;
 
-  // Convert main conjunction
+  // Convert operator.
   switch ($conditionals['op']) {
+    case 'and':
+      if ($level > 1) {
+        $return[] = str_repeat("\t", $level - 1) . "->condition(db_and()";
+        $closing_parenthesis = TRUE;
+      }
+      break;
     case 'or':
-      $return[] = "\tcondition(";
-      $return[] = "\t\tdb_or()->";
+      $return[] = str_repeat("\t", $level - 1) . "->condition(db_or()";
+      $closing_parenthesis = TRUE;
       break;
     case 'xor':
-      $return[] = "\tcondition(";
-      $return[] = "\t\tdb_xor()->";
+      $return[] = str_repeat("\t", $level - 1) . "->condition(db_xort()";
+      $closing_parenthesis = TRUE;
       break;
   }
 
-  // Convert conjunction
+  // Convert conjunction.
   if (in_array($conditionals['op'], array('and', 'or', 'xor'))) {
-    $return += coder_upgrade_convert_conditional_fragment($conditionals['arg_1'], $values, $level);
-    $return += coder_upgrade_convert_conditional_fragment($conditionals['arg_2'], $values, $level);
+    $return = array_merge($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_1'], $values, $level));
+    $return = array_merge($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_2'], $values, $level));
   }
-  // Convert single conditional fragment
+  // Convert single conditional fragment.
   else {
-    $return += coder_upgrade_convert_conditional_fragment($conditionals, $values, $level);
+    $return = array_merge($return, coder_upgrade_convert_conditional_fragment($conditionals, $values, $level));
+  }
+
+  if ($closing_parenthesis) {
+    $return[] = str_repeat("\t", $level - 1) . ")";
   }
 
   return $return;
@@ -377,12 +386,12 @@ function coder_upgrade_convert_conditional_fragment($fragment, &$values = array(
     return coder_upgrade_convert_conditional($fragment['arg_1']['value'], $values, $level + 1);
   }
   else {
-    $output = "\t->condition('" . $fragment['arg_1']['value'];
+    $output = str_repeat("\t", $level) . "->condition('" . $fragment['arg_1']['value'];
     if ($fragment['arg_2']['type'] == 'placeholder') {
       $value = array_shift($values);
 
       // IN operator now just takes an array, rather than imploded array.
-      if ($fragment['op'] == 'IN' && preg_match("/(?:db_placeholders|implode)\(([^,]*).*\);/i", $value, $matches)) {
+      if ($fragment['op'] == 'in' && preg_match("/db_placeholders\(([^,]*).*\)/", $value, $matches)) {
         $value = $matches[1];
       }
     }
@@ -392,7 +401,7 @@ function coder_upgrade_convert_conditional_fragment($fragment, &$values = array(
     $output .=  "', $value";
 
     // Add operator if necessary.
-    if ($fragment['op'] != 'op') {
+    if ($fragment['op'] != '=') {
       $output .= ", '" . $fragment['op'] . "'";
     }
 
