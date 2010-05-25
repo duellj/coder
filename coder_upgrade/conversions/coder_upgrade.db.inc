@@ -115,11 +115,15 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
         }
         $new[] = "\t\t'$column' => $value,";
       }
+      $new[] = "\t)";
+      $new += coder_upgrade_convert_conditional($parsed_sql['where_clause'], $values);
+      $new[] = "\t->execute();";
       break;
 
     case 'delete':
       break;
   }
+  dpm(join($new, "\n"));
 
   // TODO: remove
   unset($new);
@@ -316,13 +320,15 @@ function coder_upgrade_parse_sql_conditions($conditions, $values) {
  *
  * @param $conditionals
  *   Parsed conditional array.
+ * @param $values
+ *   Placeholder values
  * @param $level
  *   Level of conditional statements.
  *
  * @return
- *   Array of  conditional object strings.
+ *   Array of conditional object strings.
  */
-function coder_upgrade_convert_conditional($conditionals, $level = 1) {
+function coder_upgrade_convert_conditional($conditionals, &$values, $level = 1) {
   $return = array();
 
   // Convert main conjunction
@@ -337,18 +343,61 @@ function coder_upgrade_convert_conditional($conditionals, $level = 1) {
       break;
   }
 
-  // Convert conditional fragment
-  array_push($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_1']));
-  array_push($return, coder_upgrade_convert_conditional_fragment($conditionals['arg_2']));
+  // Convert conjunction
+  if (in_array($conditionals['op'], array('and', 'or', 'xor'))) {
+    $return += coder_upgrade_convert_conditional_fragment($conditionals['arg_1'], $values, $level);
+    $return += coder_upgrade_convert_conditional_fragment($conditionals['arg_2'], $values, $level);
+  }
+  // Convert single conditional fragment
+  else {
+    $return += coder_upgrade_convert_conditional_fragment($conditionals, $values, $level);
+  }
 
   return $return;
 }
 
-function coder_upgrade_convert_conditional_fragment($fragment, $level = 1) {
-  $return = array();
+/**
+ * Transform conditional fragment into conditional object string.
+ *
+ * If conditional fragment is a subclause, pass it back to 
+ * coder_upgrade_convert_conditional.
+ *
+ * @param $conditionals
+ *   Parsed conditional fragment array.
+ * @param $values
+ *   Placeholder values
+ * @param $level
+ *   Level of conditional statements.
+ *
+ * @return
+ *   Array of conditional object string.
+ */
+function coder_upgrade_convert_conditional_fragment($fragment, &$values = array(), $level = 1) {
   if ($fragment['arg_1']['type'] == 'subclause') {
-    array_push($return, coder_upgrade_convert_conditional($fragment['arg_1']['value'], $level + 1));
+    return coder_upgrade_convert_conditional($fragment['arg_1']['value'], $values, $level + 1);
   }
   else {
+    $output = "\t->condition('" . $fragment['arg_1']['value'];
+    if ($fragment['arg_2']['type'] == 'placeholder') {
+      $value = array_shift($values);
+
+      // IN operator now just takes an array, rather than imploded array.
+      if ($fragment['op'] == 'IN' && preg_match("/(?:db_placeholders|implode)\(([^,]*).*\);/i", $value, $matches)) {
+        $value = $matches[1];
+      }
+    }
+    else {
+      $value = $fragment['arg_2']['value'];
+    }
+    $output .=  "', $value";
+
+    // Add operator if necessary.
+    if ($fragment['op'] != 'op') {
+      $output .= ", '" . $fragment['op'] . "'";
+    }
+
+    $output .= ")";
+
+    return array($output);
   }
 }

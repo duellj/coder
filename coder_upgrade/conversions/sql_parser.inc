@@ -355,11 +355,15 @@ class SqlParser {
             $clause['arg_2']['value'] = $this->parseSelect(TRUE);
             $clause['arg_2']['type'] = 'command';
           } 
+          elseif ($this->token == 'placeholder') {
+            $clause['arg_2']['value'] = $this->lexer->tokText;
+            $clause['arg_2']['type'] = $this->token;
+            $this->getTok();
+          }
           else {
             $this->lexer->pushBack();
             // parse the set
-            $result = $this->getParams($clause['arg_2']['value'],
-              $clause['arg_2']['type']);
+            $result = $this->getParams($clause['arg_2']['value'], $clause['arg_2']['type']);
             //if (PEAR::isError($result)) {
             //return $result;
             //}
