@@ -82,10 +82,22 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   dpm($sql);
   dpm('$values = ' . print_r($values, 1));
   $parsed_sql = $sql_parser->parse(str_replace(array("{", "}"), array(), $sql));
+  dpm($parsed_sql);
 
   $new = array();
   switch ($parsed_sql['command']) {
     case 'select':
+      $new[] = "db_select('" . $parsed_sql['table_names'][0] . "')";
+      $new[] = "\t->fields(array(" . join(", ", $parsed_sql['column_names']) . "))";
+      $new = array_merge($new, coder_upgrade_convert_conditional($parsed_sql['where_clause'], $values));
+      if ($parsed_sql['sort_order']) {
+        foreach ($parsed_sql['sort_order'] as $field => $order) {
+          $new[] = "\t->orderBy($field, $order)";
+        }
+      } 
+      if ($parsed_sql['limit_clause']) {
+        $new[] = "\t->range(" . $parsed_sql['limit_clause']['start'] . ', ' . $parsed_sql['limit_clause']['length'] . ")";
+      }
       break;
 
     case 'insert':
