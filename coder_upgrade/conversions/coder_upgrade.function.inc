@@ -1612,8 +1612,16 @@ function coder_upgrade_callback_user($node, $case_node, $operation = '') {
       break;
     case 'form':
       // The user account edit form is about to be displayed. The module should present the form elements it wishes to inject into the form.
-      // This block becomes example_user_???
-      $hook = '_user_XXX';
+      // This block becomes example_form_user_profile_form_alter.
+      $hook = '_form_user_profile_form_alter';
+      $parameters = array('&$form', '&$form_state');
+      $parameter_mapping = array(
+        '$category' => '$form[\'#user_category\']',
+        '$account' => '$form[\'#user\']',
+        '$edit' => '$form',
+      );
+      coder_upgrade_op_to_hook_form($node, $case_node, $hook, $parameters, $parameter_mapping);
+      return;
       break;
     case 'insert':
       // The user account is being added. The module should save its custom additions to the user object into the database and set the saved fields to NULL in $edit.
@@ -1637,8 +1645,16 @@ function coder_upgrade_callback_user($node, $case_node, $operation = '') {
       break;
     case 'register':
       // The user account registration form is about to be displayed. The module should present the form elements it wishes to inject into the form.
-      // This block becomes example_user_???
-      $hook = '_user_XXX';
+      // This block becomes example_form_user_register_form_alter.
+      $hook = '_form_user_register_form_alter';
+      $parameters = array('&$form', '&$form_state');
+      $parameter_mapping = array(
+        '$category' => '$form[\'#user_category\']',
+        '$account' => '$form[\'#user\']',
+        '$edit' => '$form',
+      );
+      coder_upgrade_op_to_hook_form($node, $case_node, $hook, $parameters, $parameter_mapping);
+      return;
       break;
     case 'submit':
       // Modify the account before it gets saved.
@@ -1744,6 +1760,102 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
   if (is_array($last->data) && $last->data['type'] == T_WHITESPACE) {
     cdp("YAHOO: found whitespace statement in hook_nodeapi");
     $function->body->delete($last);
+  }
+
+  // Get the statement list the function node is part of.
+  $container = &$node->container;
+
+  // Insert the new function before the old function.
+  $container->insertBefore($node, $function, 'function');
+  // Insert a blank line.
+  $whitespace = array(
+    'type' => T_WHITESPACE,
+    'value' => 1,
+  );
+  $container->insertBefore($node, $whitespace, 'whitespace');
+}
+
+/**
+ * Creates hook_form_alter function from the case (or if) block of an $op-style hook.
+ *
+ * @param PGPNode $node
+ *   A node object containing a PGPClass (or function) item.
+ * @param PGPNode $case_node
+ *   A node object containing a PGPCase item.
+ * @param string $hook
+ *  A string of the new function name.
+ * @param array $parameters
+ *  An array of function parameters.
+ * @param array $parameter_mapping
+ *  An array of old to new parameter mapping.
+ */
+function coder_upgrade_op_to_hook_form($node, $case_node, $hook, $parameters, $parameter_mapping) {
+  /*
+   * Copy the case body to the new hook function.
+   * Insert before (or after) the $item function.
+   *
+   * When case body is empty (e.g. insert, update), then use next reference
+   * until a non-empty body is found.
+   *
+   * TODO
+   * Add the new function to the list of functions.
+   * This is useful when we may need to check for the existence of a function
+   * on another upgrade.
+   * Example: hook_link() becomes part of hook_node_view()
+   * or hook_comment_view() based on $type parameter. Also hook_link_alter()
+   * code goes in hook_node_view_alter() or hook_comment_view_alter().
+   * See http://drupal.org/node/224333#node_links.
+   */
+
+  global $_coder_upgrade_module_name;
+  $case = &$case_node->data;
+
+  // Set values for the new hook function.
+  $comment = array(
+    'type' => T_DOC_COMMENT,
+    'value' => "/**\n * Implements hook$hook().\n */",
+  );
+  $name = $_coder_upgrade_module_name . $hook;
+
+  // Create the new hook function.
+  $function = new PGPClass($name);
+  $function->comment = $comment;
+  $function->type = T_FUNCTION;
+  $function->parameters = new PGPList();
+
+  // Use the editor to set the function parameters.
+  $editor = PGPEditor::getInstance();
+  $editor->setParameters($function, $parameters);
+
+  // Copy the case (or if) block as the body of the function.
+  $function->body = $case->body;
+  if ($function->body->isEmpty()) {
+    // TODO Clone the node??? Use a while loop since there could be more than two cases back to back.
+    $case_node2 = &$case_node->next;
+    $case2 = &$case_node2->data;
+    $body2 = $case2->body;
+    if (!$body2->isEmpty()) {
+      $function->body = clone $case2->body;
+    }
+  }
+
+  // Remove the break statement from a case block.
+  if (($break = $function->body->find(T_BREAK, 'reverse', TRUE))) {
+    cdp("return statement found in hook");
+    $function->body->delete($break);
+  }
+  // Remove any trailing blank lines (after break) that are included in body.
+  $last = $function->body->last();
+  if (is_array($last->data) && $last->data['type'] == T_WHITESPACE) {
+    cdp("YAHOO: found whitespace statement in hook_nodeapi");
+    $function->body->delete($last);
+  }
+
+  // Add parameter mapping for new function parameters.
+  // @todo Possibly replace instances of the old parameters in function body.
+  foreach ($parameter_mapping as $old_parameter => $new_parameter) {
+    $statement = $editor->textToStatements($old_parameter . ' = ' . $new_parameter .';')->getElement();
+    $function->body->insertFirst($statement);
   }
 
   // Get the statement list the function node is part of.

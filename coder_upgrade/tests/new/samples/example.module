@@ -1628,6 +1628,28 @@ function example_user_cancel($edit, $account, $method) {
 }
 
 /**
+ * Implements hook_form_user_profile_form_alter().
+ */
+function example_form_user_profile_form_alter(&$form, &$form_state) {
+  $edit = $form;
+  $account = $form['#user'];
+  $category = $form['#user_category'];
+  if (TRUE && $category == 'account') {
+    $form['comment_settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Comment settings'),
+      '#collapsible' => TRUE,
+      '#weight' => 4);
+    $form['comment_settings']['signature'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Signature'),
+      '#default_value' => $edit['signature'],
+      '#description' => t('Your signature will be publicly displayed at the end of your comments.'));
+    return $form;
+  }
+}
+
+/**
  * Implements hook_user_XXX.
  */
 function example_user_XXX($edit, $account) {
@@ -1667,6 +1689,17 @@ function example_user_categories() {
  */
 function example_user_cancel($edit, $account, $method) {
   // The user account is being deleted. The module should remove its custom additions to the user object from the database.
+  // This block becomes example_
+}
+
+/**
+ * Implements hook_form_user_profile_form_alter().
+ */
+function example_form_user_profile_form_alter(&$form, &$form_state) {
+  $edit = $form;
+  $account = $form['#user'];
+  $category = $form['#user_category'];
+  // The user account edit form is about to be displayed. The module should present the form elements it wishes to inject into the form.
   // This block becomes example_
 }
 
