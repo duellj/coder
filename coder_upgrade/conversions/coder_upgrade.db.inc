@@ -61,8 +61,8 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   // Create helper objects.
   $editor = PGPEditor::getInstance();
 
-  // TODO Parse the values - the other parameters
-  // TODO The parameter could be an array variable or expression
+  // @todo Parse the values - the other parameters
+  // @todo The parameter could be an array variable or expression
   // See http://drupalcode.org/viewvc/drupal/drupal/modules/simpletest/tests/database_test.test?revision=1.80&view=markup
   $values = array();
   for ($i = 1; $i < $item->parameters->count(); $i++) {
@@ -71,7 +71,7 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   cdp($values);
 
   /*
-   * TODO Run the table names through a conversion routine.
+   * @todo Run the table names through a conversion routine.
    * Ex: taxonomy, block, etc.
    */
   $new = array();
@@ -86,7 +86,7 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
     cdp($matches);
     $fields = explode(', ', $matches[2]);
     cdp($fields);
-    // TODO Values could be literals not placeholders.
+    // @todo Values could be literals not placeholders.
     $new[] = "\$id = db_insert('{$matches[1]}')";
     $new[] = "\t->fields(array(";
     foreach ($fields as $field) {
@@ -99,12 +99,12 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   elseif (strpos($sql, 'UPDATE') === 0) {
     // UPDATE {node} SET title='%s', status=%d WHERE uid=%d
     $find = '@^UPDATE\s+{(\w+)}\s+SET\s+(.*?)\s+WHERE\s+(.*?)$@m';
-    // TODO Check for WHERE and use a different regex.
+    // @todo Check for WHERE and use a different regex.
     preg_match($find, $sql, $matches);
     cdp($matches);
     $fields = explode(', ', $matches[2]);
     cdp($fields);
-    // TODO Values could be literals not placeholders.
+    // @todo Values could be literals not placeholders.
     $new[] = "db_update('{$matches[1]}')";
     $new[] = "\t->fields(array(";
     foreach ($fields as $field) {
@@ -117,7 +117,7 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
     $new[] = "\t))";
     if ($matches[3]) {
       $conditions = $matches[3]; // Explode around AND, OR
-      // TODO Parse the WHERE clause which may have more complex expressions.
+      // @todo Parse the WHERE clause which may have more complex expressions.
       list($condition,) = explode("=", $conditions);
       // Trim the condition for whitespace.
       $condition = trim($condition);
@@ -129,20 +129,20 @@ function coder_upgrade_parse_query_string(&$item, &$operand, &$reader) {
   elseif (strpos($sql, 'DELETE') === 0) {
     // DELETE FROM {node} WHERE uid=%d AND created < %d
     $find = '@^DELETE\s+FROM\s+{(\w+)}\s+WHERE\s+(.*?)$@m';
-    // TODO Check for WHERE and use a different regex.
+    // @todo Check for WHERE and use a different regex.
     preg_match($find, $sql, $matches);
     cdp($matches);
     $new[] = "db_delete('{$matches[1]}')";
-    // TODO Values could be literals not placeholders.
+    // @todo Values could be literals not placeholders.
     $conditions = explode(' AND ', $matches[2]); // Explode around AND, OR
     cdp($conditions);
     foreach ($conditions as $condition) {
-      // TODO Parse the WHERE clause which may have more complex expressions.
+      // @todo Parse the WHERE clause which may have more complex expressions.
       list($condition,) = explode("=", $condition);
       // Trim the condition for whitespace.
       $condition = trim($condition);
       $value = array_shift($values);
-      // TODO The comparison operator is the third parameter.
+      // @todo The comparison operator is the third parameter.
       $new[] = "\t\t->condition('$condition', $value)";
     }
     $new[] = "\t->execute();";
@@ -187,7 +187,7 @@ function coder_upgrade_upgrade_call_db_rewrite_sql_alter(&$item, &$reader) {
       // Convert values to strings.
       // Parse the string.
       coder_upgrade_parse_query_string($item, $operand0, $reader);
-      // Add $query->addTag('node_access' /* TODO Please indicate the appropriate tag */);
+      // Add $query->addTag('node_access' /* @todo Please indicate the appropriate tag */);
     }
   }
 }

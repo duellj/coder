@@ -71,7 +71,7 @@ function coder_upgrade_upgrade_regex_alter(&$file) {
 //  $to[] = "admin\/settings\/filter$1";
 
   coder_upgrade_upgrade_admin_path_changes($from, $to);
-  // TODO Intend to do all of these when converting db_query calls.
+  // @todo Intend to do all of these when converting db_query calls.
   coder_upgrade_upgrade_database_tables($from, $to);
 
   // Replace "use PHP for block visibility" with "use PHP for settings."

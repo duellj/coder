@@ -90,7 +90,7 @@ function coder_upgrade_upgrade_hook_alter(&$node, &$reader) {
 
   // Update document comment.
   $item->comment = preg_replace('@\*\s+[iI]mplement.*?(hook_.*?)(\(\)|)(\.|)$@m', "* Implements $1().", $item->comment);
-  // TODO If no comment, then add one?
+  // @todo If no comment, then add one?
 
   global $upgrade_menu_registry;
   cdp($node->data->name);
@@ -487,7 +487,7 @@ function coder_upgrade_convert_filter(&$node, &$reader) { // DONE
     }
     $key1 = trim($case1->case->toString(), "'\"");
     cdp("key1 = $key1");
-    // TODO Convert key2 to new key: Ex. 'process' becomes 'process callback'
+    // @todo Convert key2 to new key: Ex. 'process' becomes 'process callback'
     $key1 = coder_upgrade_callback_filter($key1);
     cdp("new key1 = $key1");
     $body1 = $case1->body->getElement();
@@ -555,7 +555,7 @@ function coder_upgrade_convert_filter(&$node, &$reader) { // DONE
           }
           $value2 = $body2->value; // ->getElement();
           if (get_class($value2) == 'PGPExpression') {
-            // TODO On the callback items only want the callback function name, not the parameters!!!
+            // @todo On the callback items only want the callback function name, not the parameters!!!
             $filters[$key2][$key1] = $body2->value->toString(); // $value2->values->toString();
             cdp($body2->value->toString()); // $value2->values->toString() . "\n";
           }
@@ -574,7 +574,7 @@ function coder_upgrade_convert_filter(&$node, &$reader) { // DONE
   $item->body->clear();
 }
 
-// TODO Rename this function.
+// @todo Rename this function.
 function coder_upgrade_callback_filter($key2) { // DONE
   switch ($key2) {
     case 'list':
@@ -662,7 +662,7 @@ function coder_upgrade_convert_filter_tips(&$node) { // DONE
   // Rename function.
   $item->name .= '_XXX';
   // Update document comment.
-  //  $item->comment .= 'This function is obsolete.'; // TODO Make a comment manipulation routine.
+  //  $item->comment .= 'This function is obsolete.'; // @todo Make a comment manipulation routine.
 
   // Restructure the triggers array.
   $body = &$item->body;
@@ -687,7 +687,7 @@ function coder_upgrade_convert_filter_tips(&$node) { // DONE
    * - remove the $delta parameter
    * - add tips_callback parameters to filter_info array items
    *
-   * - TODO Case 2: could be an if block
+   * - @todo Case 2: could be an if block
    */
 
   $operand1 = $switch1->conditions->toString();
@@ -697,7 +697,7 @@ function coder_upgrade_convert_filter_tips(&$node) { // DONE
   }
 
   // Remove first parameter for new callback function.
-  // TODO Do we need to clone this object for each new function???
+  // @todo Do we need to clone this object for each new function???
   $parameters1 = $item->parameters;
   $parameters1->deleteElement();
 
@@ -752,7 +752,7 @@ function coder_upgrade_new_filter_tips_hook($node, $hook, $parameters, $body) { 
 
   //  cdp($function->print_r());
 
-  // TODO REFACTOR: The following statements are repeated in other create_hook routines.
+  // @todo REFACTOR: The following statements are repeated in other create_hook routines.
 
   // Get the statement list the function node is part of.
   $container = &$node->container;
@@ -800,7 +800,7 @@ function coder_upgrade_convert_install($node) {
       if (preg_match('(drupal_install_schema|drupal_uninstall_schema)', $text)) {
         $editor = PGPEditor::getInstance();
         // Insert comment.
-        $statements = $editor->textToStatements('// TODO The drupal_(un)install_schema functions are called automatically in D7.');
+        $statements = $editor->textToStatements('// @todo The drupal_(un)install_schema functions are called automatically in D7.');
         $body->insertBefore($current, $statements->getElement(), 'comment');
         // Comment out the statement.
         $statements = $editor->textToStatements('// ' . $text);
@@ -835,7 +835,7 @@ function coder_upgrade_convert_link(&$node) { // NOT DONE
    * Add $method parameter
    * Add switch on $method; add core case values?
    * Place existing code under case 'user_cancel_reassign'
-   * Add TODO note to check placement of code
+   * Add @todo note to check placement of code
    * DBTNG changes can be done in another routine
    */
 
@@ -845,7 +845,7 @@ function coder_upgrade_convert_link(&$node) { // NOT DONE
   $item->name .= '_OLD'; // $item->name = $item->name . '_OLD'; // $item->name['value'] = $item->name['value'] . '_OLD';
   // Get the first function parameter, usually called $op.
   $count = $item->parameters->count();
-  // TODO This gets the entire parameter including any default value. Hook_block has $op = 'list'.
+  // @todo This gets the entire parameter including any default value. Hook_block has $op = 'list'.
   $op = $item->printParameter($op_index);
   //  cdp("op = '$op'");
 
@@ -858,7 +858,7 @@ function coder_upgrade_convert_link(&$node) { // NOT DONE
    * Compare the second parameter to the function with the switch operand.
    */
 
-  // TODO The following code is common to the remove_op upgrades. Refactor.
+  // @todo The following code is common to the remove_op upgrades. Refactor.
 
   // Loop on the body statements looking for the $op parameter in an IF or
   // SWITCH condition.
@@ -910,12 +910,12 @@ function coder_upgrade_convert_link(&$node) { // NOT DONE
          * extra conditions.
          */
         foreach ($operations as $operand) {
- // TODO Rename $operand to $operation here and in called functions
+ // @todo Rename $operand to $operation here and in called functions
           $statement->type = T_IF; // If it isn't already.
           $block = new stdClass();
           $block->body = new PGPBody();
           $block->body->insertLast($statement);
-          $case_node = new PGPNode($block, $current->container); // TODO What is the correct container???
+          $case_node = new PGPNode($block, $current->container); // @todo What is the correct container???
           $callback($node, $case_node, $operand); // coder_upgrade_callback_user($node, $case_node, $operand);
         }
       }
@@ -944,7 +944,7 @@ function coder_upgrade_convert_menu_link_alter(&$node) {
     // Delete second parameter.
     $item->deleteParameter(1);
   }
-  // TODO Do we need to check for $menu in the body of this hook?
+  // @todo Do we need to check for $menu in the body of this hook?
 }
 
 /**
@@ -979,7 +979,7 @@ function coder_upgrade_convert_perm(&$node) { // NEEDS REVISION
 //  cdp($value->toString());
   //  cdp("Printing return item DONE");
 
-  // TODO This fits with the coder_upgrade_convert_return pattern.
+  // @todo This fits with the coder_upgrade_convert_return pattern.
 
   // Examine the type of the operand in the return statement.
   $array = $value->getElement();
@@ -997,7 +997,7 @@ function coder_upgrade_convert_perm(&$node) { // NEEDS REVISION
       // If the permission is other than a string (e.g. T_VARIABLE expression),
       // then do not enclose in quotes.
       $expression = &$current->data->first()->data;
-      // TODO Fix next line when condition is TRUE
+      // @todo Fix next line when condition is TRUE
       $type = is_object($expression) ? '$expression->type' : $expression['type']; // Operand object does not have a type parameter // $type = is_object($expression) ? $expression->type : $expression['type'];
       $add_quotes = $type == T_CONSTANT_ENCAPSED_STRING;
 
@@ -1005,11 +1005,11 @@ function coder_upgrade_convert_perm(&$node) { // NEEDS REVISION
       //      cdp("permission = $permission");
       $permission = trim($permission, "'\"");
       if ($add_quotes) {
-        $string .= "'$permission' => array('title' => t('$permission'), 'description' => t('TODO Add a description for $permission'),),\n";
+        $string .= "'$permission' => array('title' => t('$permission'), 'description' => t('@todo Add a description for $permission'),),\n";
       }
       else {
         $permission2 = str_replace("'", "\'", $permission);
-        $string .= "$permission => array('title' => t($permission), 'description' => t('TODO Add a description for $permission2'),),\n";
+        $string .= "$permission => array('title' => t($permission), 'description' => t('@todo Add a description for $permission2'),),\n";
       }
     }
     $current = &$current->next;
@@ -1017,7 +1017,7 @@ function coder_upgrade_convert_perm(&$node) { // NEEDS REVISION
   $string .= ");\n";
 //  cdp($string);
   $editor = PGPEditor::getInstance();
-  // TODO There may be other routines that need this setting. Should we set it once up front or routine-by-routine?
+  // @todo There may be other routines that need this setting. Should we set it once up front or routine-by-routine?
   $editor->getReader()->setPreserveArrayFormat();
   $expression = $editor->expressionToStatement($string);
   $expression->multiline = 1;
@@ -1048,7 +1048,7 @@ function coder_upgrade_convert_schema(&$node) {
   //  cdp("Printing return item DONE");
   $variable = &$return->getParameter()->getElement();
 
-  // TODO This fits with the coder_upgrade_convert_return pattern.
+  // @todo This fits with the coder_upgrade_convert_return pattern.
 
   /*
    * Traverse the body statements looking for:
@@ -1205,7 +1205,7 @@ function coder_upgrade_convert_op(&$node, $callback, $op_index) {
           $block = new stdClass();
           $block->body = new PGPBody();
           $block->body->insertLast($statement);
-          $case_node = new PGPNode($block, $current->container); // TODO What is the correct container???
+          $case_node = new PGPNode($block, $current->container); // @todo What is the correct container???
           $callback($node, $case_node, $operation);
         }
       }
@@ -1224,8 +1224,8 @@ function coder_upgrade_convert_op(&$node, $callback, $op_index) {
   }
   if ($body->count()) {
     $editor = PGPEditor::getInstance();
-    // TODO Insert comment indicating the block was not changed.
-    $body->insertFirst($editor->commentToStatement('// TODO Remaining code in this function needs to be moved to the appropriate new hook function.')/*, 'comment'*/);
+    // @todo Insert comment indicating the block was not changed.
+    $body->insertFirst($editor->commentToStatement('// @todo Remaining code in this function needs to be moved to the appropriate new hook function.')/*, 'comment'*/);
   }
 }
 
@@ -1375,7 +1375,7 @@ function coder_upgrade_callback_block($node, $case_node, $operation = '') {
   $text = preg_replace($search, $replace, $text, -1, $count);
   if ($count) {
     $body = $editor->textToStatements($text);
-    $body->insertFirst($editor->commentToStatement('// TODO Rename block deltas (e.g. delta-0) to readable strings.'), 'comment');
+    $body->insertFirst($editor->commentToStatement('// @todo Rename block deltas (e.g. delta-0) to readable strings.'), 'comment');
   }
 
   // Create the new hook function.
@@ -1591,7 +1591,7 @@ function coder_upgrade_callback_user($node, $case_node, $operation = '') {
   $hook = '_user_' . str_replace(' ', '_', $operation);
   $parameters = array('$edit', '$account');
 
-  // TODO We can end up with multiple copies of same hook if this mapping is accurate???
+  // @todo We can end up with multiple copies of same hook if this mapping is accurate???
   switch ($operation) {
     case 'after_update':
       // The user object has been updated and changed. Use this if (probably along with 'insert') if you want to reuse some information from the user object.
@@ -1692,7 +1692,7 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
    * When case body is empty (e.g. insert, update), then use next reference
    * until a non-empty body is found.
    *
-   * TODO
+   * @todo
    * Add the new function to the list of functions.
    * This is useful when we may need to check for the existence of a function
    * on another upgrade.
@@ -1725,7 +1725,7 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
   // Copy the case (or if) block as the body of the function.
   $function->body = $case->body;
   if ($function->body->isEmpty()) {
-    // TODO Clone the node??? Use a while loop since there could be more than two cases back to back.
+    // @todo Clone the node??? Use a while loop since there could be more than two cases back to back.
     $case_node2 = &$case_node->next;
     $case2 = &$case_node2->data;
     $body2 = $case2->body;
@@ -1778,7 +1778,7 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
 function coder_upgrade_convert_return(&$node, $hook, $callback = '') { // DONE
   cdp("inside " . __FUNCTION__);
   $editor = PGPEditor::getInstance();
-  $msg = '// TODO The array elements in this hook function need to be changed.';
+  $msg = '// @todo The array elements in this hook function need to be changed.';
 
   $item = &$node->data;
 
@@ -1842,13 +1842,13 @@ function coder_upgrade_convert_return_loop(&$node, &$count, $return_variable, $h
         // Use case 2: makes one assignment to array variable; returns variable.
         cdp("Use case 2: Assignment variable matches return variable");
         /*
-         * TODO This equality check would fail if comments are embedded between
+         * @todo This equality check would fail if comments are embedded between
          * variable and operator.
          * Example: $theme /**\/ = $array + array(..);
          */
         $value1 = $assignment->values->getElement();
         /*
-         * TODO Find the operand of class PGPArray.
+         * @todo Find the operand of class PGPArray.
          * Example: $theme /**\/ = $array + array(..);
          */
         $array1 = $value1->getElement($value1->count() - 1);
@@ -1862,7 +1862,7 @@ function coder_upgrade_convert_return_loop(&$node, &$count, $return_variable, $h
         // Use case 3: makes multiple assignments to array variable; returns variable.
         cdp("Use case 3: Assignment variable includes return variable");
         /*
-         * TODO This substring check would fail if comments are embedded between
+         * @todo This substring check would fail if comments are embedded between
          * variable and operator.
          * Example: $theme /**\/ = $array + array(..);
          */
@@ -1877,7 +1877,7 @@ function coder_upgrade_convert_return_loop(&$node, &$count, $return_variable, $h
         elseif ($assign_variable2->countType('index') == 2) {
           cdp('variable has two indices');
           /*
-           * TODO Use case 5
+           * @todo Use case 5
            * Assignment to array variable at an index
            * $items[$admin_path] = array_merge($default_menu_fields, $menu_item);
            * $items[$admin_path]['page callback'][] = 'example_admin_form';
@@ -1890,7 +1890,7 @@ function coder_upgrade_convert_return_loop(&$node, &$count, $return_variable, $h
         elseif ($assign_variable2->countType('index') == 3 && $assign_variable2->getType('index', 3)->toString() == '') {
           cdp('variable has three indices');
           /*
-           * TODO Use case 5
+           * @todo Use case 5
            * Assignment to array variable at an index
            * $items[$admin_path] = array_merge($default_menu_fields, $menu_item);
            * $items[$admin_path]['page callback'][] = 'example_admin_form';
@@ -1997,7 +1997,7 @@ function coder_upgrade_callback_return_case3(&$array2, $hook, $callback = '') { 
 function coder_upgrade_callback_return_case5(/*&*/$assignment, $hook, $callback = '') { // NOT DONE
   cdp("inside " . __FUNCTION__);
   /*
-   * TODO Convert the assingment into an array expression. Then pass off the
+   * @todo Convert the assingment into an array expression. Then pass off the
    * array to coder_upgrade_callback_return_case3.
    *
    * Loop on assignment to remove all nodes up to and including the assignment
@@ -2128,7 +2128,7 @@ function coder_upgrade_callback_action_info(&$array2, &$current2, $hook, $type, 
     $string = 'array(' . implode(', ', $ops) . ')';
     $editor = PGPEditor::getInstance();
     $expression = $editor->expressionToStatement($string);
-    // TODO Use multiline format? Depending on number of items?
+    // @todo Use multiline format? Depending on number of items?
     $expression->getElement()->multiline = 1;
     $expression->getElement()->preserve = 0;
     // Replace the triggers nested array with new array.
@@ -2186,7 +2186,7 @@ function coder_upgrade_callback_hook_info(&$array2, &$current2, $hook, $type, $k
     }
 
     // This is the module (or content type) the hook pertains to.
-    // TODO Other prefixes may need to be modified.
+    // @todo Other prefixes may need to be modified.
     switch ($key) {
       case 'nodeapi':
         $prefix = 'node';
@@ -2397,7 +2397,7 @@ function coder_upgrade_callback_theme(&$array2, &$current2, $hook, $type, $key, 
     // pair: lparens, key, assign, and value.
     // What other likely values are there for a render element?
     // Does $form ever appear with other variables? If so, how is this to be handled?
-    // TODO This is not a deterministic way of setting the key.
+    // @todo This is not a deterministic way of setting the key.
     if ($array->count == 1 && in_array($key0, array('form', 'element', 'elements'))) { // if ($array->values->count() == 4 && in_array($key0, array('form', 'element'))) {
       // Change key from 'arguments' to 'render element.'
       $key_expression = $editor->expressionToStatement("'render element'");
