@@ -21,14 +21,14 @@
  *   Array of a directory containing the files to convert.
  */
 function coder_upgrade_upgrade_begin_alter($item) {
-//  return; // @todo Temporary
+//  return; // TODO Temporary
 //  cdp("inside " . __FUNCTION__);
   global $upgrade_menu_registry;
   if (!$upgrade_menu_registry) {
     $upgrade_menu_registry = array();
   }
   /*
-   * @todo Should we:
+   * TODO Should we:
    * - write the core cache to a file (and commit the file?)
    * - make an admin settings page button to generate this cache (and any others we need)
    * - check for existence of cache if core upgrades are being run
@@ -71,7 +71,7 @@ function coder_upgrade_theme_build_registry() {
 
   $cache = array();
   $hook = 'theme';
-  // @todo In the D8 release of this module, will need to use the correct file.
+  // TODO In the D8 release of this module, will need to use the correct file.
   // $hook_info = module_hook_info();
   foreach ($list as $module => $stuff) { // foreach (module_implements('theme') as $module) {
     module_load_include('module', $module);
@@ -106,7 +106,7 @@ function coder_upgrade_cache_info_hooks($item, $recursive = TRUE) {
     if (!in_array($filename, $ignore)) {
       if (is_dir($dirname . '/' . $filename)) {
         if ($recursive) {
-          // @todo Fix this!!!
+          // TODO Fix this!!!
           $new_item = array(
             'name' => $item['name'],
             'old_dir' => $dirname . '/' . $filename,

@@ -274,12 +274,12 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
 
     case 'check_markup': // DONE
       if ($item->parameters->count() > 2) {
-        $editor->insertParameter($item, 2, '$langcode = \'\' /* @todo Set this variable. */');
+        $editor->insertParameter($item, 2, '$langcode = \'\' /* TODO Set this variable. */');
       }
       break;
 
     case '_comment_load': // DONE
-      // @todo The comment_wildcard change in hook_menu.
+      // TODO The comment_wildcard change in hook_menu.
       $name['value'] = 'comment_load';
       break;
 
@@ -295,7 +295,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
 
     case 'comment_validate': // DONE
       $name['value'] = 'comment_form_validate';
-      $editor->setParameters($item, array('$form', '$form_state /* @todo Set these variables. */'));
+      $editor->setParameters($item, array('$form', '$form_state /* TODO Set these variables. */'));
       break;
 
     case 'db_add_field':
@@ -468,7 +468,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
       break;
 
     case 'drupal_set_header': // DONE
-      // @todo the hook_file_download() changes. Use parser on the entire function.
+      // TODO the hook_file_download() changes. Use parser on the entire function.
       $temp = $item->printParameters();
       if (strpos($temp, 'Content-Type:') !== FALSE) {
         $temp = explode(':', $temp);
@@ -495,7 +495,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
       cdp("temp = $temp");
 
       if (strpos($temp, 'check_plain') !== FALSE) {
-        // @todo Could check for isset, count of parameters, etc.???
+        // TODO Could check for isset, count of parameters, etc.???
         // check_plain could be part of an expression (e.g. concatenation).
         $temp = $item->getParameter(0);
         $temp = $temp->getElement(0);
@@ -540,8 +540,8 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
       break;
 
     case 'file_scan_directory': // DONE
-      // @todo Part of http://drupal.org/node/224333#preg_match
-      // @todo Other changes apply to this function call.
+      // TODO Part of http://drupal.org/node/224333#preg_match
+      // TODO Other changes apply to this function call.
       $temp = $item->printParameter(1);
       // Check for type == T_CONSTANT_ENCAPSED_STRING
       // Check for a '/' in the mask and use a different mask or delimit the '/' with '\/'.
@@ -616,7 +616,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
 
     case 'module_invoke': // DONE
       // http://drupal.org/node/224333#taxonomy_get_tree
-      $depth = '$max_depth = NULL /* @todo Set this variable. */';
+      $depth = '$max_depth = NULL /* TODO Set this variable. */';
       $count = $item->parameters->count();
       // Confirm this call relates to our topic.
       if ($count > 2) {
@@ -648,7 +648,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
 
     case 'module_list': // DONE
       $name['value'] = 'module_implements';
-      $editor->setParameters($item, array('$hook /* @todo Set this variable. */'));
+      $editor->setParameters($item, array('$hook /* TODO Set this variable. */'));
       break;
 
     case 'module_rebuild_cache': // DONE
@@ -697,7 +697,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
       break;
 
     case 'taxonomy_get_tree': // DONE
-      $depth = '$max_depth = NULL /* @todo Set this variable. */';
+      $depth = '$max_depth = NULL /* TODO Set this variable. */';
       $count = $item->parameters->count();
       // Adjust parameters.
       if ($count > 3) {
@@ -720,13 +720,13 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
     case 'taxonomy_save_term': // DONE
       $name['value'] = 'taxonomy_term_save';
       $temp = $item->printParameters();
-      $editor->setParameters($item, array('$term /* @todo Term object replaces array ' . $temp . ' */)'));
+      $editor->setParameters($item, array('$term /* TODO Term object replaces array ' . $temp . ' */)'));
       break;
 
     case 'taxonomy_save_vocabulary': // DONE
       $name['value'] = 'taxonomy_vocabulary_save';
       $temp = $item->printParameters();
-      $editor->setParameters($item, array('$vocabulary /* @todo Vocabulary object replaces array ' . $temp . ' */)'));
+      $editor->setParameters($item, array('$vocabulary /* TODO Vocabulary object replaces array ' . $temp . ' */)'));
       break;
 
     case 'theme': // DONE
@@ -740,7 +740,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
        * file!!!
        *
        * Add helper functions to PGPArray to get the keys and values as arrays.
-       * @todo Refactor any existing code that does this.
+       * TODO Refactor any existing code that does this.
        *
        * static $themes = array();
        *
@@ -809,7 +809,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
     case 'user_authenticate': // DONE
       $count = $item->parameters->count();
       if ($count == 0) {
-        $editor->setParameters($item, array('$name', '$password /* @todo Set these variables */'));
+        $editor->setParameters($item, array('$name', '$password /* TODO Set these variables */'));
         break;
       }
 
@@ -828,7 +828,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
         // Get the variable name used as the parameter.
         $parameter = $item->getParameter()->toString();
         // Make variable assignments referring to two new parameters.
-        $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // @todo Set these variables");
+        $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // TODO Set these variables");
         $assign2 = $editor->textToStatements('$password = ' . $parameter . "['pass'];")->getElement(0);
         cdp($assign1->print_r());
         // Insert the assignments before this statement.
@@ -852,7 +852,7 @@ function coder_upgrade_callback_function_calls(&$item, &$reader) {
 
     case 'user_delete': // DONE
       $name['value'] = 'user_cancel';
-      $editor->setParameter($item, 2, "\$method = 'user_cancel_block' /* @todo Set this variable */");
+      $editor->setParameter($item, 2, "\$method = 'user_cancel_block' /* TODO Set this variable */");
       break;
   }
 }
@@ -1155,7 +1155,7 @@ function coder_upgrade_convert_install($node) {
       if (preg_match('(drupal_install_schema|drupal_uninstall_schema)', $text)) {
         $editor = new PGPEditor();
         // Insert comment.
-        $statements = $editor->textToStatements('// @todo The drupal_(un)install_schema functions are called automatically in D7.');
+        $statements = $editor->textToStatements('// TODO The drupal_(un)install_schema functions are called automatically in D7.');
         $body->insertBefore($current, $statements->getElement(), 'comment');
         // Comment out the statement.
         $statements = $editor->textToStatements('// ' . $text);
@@ -1183,7 +1183,7 @@ function coder_upgrade_convert_menu_link_alter(&$node) {
     // Delete second parameter.
     $item->deleteParameter(1);
   }
-  // @todo Do we need to check for $menu in the body of this hook?
+  // TODO Do we need to check for $menu in the body of this hook?
 }
 
 /**
@@ -1233,7 +1233,7 @@ function coder_upgrade_convert_perm(&$node) {
       // If the permission is other than a string (e.g. T_VARIABLE expression),
       // then do not enclose in quotes.
       $expression = &$current->data->first()->data;
-      // @todo Fix next line when condition is TRUE
+      // TODO Fix next line when condition is TRUE
       $type = is_object($expression) ? '$expression->type' : $expression['type']; // Operand object does not have a type parameter // $type = is_object($expression) ? $expression->type : $expression['type'];
       $add_quotes = $type == T_CONSTANT_ENCAPSED_STRING;
 
@@ -1241,11 +1241,11 @@ function coder_upgrade_convert_perm(&$node) {
 //      cdp("permission = $permission");
       $permission = trim($permission, "'\"");
       if ($add_quotes) {
-        $string .= "'$permission' => array('title' => t('$permission'), 'description' => t('@todo Add a description for $permission'),),\n";
+        $string .= "'$permission' => array('title' => t('$permission'), 'description' => t('TODO Add a description for $permission'),),\n";
       }
       else {
         $permission2 = str_replace("'", "\'", $permission);
-        $string .= "$permission => array('title' => t($permission), 'description' => t('@todo Add a description for $permission2'),),\n";
+        $string .= "$permission => array('title' => t($permission), 'description' => t('TODO Add a description for $permission2'),),\n";
       }
     }
     $current = &$current->next;
@@ -1374,7 +1374,7 @@ function coder_upgrade_convert_op(&$node, $callback, $op_index) {
   $item->name .= '_OLD';
   // Get the operation function parameter, usually called $op.
   $count = $item->parameters->count();
-  // @todo This gets the entire parameter including any default value. Hook_block has $op = 'list'.
+  // TODO This gets the entire parameter including any default value. Hook_block has $op = 'list'.
   $op = $item->printParameter($op_index);
 
   // Get the function body statements.
@@ -1427,7 +1427,7 @@ function coder_upgrade_convert_op(&$node, $callback, $op_index) {
           $block = new stdClass();
           $block->body = new PGPBody();
           $block->body->insertLast($statement);
-          $case_node = new PGPNode($block, $current->container); // @todo What is the correct container???
+          $case_node = new PGPNode($block, $current->container); // TODO What is the correct container???
           $callback($node, $case_node, $operation);
         }
       }
@@ -1777,7 +1777,7 @@ function coder_upgrade_callback_user($node, $case_node, $operation = '') {
   $hook = '_user_' . str_replace(' ', '_', $operation);
   $parameters = array('$edit', '$account');
 
-  // @todo We can end up with multiple copies of same hook if this mapping is accurate???
+  // TODO We can end up with multiple copies of same hook if this mapping is accurate???
   switch ($operation) {
     case 'after_update':
       // The user object has been updated and changed. Use this if (probably along with 'insert') if you want to reuse some information from the user object.
@@ -1878,7 +1878,7 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
    * When case body is empty (e.g. insert, update), then use next reference
    * until a non-empty body is found.
    *
-   * @todo
+   * TODO
    * Add the new function to the list of functions.
    * This is useful when we may need to check for the existence of a function
    * on another upgrade.
@@ -1911,7 +1911,7 @@ function coder_upgrade_op_to_hook($node, $case_node, $hook, $parameters) {
   // Copy the case (or if) block as the body of the function.
   $function->body = $case->body;
   if ($function->body->isEmpty()) {
-    // @todo Clone the node??? Use a while loop since there could be more than two cases back to back.
+    // TODO Clone the node??? Use a while loop since there could be more than two cases back to back.
     $case_node2 = &$case_node->next;
     $case2 = &$case_node2->data;
     $body2 = $case2->body;

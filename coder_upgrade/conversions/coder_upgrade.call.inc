@@ -192,7 +192,7 @@ function coder_upgrade_upgrade_call_alter(&$item, &$reader, $name) { // NEEDS WO
       $item->deleteParameter();
 
       /*
-       * @todo
+       * TODO
        * See http://drupal.org/node/224333#update_sql
        * Search for assignments to and return statements with the $ret parameter
        * used in these db_operation function calls.
@@ -294,7 +294,7 @@ function coder_upgrade_upgrade_call_check_markup_alter(&$item, &$reader) { // DO
   // Process function call.
   $name = &$item->name;
   if ($item->parameters->count() > 2) {
-    $editor->insertParameter($item, 2, '$langcode = \'\' /* @todo Set this variable. */');
+    $editor->insertParameter($item, 2, '$langcode = \'\' /* TODO Set this variable. */');
   }
 }
 
@@ -308,7 +308,7 @@ function coder_upgrade_upgrade_call__comment_load_alter(&$item, &$reader) { // D
   // Process function call.
   $name = &$item->name;
   $name['value'] = 'comment_load';
-  // @todo The %_comment wildcard change to %comment in hook_menu. (See coder_upgrade.other_regex.inc.)
+  // TODO The %_comment wildcard change to %comment in hook_menu. (See coder_upgrade.other_regex.inc.)
 }
 
 /**
@@ -339,7 +339,7 @@ function coder_upgrade_upgrade_call_comment_validate_alter(&$item, &$reader) { /
   // Process function call.
   $name = &$item->name;
   $name['value'] = 'comment_form_validate';
-  $editor->setParameters($item, array('$form', '$form_state /* @todo Set these variables. */'));
+  $editor->setParameters($item, array('$form', '$form_state /* TODO Set these variables. */'));
 }
 
 /**
@@ -355,7 +355,7 @@ function coder_upgrade_upgrade_call_db_add_field_alter(&$item, &$reader) { // NE
   $item->deleteParameter();
 
   /*
-   * @todo
+   * TODO
    * See http://drupal.org/node/224333#update_sql
    * Search for assignments to and return statements with the $ret parameter
    * used in these db_operation function calls.
@@ -846,7 +846,7 @@ function coder_upgrade_upgrade_call_drupal_get_form_alter(&$item, &$reader) { //
     $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
     if ($statement) {
       $operand2 = &$statement->values->getElement()->findNode('operand', 'backward');
-      // @todo A pattern here - this is the same code as above but executed on a different object.
+      // TODO A pattern here - this is the same code as above but executed on a different object.
       if (is_array($operand2) && $operand2['type'] == T_CONSTANT_ENCAPSED_STRING) {
         $value = trim($operand2['value'], "'\"");
         $function = $editor->findFunction($reader->getFunctions(), $value);
@@ -860,19 +860,19 @@ function coder_upgrade_upgrade_call_drupal_get_form_alter(&$item, &$reader) { //
       }
       else {
         clp("ERROR: Could not find a string to change in " . __FUNCTION__);
-        $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
+        $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
       }
     }
     else {
       clp("ERROR: Could not find a string to change in " . __FUNCTION__);
-      $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
+      $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
     }
   }
   else {
     clp("ERROR: Form callback is not a string or variable" . __FUNCTION__);
-    $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
+    $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to have $form as its first parameter.'));
   }
-  // @todo Comment out an assignment of $form = array();
+  // TODO Comment out an assignment of $form = array();
 }
 
 /**
@@ -926,30 +926,30 @@ function coder_upgrade_upgrade_call_drupal_goto_alter(&$item, &$reader) {
       $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
       if ($statement) {
         $operand2 = &$statement->values->getElement()->findNode('operand', 'backward');
-        // @todo A pattern here - this is the same code as above but executed on a different object.
+        // TODO A pattern here - this is the same code as above but executed on a different object.
         if (is_array($operand2) && $operand2['type'] == T_CONSTANT_ENCAPSED_STRING) {
           $operand2 = coder_upgrade_query_to_array($operand2['value']);
         }
         else {
           clp("ERROR: Could not find a string to change in " . __FUNCTION__);
-          $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
+          $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
         }
       }
       else {
         clp("ERROR: Could not find a string to change in " . __FUNCTION__);
-        $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
+        $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
       }
     }
     elseif ($query->isType(T_STRING)) {
       // Parameter is a constant.
       if ($value != 'NULL') {
-        $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
+        $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
       }
-      // @todo Handle constants - add todo comment - try to find the define?
+      // TODO Handle constants - add todo comment - try to find the define?
     }
     else {
 //      clp("ERROR: Could not find a string to change in " . __FUNCTION__);
-      $item->insertStatementBefore($editor->commentToStatement('// @todo ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
+      $item->insertStatementBefore($editor->commentToStatement('// TODO ' . $item->printParameter(1) . ' needs to be an array of keys and values instead of a string.'));
     }
   }
 
@@ -1144,7 +1144,7 @@ function coder_upgrade_upgrade_call_drupal_set_header_alter(&$item, &$reader) { 
     }
   }
 
-  // @todo the hook_file_download() changes. Use parser on the entire function.
+  // TODO the hook_file_download() changes. Use parser on the entire function.
 }
 
 /**
@@ -1177,7 +1177,7 @@ function coder_upgrade_upgrade_call_drupal_set_html_head_alter(&$item, &$reader)
       return;
     }
 
-    $key = '$key = NULL /* @todo Set this variable. */';
+    $key = '$key = NULL /* TODO Set this variable. */';
     // Insert new required parameter when first parameter is set.
     $editor->insertParameter($item, 1, $key);
   }
@@ -1196,7 +1196,7 @@ function coder_upgrade_upgrade_call_drupal_set_title_alter(&$item, &$reader) { /
   cdp("temp = $temp");
 
   if (strpos($temp, 'check_plain') !== FALSE) {
-    // @todo Could check for isset, count of parameters, etc.???
+    // TODO Could check for isset, count of parameters, etc.???
     // check_plain could be part of an expression (e.g. concatenation).
     $temp = $item->getParameter(0);
     $temp = $temp->getElement(0);
@@ -1285,7 +1285,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
   $name = &$item->name;
 
   /*
-   * @todo Default values will not harm anything if they are in the $options
+   * TODO Default values will not harm anything if they are in the $options
    * array. However, if the mask and nomask parameters are variables, then they
    * need to be changed to preg format. Also, the key values need to change in
    * the function call and the variables that reference the file objects.
@@ -1314,7 +1314,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
       $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
       if ($statement) {
         $operand2 = &$statement->values->getElement()->findNode('operand', 'backward');
-        // @todo A pattern here - this is the same code as above but executed on a different object.
+        // TODO A pattern here - this is the same code as above but executed on a different object.
         if (is_array($operand2) && $operand2['type'] == T_CONSTANT_ENCAPSED_STRING) {
           $operand2['value'] = coder_upgrade_ereg_to_preg($operand2['value']);
           $mask = $operand2['value'];
@@ -1348,7 +1348,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
       $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
       if ($statement) {
         $operand2 = &$statement->values->getElement()->findNode('operand', 'backward');
-        // @todo A pattern here - this is the same code as above but executed on a different object.
+        // TODO A pattern here - this is the same code as above but executed on a different object.
         if (is_a($operand2, 'PGPArray')) {
           $nomask = coder_upgrade_array_to_preg($operand2);
           $operand2 = array('type' => T_CONSTANT_ENCAPSED_STRING, 'value' => $nomask);
@@ -1380,7 +1380,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
     }
     // Edge case: the parameter could have a comment.
     // Make a general function to clean the parameter of comments and whitespace so we can truly evaluate it.
-    // @todo Add a comment if unable to make the change. This applies to all routines!!!
+    // TODO Add a comment if unable to make the change. This applies to all routines!!!
   }
 
   // http://drupal.org/node/224333#file_scan_directory_array_itize
@@ -1398,7 +1398,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
     $item->setParameter(7, $depth);
   }
 
-  // @todo Could regex for '->filename' and change to '->filepath'???
+  // TODO Could regex for '->filename' and change to '->filepath'???
   // See http://drupal.org/files/issues/file_scan_directory-1.patch
 }
 
@@ -1434,7 +1434,7 @@ function coder_upgrade_ereg_to_preg($string) {
   cdp(__FUNCTION__);
   // Check for type == T_CONSTANT_ENCAPSED_STRING
   // Check for a '/' in the mask and use a different mask or delimit the '/' with '\/'.
-  $delimiters = array('/', '@', '#', '%', '~', ''); // @todo Are these all legal?
+  $delimiters = array('/', '@', '#', '%', '~', ''); // TODO Are these all legal?
   foreach ($delimiters as $delimiter) {
     if (strpos($string, $delimiter) === FALSE) {
       break;
@@ -1637,7 +1637,7 @@ function coder_upgrade_upgrade_call_jquery_ui_add_alter(&$item, &$reader) {
     // Parameter is a variable.
     $variable = $item->getParameter()->getElement()->findNode('value');
     $parent = $item->parent;
-    // @todo This single search won't find multiple assignments to array variable.
+    // TODO This single search won't find multiple assignments to array variable.
     $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
     if ($statement) {
       $operand = &$statement->values->getElement()->findNode('operand', 'backward');
@@ -1671,7 +1671,7 @@ function coder_upgrade_upgrade_call_jquery_ui_add_alter(&$item, &$reader) {
   }
   else { // elseif (get_class($operand) == 'PGPOperand') {
     // This would be a variable and should not occur.
-    $statement = $editor->commentToStatement("// @todo {$operand->toString()} needs to be a string or multiple calls to drupal_add_library need to be made.");
+    $statement = $editor->commentToStatement("// TODO {$operand->toString()} needs to be a string or multiple calls to drupal_add_library need to be made.");
     $item->insertStatementBefore($statement);
   }
 
@@ -1701,7 +1701,7 @@ function coder_upgrade_upgrade_call_menu_tree_data_alter(&$item, &$reader) {
   // Function now expects an array of links, rather than a query resource.
   $p1 = $item->getParameter()->getElement();
   if (!is_object($p1)) {
-    // @todo
+    // TODO
     return;
   }
   elseif (get_class($p1) == 'PGPOperand') {
@@ -1733,7 +1733,7 @@ function coder_upgrade_upgrade_call_menu_valid_path_alter(&$item, &$reader) { //
   //      cdp($item->parameters->print_r());
   $count = $item->parameters->count();
   if (!$count) {
-    $editor->setParameter($item, 0, "'' /* @todo Please pass a menu path */");
+    $editor->setParameter($item, 0, "'' /* TODO Please pass a menu path */");
     return;
   }
   coder_upgrade_convert_menu_valid_path($item, $reader, $editor);
@@ -1749,7 +1749,7 @@ function coder_upgrade_upgrade_call_module_invoke_alter(&$item, &$reader) { // D
   // Process function call.
   $name = &$item->name;
   // http://drupal.org/node/224333#taxonomy_get_tree
-  $depth = '$max_depth = NULL /* @todo Set this variable. */';
+  $depth = '$max_depth = NULL /* TODO Set this variable. */';
   $count = $item->parameters->count();
   // Confirm this call relates to our topic.
   if ($count > 2) {
@@ -1789,7 +1789,7 @@ function coder_upgrade_upgrade_call_module_list_alter(&$item, &$reader) { // DON
   // Process function call.
   $name = &$item->name;
   $name['value'] = 'module_implements';
-  $editor->setParameters($item, array('$hook /* @todo Set this variable. */'));
+  $editor->setParameters($item, array('$hook /* TODO Set this variable. */'));
 }
 
 /**
@@ -1812,8 +1812,8 @@ function coder_upgrade_upgrade_call_node_get_types_alter(&$item, &$reader) { // 
   $editor = PGPEditor::getInstance();
 
   if ($item->parameterCount() && !$item->getParameter()->isType(T_CONSTANT_ENCAPSED_STRING)) {
-    // Add @todo comment.
-    $item->insertStatementBefore($editor->commentToStatement('// @todo Please change this function call to node_type_get_$op based on the value of the $op variable.'));
+    // Add TODO comment.
+    $item->insertStatementBefore($editor->commentToStatement('// TODO Please change this function call to node_type_get_$op based on the value of the $op variable.'));
     return;
   }
 
@@ -1834,7 +1834,7 @@ function coder_upgrade_upgrade_call_node_get_types_alter(&$item, &$reader) { // 
       $todo = '';
       if (strtoupper($node) == 'NULL' || $node == '') {
         $node = $node == '' ? '$node' : $node;
-        $todo = ' /* @todo The $node parameter should not be null. Please declare and initialize a $node parameter. */';
+        $todo = ' /* TODO The $node parameter should not be null. Please declare and initialize a $node parameter. */';
       }
       $editor->setParameter($item, 0, $node . $todo);
       break;
@@ -1861,8 +1861,8 @@ function coder_upgrade_upgrade_call_node_invoke_nodeapi_alter(&$item, &$reader) 
   $name['value'] = 'module_invoke_all';
 
   if ($item->parameterCount() < 2) {
-    $item->insertStatementBefore($editor->commentToStatement('// @todo The $hook parameter should not be null. Please declare and initialize a $hook parameter.'));
-    $editor->insertParameter($item, 0, 'node_ . $hook /* @todo Set this variable. */');
+    $item->insertStatementBefore($editor->commentToStatement('// TODO The $hook parameter should not be null. Please declare and initialize a $hook parameter.'));
+    $editor->insertParameter($item, 0, 'node_ . $hook /* TODO Set this variable. */');
     return;
   }
 
@@ -1935,7 +1935,7 @@ function coder_upgrade_upgrade_call_node_invoke_nodeapi_alter(&$item, &$reader) 
   else {
     $p0 = "'node_' . " . $op->toString();
     // Let's assume $p2 is valid.
-//    $p2 .= $p2 ? " /* @todo: Set this parameter based on the " . $op->toString() . " hook */" : '';
+//    $p2 .= $p2 ? " /* TODO: Set this parameter based on the " . $op->toString() . " hook */" : '';
   }
 
   $editor->insertParameter($item, 0, $p0);
@@ -1963,10 +1963,10 @@ function coder_upgrade_upgrade_call_node_load_alter(&$item, &$reader) {
 
       if ($item->parameterCount() > 1) {
         // Add vid to conditions array if present
-        // @todo Would it work to have passed nid and vid as params in D6?
+        // TODO Would it work to have passed nid and vid as params in D6?
         // If so, then we should allow for this.
         $key = $editor->expressionToStatement("'vid'");
-        // @todo Add an API function to insert array item with or w/o key.
+        // TODO Add an API function to insert array item with or w/o key.
         $p0->values->insertLast($key, 'key');
         $assign = '=>';
         $p0->values->insertLast($assign, 'assign');
@@ -1974,13 +1974,13 @@ function coder_upgrade_upgrade_call_node_load_alter(&$item, &$reader) {
         $p0->values->insertLast($item->getParameter(1), 'value');
         $p0->count++;
         cdp($p0);
-  //      $p1 = $item->printParameter(1); // @todo What if this has an assignment?
+  //      $p1 = $item->printParameter(1); // TODO What if this has an assignment?
         $item->deleteParameter(1);
 
         $editor->insertParameter($item, 0, 'array()');
       }
-      // @todo Maybe use array_shift to get the first node?
-      $item->insertStatementBefore($editor->commentToStatement('// @todo node_load_multiple returns an array of nodes, rather than a single node'));
+      // TODO Maybe use array_shift to get the first node?
+      $item->insertStatementBefore($editor->commentToStatement('// TODO node_load_multiple returns an array of nodes, rather than a single node'));
     }
   }
 }
@@ -2143,7 +2143,7 @@ function coder_upgrade_upgrade_call_taxonomy_get_tree_alter(&$item, &$reader) { 
 
   // Process function call.
   $name = &$item->name;
-  $depth = '$max_depth = NULL /* @todo Set this variable. */';
+  $depth = '$max_depth = NULL /* TODO Set this variable. */';
   $count = $item->parameters->count();
   // Adjust parameters.
   if ($count > 3) {
@@ -2174,7 +2174,7 @@ function coder_upgrade_upgrade_call_taxonomy_save_term_alter(&$item, &$reader) {
   $name = &$item->name;
   $name['value'] = 'taxonomy_term_save';
   $temp = $item->printParameters();
-  $editor->setParameters($item, array('$term /* @todo Term object replaces array ' . $temp . ' */)'));
+  $editor->setParameters($item, array('$term /* TODO Term object replaces array ' . $temp . ' */)'));
 }
 
 /**
@@ -2188,7 +2188,7 @@ function coder_upgrade_upgrade_call_taxonomy_save_vocabulary_alter(&$item, &$rea
   $name = &$item->name;
   $name['value'] = 'taxonomy_vocabulary_save';
   $temp = $item->printParameters();
-  $editor->setParameters($item, array('$vocabulary /* @todo Vocabulary object replaces array ' . $temp . ' */)'));
+  $editor->setParameters($item, array('$vocabulary /* TODO Vocabulary object replaces array ' . $temp . ' */)'));
 }
 
 /**
@@ -2205,8 +2205,8 @@ function coder_upgrade_upgrade_call_theme_alter(&$item, &$reader) { // DONE
 
   $p0 = $item->getParameter();
   if (!$p0->isType(T_CONSTANT_ENCAPSED_STRING)) {
-    // @todo Look for the assignment to the theme hook (a variable or expression).
-    $item->insertStatementBefore($editor->commentToStatement('// @todo Please change this theme call to use an associative array for the $variables parameter.'));
+    // TODO Look for the assignment to the theme hook (a variable or expression).
+    $item->insertStatementBefore($editor->commentToStatement('// TODO Please change this theme call to use an associative array for the $variables parameter.'));
     return;
   }
 
@@ -2214,7 +2214,7 @@ function coder_upgrade_upgrade_call_theme_alter(&$item, &$reader) { // DONE
   $theme = trim($item->printParameter(), "'\"");
   // http://drupal.org/node/224333#theme_page
   if ($theme == 'page') { // DONE
-    $item->insertStatementBefore($editor->commentToStatement('// @todo Please change this theme call as discussed at http://drupal.org/node/224333#theme_page.'));
+    $item->insertStatementBefore($editor->commentToStatement('// TODO Please change this theme call as discussed at http://drupal.org/node/224333#theme_page.'));
     // Get the statement (i.e. node) this function call is part of.
     $parent = &$item->parent;
     // Comment out the statement.
@@ -2261,17 +2261,17 @@ function coder_upgrade_upgrade_call_theme_alter(&$item, &$reader) { // DONE
   $theme = trim($item->printParameter(0), "'\"");
   if (!isset($upgrade_theme_registry[$theme])) {
     clp("ERROR: Theme entry for '$theme' not found in theme registry or hook_theme");
-    $item->insertStatementBefore($editor->commentToStatement('// @todo Please change this theme call to use an associative array for the $variables parameter.'));
+    $item->insertStatementBefore($editor->commentToStatement('// TODO Please change this theme call to use an associative array for the $variables parameter.'));
     return;
   }
   $hook = $upgrade_theme_registry[$theme];
 
   if (isset($hook['variables']) && $hook['variables']) {
     $count = $item->parameterCount();
-    // @todo Incorporate default value elimination into this.
+    // TODO Incorporate default value elimination into this.
     if ($count == 1 /*|| $count - 1 != count($hook['variables'])*/) {
       // This theme call is missing some or all of the variables parameters.
-      $item->insertStatementBefore($editor->commentToStatement('// @todo Please change this theme call to use an associative array for the $variables parameter.'));
+      $item->insertStatementBefore($editor->commentToStatement('// TODO Please change this theme call to use an associative array for the $variables parameter.'));
       return;
     }
     $defaults = array_fill(0, $count - 1, "'XXX_YYY'");
@@ -2312,8 +2312,8 @@ function coder_upgrade_upgrade_call_url_alter(&$item, &$reader) { // DONE
   // Convert query string into an array
   $p1 = $item->getParameter(1)->getElement();
   if (!is_object($p1) || !$p1->isType(/*'PGPArray'*/ T_ARRAY)) {
-    // Add @todo comment.
-    $item->insertStatementBefore($editor->commentToStatement('// @todo The second parameter to this function call should be an array.'));
+    // Add TODO comment.
+    $item->insertStatementBefore($editor->commentToStatement('// TODO The second parameter to this function call should be an array.'));
     return;
   }
 
@@ -2335,7 +2335,7 @@ function coder_upgrade_upgrade_call_user_authenticate_alter(&$item, &$reader) { 
   $name = &$item->name;
   $count = $item->parameters->count();
   if ($count == 0) {
-    $editor->setParameters($item, array('$name', '$password /* @todo Set these variables */'));
+    $editor->setParameters($item, array('$name', '$password /* TODO Set these variables */'));
     return;
   }
 
@@ -2354,7 +2354,7 @@ function coder_upgrade_upgrade_call_user_authenticate_alter(&$item, &$reader) { 
     // Get the variable name used as the parameter.
     $parameter = $item->printParameter();
     // Make variable assignments referring to two new parameters.
-    $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // @todo Set these variables");
+    $assign1 = $editor->textToStatements('$name = ' . $parameter . "['name']; // TODO Set these variables");
     $assign2 = $editor->textToStatements('$password = ' . $parameter . "['pass'];")->getElement(0);
     cdp($assign1->print_r());
     // Insert the assignments before this statement.
@@ -2386,7 +2386,7 @@ function coder_upgrade_upgrade_call_user_delete_alter(&$item, &$reader) { // DON
   // Process function call.
   $name = &$item->name;
   $name['value'] = 'user_cancel';
-  $editor->setParameter($item, 2, "\$method = 'user_cancel_block' /* @todo Set this variable */");
+  $editor->setParameter($item, 2, "\$method = 'user_cancel_block' /* TODO Set this variable */");
 }
 
 /**
@@ -2419,7 +2419,7 @@ function coder_upgrade_upgrade_call_user_load_alter(&$item, &$reader) { // DONE
     // Parameter is a variable.
     $variable = $item->getParameter()->getElement()->findNode('value');
     $parent = $item->parent;
-    // @todo This single search won't find multiple assignments to array variable.
+    // TODO This single search won't find multiple assignments to array variable.
     $statement = $parent->container->searchBackward('PGPAssignment', 'values', 0, $variable, $parent);
     if ($statement) {
       $operand = &$statement->values->getElement()->findNode('operand', 'backward');
@@ -2446,7 +2446,7 @@ function coder_upgrade_convert_user_load(&$item, &$operand, $is_parameter = TRUE
   // Create helper objects.
   $editor = PGPEditor::getInstance();
 
-  // @todo We need an isType() that is not a class method.
+  // TODO We need an isType() that is not a class method.
   if (is_array($operand) && $operand['type'] == T_CONSTANT_ENCAPSED_STRING) {
     // Value is a string. (Assume it is an integer.)
     $uid = trim($operand['value'], "'\"");
@@ -2546,7 +2546,7 @@ function coder_upgrade_convert_menu_valid_path(&$item, &$reader, &$editor) { // 
       // The operand passed is more complex than a variable name. It might
       // be an expression like $item['xx'] or $item->xx.
       clp("ERROR: Variable expression $p0 passed as parameter in menu_valid_path");
-      $editor->setParameter($item, 0, "$p0 /* @todo Please pass a menu path directly */");
+      $editor->setParameter($item, 0, "$p0 /* TODO Please pass a menu path directly */");
       return;
     }
     if ($operand->getElement(0) != T_VARIABLE) {
@@ -2617,7 +2617,7 @@ function coder_upgrade_convert_menu_valid_path(&$item, &$reader, &$editor) { // 
  */
 function coder_upgrade_callback_menu_valid_path(&$item, &$operand) { // DONE
   cdp("inside " . __FUNCTION__);
-  // @todo This key value could also be in double quotes.
+  // TODO This key value could also be in double quotes.
   $value = $operand->findValue('link_path');
   cdp($value->print_r());
   $item->setParameter(0, $value);
@@ -2633,7 +2633,7 @@ function coder_upgrade_convert_taxonomy_synonyms(&$item) {
 
   // Comment out function.
   // Replace function call with default return value (so code will theoretically still run).
-  $item->insertStatementBefore($editor->commentToStatement('// @todo The taxonomy synonym functionality has been removed.'));
+  $item->insertStatementBefore($editor->commentToStatement('// TODO The taxonomy synonym functionality has been removed.'));
   $item->insertStatementBefore($editor->commentToStatement('// To replace this functionality, you can add a synonym field to your vocabulary.'));
   $temp = $item->toString();
   $item = $editor->expressionToStatement('array() /*' . $temp . '*/');
