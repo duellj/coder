@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.regex.inc,v 1.6 2010/04/26 20:14:52 solotandem Exp $
+// $Id: coder_upgrade.regex.inc,v 1.7 2010/06/28 15:01:45 solotandem Exp $
 
 /**
  * @file
@@ -35,6 +35,10 @@
  *
  * Input Sanitization and Input Formats
  * http://drupal.org/node/224333#filter_urls
+ *
+ *
+ * Taxonomy
+ * http://drupal.org/node/224333#taxonomy_tables
  *
  *
  * File API
@@ -134,4 +138,11 @@ function coder_upgrade_upgrade_database_tables(&$from, &$to) {
     $from[] = '/\{' . $old_table . '\}/i';
     $to[] = '{' . $new_table . '}';
   }
+
+  // http://drupal.org/node/224333#taxonomy_tables
+  // This expression format is more compact than above.
+  $from[] = '@({|\'|")(term_data|term_hierarchy|term_node|term_relation|term_synonym|vocabulary)(}|\'|")@';
+  $to[] = "$1taxonomy_$2$3";
+  $from[] = '@({|\'|")(vocabulary_node_type)s(}|\'|")@';
+  $to[] = "$1taxonomy_$2$3";
 }
