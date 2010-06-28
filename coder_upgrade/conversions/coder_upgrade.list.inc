@@ -39,7 +39,6 @@ function coder_upgrade_upgrade_info() {
       'conversions/coder_upgrade.function.inc',
       'conversions/coder_upgrade.install.inc',
       'conversions/coder_upgrade.regex.inc',
-      'conversions/coder_upgrade.theme.inc',
     ),
   );
   return array('coder_upgrade' => $upgrade);

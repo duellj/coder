@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.call.inc,v 1.20 2010/04/26 20:14:52 solotandem Exp $
+// $Id: coder_upgrade.call.inc,v 1.21 2010/06/19 00:31:13 solotandem Exp $
 
 /**
  * @file
@@ -1395,7 +1395,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
     $item->setParameter(2, $temp);
   }
   if (is_object($depth)) {
-    $item->setParameter(7, $depth);
+    $item->setParameter(3, $depth);
   }
 
   // TODO Could regex for '->filename' and change to '->filepath'???

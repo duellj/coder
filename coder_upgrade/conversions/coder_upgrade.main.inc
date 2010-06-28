@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.main.inc,v 1.21 2010/03/31 19:43:52 solotandem Exp $
+// $Id: coder_upgrade.main.inc,v 1.23 2010/06/28 15:01:45 solotandem Exp $
 
 /**
  * @file
@@ -28,7 +28,7 @@
  */
 function coder_upgrade_start($upgrades, $extensions, $items, $recursive = TRUE) {
   // Declare global variables.
-  global $log, $debug, $_coder_upgrade_module_name, $replace_files, $is_test;
+  global $log, $debug, $_coder_upgrade_module_name, $replace_files;
 //  global $_coder_upgrade_dirname; // Not used.
 
   // Check lists in case this function is called apart from form submit.
@@ -67,7 +67,7 @@ function coder_upgrade_start($upgrades, $extensions, $items, $recursive = TRUE) 
     $_coder_upgrade_module_name = '';
 //    $_coder_upgrade_dirname = $item['old_dir'];
 
-    if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'simpletest') === FALSE) { // if (!$is_test) {
+    if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'simpletest') === FALSE) {
       // Process the directory before conversion routines are applied.
       coder_upgrade_convert_begin($item);
     }
@@ -430,11 +430,6 @@ function coder_upgrade_convert_functions(&$reader) {
     $name = &$item->name;
     cdp("name = $name");
 
-    // Convert theme_X function calls.
-    if (strpos($name, 'theme_') === 0) {
-      drupal_alter('upgrade_theme', $node, $reader);
-      continue;
-    }
     /*
      * If the function name does not begin with the module name, then ignore it.
      * This assumes such a function would be an instance of an API hook defined
@@ -536,8 +531,8 @@ function coder_upgrade_make_patch_file($item, $replace_files = FALSE) {
   // Swap directories if files are replaced.
   $old_dir = $replace_files ? $item['new_dir'] : $item['old_dir'];
   $new_dir = $replace_files ? $item['old_dir'] : $item['new_dir'];
-  coder_upgrade_log_print("Making patch file: diff -u -r {$old_dir} {$new_dir} > {$patch_filename}");
-  shell_exec("diff -u -r {$old_dir} {$new_dir} > {$patch_filename}");
+  coder_upgrade_log_print("Making patch file: diff -up -r {$old_dir} {$new_dir} > {$patch_filename}");
+  shell_exec("diff -up -r {$old_dir} {$new_dir} > {$patch_filename}");
 }
 
 /**
@@ -706,7 +701,11 @@ function clp($text) {
   coder_upgrade_log_print($text);
 }
 
-function cdp($text) {
+function cdp($text, $description = '') {
+  if ($description) {
+    $description .= ' ==>'; // Use two '=' so easier to find in file.
+    coder_upgrade_debug_print($description);
+  }
   coder_upgrade_debug_print($text);
 }
 
