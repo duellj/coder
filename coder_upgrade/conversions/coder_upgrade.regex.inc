@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.regex.inc,v 1.6 2010/04/26 20:14:52 solotandem Exp $
+// $Id: coder_upgrade.regex.inc,v 1.8 2010/06/28 22:23:44 solotandem Exp $
 
 /**
  * @file
@@ -30,11 +30,20 @@
  *
  *
  * Blocks
+ * http://drupal.org/node/224333#block_tables_renamed
  * http://drupal.org/node/224333#custom_block
  *
  *
  * Input Sanitization and Input Formats
  * http://drupal.org/node/224333#filter_urls
+ *
+ *
+ * Taxonomy
+ * http://drupal.org/node/224333#taxonomy_tables
+ *
+ *
+ * Form API
+ * http://drupal.org/node/224333#fapi_changes
  *
  *
  * File API
@@ -62,14 +71,6 @@ function coder_upgrade_upgrade_regex_alter(&$file) {
   $from = array();
   $to = array();
 
-  // Moved admin/reports/settings to admin/config/system/statistics (replacing admin/settings/statistics).
-//  $from[] = "@'admin/reports/settings'@";
-//  $to[] = "'admin/config/system/statistics'";
-
-  // Moved admin/settings/filters/* to admin/settings/filter/*
-//  $from[] = '@admin\/settings\/filters(\/.*?)@';
-//  $to[] = "admin\/settings\/filter$1";
-
   coder_upgrade_upgrade_admin_path_changes($from, $to);
   // TODO Intend to do all of these when converting db_query calls.
   coder_upgrade_upgrade_database_tables($from, $to);
@@ -83,8 +84,14 @@ function coder_upgrade_upgrade_regex_alter(&$file) {
   $to[] = "~FILE_STATUS_PERMANENT";
 
   // Renamed WATCHDOG_EMERG to WATCHDOG_EMERGENCY.
-  $from[] = '@WATCHDOG_EMERG@';
-  $to[] = 'WATCHDOG_EMERGENCY';
+  $from[] = '@WATCHDOG_EMERG([^\w])@';
+  $to[] = 'WATCHDOG_EMERGENCY$1';
+
+  // $form['#redirect'] and $_REQUEST['destination'] are no longer supported.
+  $from[] = '/\$form\[[\'"]#redirect[\'"]\]/';
+  $to[] = '$form_state[\'#redirect\']';
+  $from[] = '/\$_REQUEST\[[\'"]destination[\'"]\]/';
+  $to[] = '$_GET[\'destination\']';
 
   coder_upgrade_do_conversions($from, $to, $new);
   coder_upgrade_save_changes($cur, $new, $file, $hook);
@@ -128,10 +135,20 @@ function coder_upgrade_upgrade_admin_path_changes(&$from, &$to) {
  */
 function coder_upgrade_upgrade_database_tables(&$from, &$to) {
   $table_conversion = array(
-    'box' => 'custom_block',
+    'box' => 'custom_block', // TODO Is this an error?
+    'boxes' => 'block_custom',
+    'blocks' => 'block',
+    'blocks_roles' => 'block_role',
   );
   foreach ($table_conversion as $old_table => $new_table) {
     $from[] = '/\{' . $old_table . '\}/i';
     $to[] = '{' . $new_table . '}';
   }
+
+  // http://drupal.org/node/224333#taxonomy_tables
+  // This expression format is more compact than above.
+  $from[] = '@({|\'|")(term_data|term_hierarchy|term_node|term_relation|term_synonym|vocabulary)(}|\'|")@';
+  $to[] = "$1taxonomy_$2$3";
+  $from[] = '@({|\'|")(vocabulary_node_type)s(}|\'|")@';
+  $to[] = "$1taxonomy_$2$3";
 }

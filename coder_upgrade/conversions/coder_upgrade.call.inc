@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.call.inc,v 1.20 2010/04/26 20:14:52 solotandem Exp $
+// $Id: coder_upgrade.call.inc,v 1.22 2010/06/28 22:23:44 solotandem Exp $
 
 /**
  * @file
@@ -66,6 +66,7 @@
  * Taxonomy
  * http://drupal.org/node/224333#taxonomy_get_tree
  * http://drupal.org/node/224333#taxonomy_crud
+ * http://drupal.org/node/224333#taxonomy_form_all
  * http://drupal.org/node/224333#no-synonyms-taxonomy
  *
  *
@@ -1395,7 +1396,7 @@ function coder_upgrade_upgrade_call_file_scan_directory_alter(&$item, &$reader) 
     $item->setParameter(2, $temp);
   }
   if (is_object($depth)) {
-    $item->setParameter(7, $depth);
+    $item->setParameter(3, $depth);
   }
 
   // TODO Could regex for '->filename' and change to '->filepath'???
@@ -2120,6 +2121,22 @@ function coder_upgrade_upgrade_call_taxonomy_del_vocabulary_alter(&$item, &$read
   // Process function call.
   $name = &$item->name;
   $name['value'] = 'taxonomy_vocabulary_delete';
+}
+
+/**
+* Implements hook_upgrade_call_taxonomy_form_all_alter().
+*/
+function coder_upgrade_upgrade_call_taxonomy_form_all_alter(&$item, &$reader) {
+  cdp(__FUNCTION__);
+  // Create helper objects.
+  $editor = PGPEditor::getInstance();
+
+  $item->insertStatementBefore($editor->commentToStatement('// TODO taxonomy_form_all has been removed, use an autocomplete field instead.'));
+
+  // Replace function call with array().
+  $string = $item->toString();
+  // This is an example of changing a function call reference.
+  $item = $editor->expressionToStatement("array() /* $string */");
 }
 
 /**
