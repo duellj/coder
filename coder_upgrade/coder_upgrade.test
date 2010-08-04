@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.test,v 1.4 2010/06/10 20:35:55 solotandem Exp $
+// $Id: coder_upgrade.test,v 1.5 2010/07/03 17:25:43 solotandem Exp $
 
 /**
  * @file
@@ -75,6 +75,7 @@ class CoderUpgradeUnitTestCase extends DrupalUnitTestCase {
     $module_dirname = DRUPAL_ROOT . '/' . drupal_get_path('module', 'coder_upgrade');
     require_once $module_dirname . '/conversions/coder_upgrade.main.inc';
     require_once $module_dirname . '/conversions/coder_upgrade.begin.inc';
+    require_once $module_dirname . '/conversions/coder_upgrade.function.inc';
     coder_upgrade_debug_print("module = $module_dirname");
 
     $in_dirname = $module_dirname . '/tests/old/';

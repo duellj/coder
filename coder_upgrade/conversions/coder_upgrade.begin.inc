@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.begin.inc,v 1.4 2010/04/22 05:13:19 solotandem Exp $
+// $Id: coder_upgrade.begin.inc,v 1.5 2010/07/30 00:13:40 solotandem Exp $
 
 /**
  * @file
@@ -138,7 +138,7 @@ function coder_upgrade_cache_info_hooks($item, $recursive = TRUE) {
 //            break 2;
           }
           elseif ($function->data->name == $_coder_upgrade_module_name . '_menu') {
-            $module_menu = coder_upgrade_convert_return($function, 'menu');
+            coder_upgrade_convert_return($function->data->body, 'menu', '', 1, 1);
 //            break 2;
           }
         }
@@ -155,6 +155,8 @@ function coder_upgrade_cache_info_hooks($item, $recursive = TRUE) {
  *
  * Save a list of form callback routines (including arguments to drupal_get_form()).
  *
+ * @param PGPNode $node
+ *   The node of the statement containing the array object.
  * @param PGPArray $array2
  *   The array object containing the array element ($current2).
  * @param PGPNode $current2
@@ -168,7 +170,7 @@ function coder_upgrade_cache_info_hooks($item, $recursive = TRUE) {
  * @param string $value
  *   The value of the array element (or NULL if element is a key).
  */
-function coder_upgrade_callback_menu(&$array2, &$current2, $hook, $type, $key, $value) { // NOT DONE
+function coder_upgrade_callback_menu($node, &$array2, &$current2, $hook, $type, $key, $value) { // NOT DONE
 //  cdp("inside " . __FUNCTION__);
   global $upgrade_menu_registry;
 

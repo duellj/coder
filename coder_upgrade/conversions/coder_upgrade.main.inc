@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.main.inc,v 1.24 2010/06/28 22:23:44 solotandem Exp $
+// $Id: coder_upgrade.main.inc,v 1.26 2010/07/30 00:13:40 solotandem Exp $
 
 /**
  * @file
@@ -348,7 +348,7 @@ function coder_upgrade_apply_parser($filename, &$new) {
   coder_upgrade_log_print("Calling hook_upgrade_file_alter");
   drupal_alter('upgrade_file', $reader);
   coder_upgrade_log_print("Completed hook_upgrade_file_alter");
-  pgp_log_memory_use('apply hook function conversions');
+  pgp_log_memory_use('apply file conversions');
 
   if ($is_install_file) {
     // Apply parser conversion routines for install file.
@@ -377,8 +377,9 @@ function coder_upgrade_apply_parser($filename, &$new) {
  */
 function coder_upgrade_convert_function_calls(&$reader) {
   cdp("inside " . __FUNCTION__);
-  $items = &$reader->getFunctionCalls();
-  foreach ($items as &$item) {
+  $nodes = &$reader->getFunctionCalls();
+  foreach ($nodes as &$node) {
+    $item = &$node->data;
     if (!isset($item) || !is_object($item) || !is_a($item, 'PGPFunctionCall') || $item->type != T_FUNCTION_CALL) {
       // The reference could have been changed in another routine so that it
       // no longer refers to an ojbect.
@@ -390,18 +391,22 @@ function coder_upgrade_convert_function_calls(&$reader) {
     if (is_array($item->name) && in_array($item->name['type'], $types)) {
       // If name is an object, then it is a variable expression that is not
       // 'alterable' in the traditional sense.
-      drupal_alter('upgrade_call_' . $item->name['value'], $item, $reader);
+      drupal_alter('upgrade_call_' . $item->name['value'], $node, $reader);
       // TODO The alter hooks can get the $reader from PGPReader::getInstance();
       // We could do the same in this function.
     }
 
+    if (!isset($node) || !is_object($node) || !is_a($node, 'PGPNode')) {
+      continue;
+    }
+    $item = &$node->data;
     if (!isset($item) || !is_object($item) || !is_a($item, 'PGPFunctionCall') || $item->type != T_FUNCTION_CALL) {
       continue;
     }
     if (is_array($item->name) && in_array($item->name['type'], $types)) {
       // Set name because only variables may be passed by reference.
       $name = $item->name['value'];
-      drupal_alter('upgrade_call', $item, $reader, $name);
+      drupal_alter('upgrade_call', $node, $reader, $name);
       // TODO The alter hooks can get the $reader from PGPReader::getInstance();
       // We could do the same in this function.
     }

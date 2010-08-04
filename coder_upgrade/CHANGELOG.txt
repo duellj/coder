@@ -1,7 +1,58 @@
-// $Id: CHANGELOG.txt,v 1.47 2010/06/28 22:23:44 solotandem Exp $
+// $Id: CHANGELOG.txt,v 1.54 2010/07/30 00:13:40 solotandem Exp $
 
 coder_upgrade 7.x-1.x, 2009-xx-xx (development version)
 ---------------------------------
+- Changes (2010-07-29):
+  * coder_upgrade.db.inc
+  * - improve sql parsing and conversion to DBTNG syntax
+  * coder_upgrade.begin.inc
+  * - refactor call to coder_upgrade_convert_return() and associated callback
+  * coder_upgrade.function.inc
+  * - enhance coder_upgrade_convert_op() to use new getParameterVariable() API function
+  * - refactor the convert return pattern of routines: coder_upgrade_convert_return(), coder_upgrade_convert_return_loop(), and coder_upgrade_callback_return_caseN()
+  * tests/samples directory
+  * - update the input and expected test file: example.module
+
+- Changes (2010-07-12):
+  * coder_upgrade.api.php
+  * - update documentation to reflect the node being returned by getFunctionCalls()
+  * coder_upgrade.db.inc
+  * - improve sql parsing and conversion to DBTNG syntax
+
+- Changes (2010-07-09):
+  * coder_upgrade.call.inc, coder_upgrade.db.inc, and coder_upgrade.main.inc
+  * - revise code to reflect change to PGPReader::getFunctionCalls() which now returns a list of nodes
+  *   (NOTE: this change was made using an upgrade routine and this module)
+  * coder_upgrade.call.inc
+  * - enhance #comment_node_url, #taxonomy_form_all, and #update_sql to utilize the node now returned by getFunctionCalls()
+
+- Changes (2010-07-08):
+  * coder_upgrade.call.inc
+  * - #update_sql
+  * - #847914: drupal_get_form() upgrade routine fails when form callback has no parameters
+  * coder_upgrade.function.inc
+  * - #837258: add T_ELSE_IF to condition check in coder_upgrade_convert_op()
+  * - #update_sql: changes to hook_update_N()
+
+- Changes (2010-07-03):
+  * coder_upgrade.db.inc
+  * - improve sql parsing and conversion to DBTNG syntax (by duellj and adrian)
+  * coder_upgrade.call.inc
+  * - improve #drupal_set_title to only find calls to check_plain()
+  * - improve #user_load_multiple to handle inline comments in parameters
+  * coder_upgrade.function.inc
+  * - #833972: conform doc_comment to Drupal standards for inserted hook_op functions
+  * - add a doc_comment to each function missing one
+  * coder_upgrade.test
+  * - include function.inc needed by begin.inc
+  * tests/samples directory
+  * - update the input and expected test file: example.module
+
+- Changes (2010-06-29):
+  * coder_upgrade.call.inc
+  * - #db_is_active, #remove-drupal-urlencode
+  * - improve #user_load_multiple to not always change call to user_load_multiple()
+
 - Changes (2010-06-28): (part 2)
   * coder_upgrade.call.inc
   * - #taxonomy_form_all

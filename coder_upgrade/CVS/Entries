@@ -1,11 +1,11 @@
 D/conversions////
 D/samples////
 D/tests////
-/coder_upgrade.api.php/1.8/Thu Apr 29 22:36:01 2010//
 /coder_upgrade.help.inc/1.9/Thu Apr 29 22:36:01 2010//
 /coder_upgrade.inc/1.4/Thu Apr 29 22:36:01 2010//
 /coder_upgrade.install/1.8/Thu Apr 29 22:36:01 2010//
-/CHANGELOG.txt/1.47/Tue Jun 29 20:08:01 2010//
 /coder_upgrade.info/1.9/Tue Jun 29 20:07:56 2010//
-/coder_upgrade.module/1.19/Mon Jun 28 21:33:41 2010//
-/coder_upgrade.test/1.4/Mon Jun 28 21:33:41 2010//
+/CHANGELOG.txt/1.54/Wed Aug  4 22:15:50 2010//
+/coder_upgrade.api.php/1.9/Wed Aug  4 22:15:50 2010//
+/coder_upgrade.module/1.19/Tue Jun 29 20:22:28 2010//
+/coder_upgrade.test/1.5/Wed Aug  4 22:15:50 2010//
