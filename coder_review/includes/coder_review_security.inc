@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_security.inc,v 1.3 2009/10/18 12:45:36 snpower Exp $
+// $Id: coder_review_security.inc,v 1.7 2010/08/09 18:18:12 snpower Exp $
 
 /**
  * @file
@@ -16,15 +16,26 @@ function coder_review_security_reviews() {
   $rules = array(
     array(
       '#type' => 'regex',
+      '#value' => '[\s\(]drupal_set_title\s*\(\s*[^\$]+.+\$',
+      '#never' => '(^function\s|drupal_set_title\s*\(\s*(((st|t|\$t)\s*\(.*?array\([^!]+\))|(format_plural|filter_xss_admin|check_plain|check_markup)\s*\().*$)',
+      '#source' => 'allphp',
+      '#warning_callback' => '_coder_review_security_drupal_set_title_filter_warning',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '[\s\(]drupal_set_message\s*\(\s*[^\$]+.+\$',
+      '#never' => '(^function\s|drupal_set_message\s*\(\s*(((st|t|\$t)\s*\(.*?array\([^!]+\))|(format_plural|filter_xss_admin|check_plain|check_markup)\s*\().*$)',
+      '#source' => 'allphp',
+      '#warning_callback' => '_coder_review_security_drupal_set_message_filter_warning',
+    ),
+    array(
+      '#type' => 'regex',
+      '#severity' => 'minor',
       '#value' => '[\s\(]l\(check_plain\(.*',
       '#never' => '[\'"]html[\'"]\s*=>\s*(TRUE|1)',
       '#source' => 'allphp',
       '#warning_callback' => '_coder_review_security_l_check_plain_warning',
     ),
-/*  array(
-      '#type' => 'callback',
-      '#value' => _coder_review_security_callback,
-    ), */
     array(
       '#type' => 'regex',
       '#value' => '(?-i)\$REQUEST_URI',
@@ -50,6 +61,31 @@ function coder_review_security_reviews() {
       '#source' => 'quote',
       '#warning' => 'SQL query handling data in a potentially insecure way by using the %%s placeholder without wrapping it in single quotes.  This is a potential source of SQL injection attacks when the value can come from user data.',
     ),
+    array(
+      '#type' => 'regex',
+      '#source' => 'allphp', // allow us to look inside the regex string
+      '#value' => '\bpreg_replace\s*\(\s*(\'(.)([^\'\\\\]|\\\\.)*\\2([^\'\\\\]|\\\\.)*|"(.)([^"\\\\]|\\\\.)*\\5([^"\\\\]|\\\\.)*)e',
+      '#warning' => "Use preg_replace_callback() instead of the 'e' modifier to preg_replace()",
+      '#severity' => 'critical',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '.*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}',
+      '#never' => '[\s\(]db_rewrite_sql\s*\(',
+      '#source' => 'allphp',
+      '#warning_callback' => '_coder_review_security_db_rewrite_sql',
+    ),
+    array(
+      '#type' => 'regex',
+      '#value' => '[\s\(]db_rewrite_sql\(\s*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}([,\'"]+|\s+(ON|WHERE|HAVING|LIMIT|ORDER|GROUP)\s+)',
+      '#never' => '[\s\(]db_rewrite_sql\(\s*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}([,\'"]+|\s+(ON|WHERE|HAVING|LIMIT|ORDER|GROUP)\s+).*?,\s*[\'"]{node}[\'"]',
+      '#source' => 'allphp',
+      '#warning_callback' => '_coder_review_security_db_rewrite_sql',
+    ),
+    array(
+      '#type' => 'callback',
+      '#value' => '_coder_review_security_callback',
+    ),
   );
   $review = array(
     '#title' => 'Drupal Security Checks',
@@ -66,19 +102,96 @@ function coder_review_security_reviews() {
  * Define the rule callbacks.
  */
 
-/* function _coder_review_security_callback(&$coder_args, $review, $rule, $lines, &$results) {
+function _coder_review_security_callback(&$coder_args, $review, $rule, $lines, &$results) {
+  $severity_name = _coder_severity_name($coder_args, $review, $rule);
+  /*
   if (!isset($coder_args['#tokens'])) {
     $source = implode('', $lines);
     $coder_args['#tokens'] = token_get_all($source);
   }
-} */
+  */
+
+  // Check for calls to drupal_set_title() and drupal_set_message() on $vars
+  // without a sanitizing function. If found, look back up within current
+  // function.
+  $this_function = '';
+  $function_paren = 0;
+  foreach ($coder_args['#all_lines'] as $lineno => $line) {
+    // Start of a function, store the line.
+    if (preg_match('/function (\w+)\(/', $line, $match)) {
+      $this_function = $line;
+    }
+    // Within a function.
+    elseif ($function_paren > 0) {
+      $this_function .= $line;
+    }
+    // Check to see if we're still in a function by counting number of {} chars.
+   if (preg_match('/([{}])/', $line, $match)) {
+      $function_paren += ($match[0] == '{') ? 1 : -1;
+    }
+    // If we're not in a function, continue.
+    if ($function_paren < 0 || $this_function == '') {
+      continue;
+    }
+
+    // Run our reviews.
+    // drupal_set_title()
+    $regex = '/[\s\(]drupal_set_title\s*\(\s*\$(\w+)\s*[,\)]/';
+    $never_regex = '/(^function\s|drupal_set_title\s*\(\s*(((st|t|\$t)\s*\(.*?array\([^!]+\))|(format_plural|filter_xss_admin|check_plain|check_markup)\s*\().*$)/';
+    if (preg_match($regex, $line, $matches)) {
+      if (!preg_match($never_regex, $coder_args['#all_lines'][$lineno])) {
+        $before_regex = '/[\s]\$' . $matches[1] . '\s*=\s*(format_plural|filter_xss_admin|check_plain|check_markup)\s*\(/';
+        if (!preg_match($before_regex, $this_function, $sanitized_matches)) {
+          $msg = _coder_review_security_drupal_set_title_filter_warning();
+          $rule = array('#warning' => $msg);
+          _coder_error($results, $rule, $severity_name, $lineno, $line);
+        }
+      }
+    }
+    // drupal_set_message()
+    $regex = '/[\s\(]drupal_set_message\s*\(\s*\$(\w+)\s*[,\)]/';
+    $never_regex = '/(^function\s|drupal_set_message\s*\(\s*(((st|t|\$t)\s*\(.*?array\([^!]+\))|(format_plural|filter_xss_admin|check_plain|check_markup)\s*\().*$)/';
+    if (preg_match($regex, $line, $matches)) {
+      if (!preg_match($never_regex, $coder_args['#all_lines'][$lineno])) {
+        $before_regex = '/[\s]\$' . $matches[1] . '\s*=\s*(format_plural|filter_xss_admin|check_plain|check_markup)\s*\(/';
+        if (!preg_match($before_regex, $this_function, $sanitized_matches)) {
+          $msg = _coder_review_security_drupal_set_message_filter_warning();
+          $rule = array('#warning' => $msg);
+          _coder_error($results, $rule, $severity_name, $lineno, $line);
+        }
+      }
+    }
+  }
+}
 
 /**
  * Define the warning callbacks.
  */
 
+function _coder_review_security_drupal_set_title_filter_warning() {
+  return t('!drupal_set_title() only accepts filtered text, be sure to use !t(), !check_plain(), !filter_xss_admin() or similar to ensure your $variable is fully sanitized.',
+    array(
+      '!drupal_set_title' => theme('drupalapi', 'drupal_set_title'),
+      '!t' => theme('drupalapi', 't'),
+      '!check_plain' => theme('drupalapi', 'check_plain'),
+      '!filter_xss_admin' => theme('drupalapi', 'filter_xss_admin'),
+    )
+  );
+}
+
+function _coder_review_security_drupal_set_message_filter_warning() {
+  return t('!drupal_set_message() only accepts filtered text, be sure to use !t(), !check_plain(), !filter_xss_admin() or similar to ensure your $variable is fully sanitized.',
+    array(
+      '!drupal_set_message' => theme('drupalapi', 'drupal_set_message'),
+      '!t' => theme('drupalapi', 't'),
+      '!check_plain' => theme('drupalapi', 'check_plain'),
+      '!filter_xss_admin' => theme('drupalapi', 'filter_xss_admin'),
+    )
+  );
+}
+
 function _coder_review_security_l_check_plain_warning() {
-  return t('!l() already contains a !check_plain() call by default',
+  return t('!l() already contains a !check_plain() call by default. See http://drupal.org/node/28984',
     array(
       '!l' => theme('drupalapi', array('function' => 'l')),
       '!check_plain' => theme('drupalapi', array('function' => 'check_plain')),
@@ -103,5 +216,15 @@ function _coder_review_security_sql_var_warning() {
     ),
     '#link' => 'http://drupal.org/writing-secure-code',
     '#description' => t('Use %s and %d variable substitution.  When inserting an array of values use <code>$placeholders = implode(\',\', array_fill(0, count($args), "\'%s\'"));</code>'),
+  );
+}
+
+function _coder_review_security_db_rewrite_sql() {
+  return array(
+    '#warning' => t('"SELECT FROM {node}" statements should probably be wrapped in !db_rewrite_sql and with the alias for {node} table defined (e.g. {node} n)',
+      array(
+        '!db_rewrite_sql' => theme('drupalapi', 'db_rewrite_sql'),
+      )
+    ),
   );
 }
