@@ -227,9 +227,7 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   $delimiter = $sql[0]; // Save this for SELECT queries.
   // Alter the string for these SQL types as we are making entirely new syntax.
   // Trim won't work here, since it'll trim off the last ' if the string ends in '%s'
-  $sql = substr($sql, 1, -1); // $sql = substr($operand['value'], 1, -1);
-  // Assume there is no literal string containing any new lines or commas.
-//  $sql = preg_replace("@\n@", ' ', $sql);
+  $sql = substr($sql, 1, -1);
 
   module_load_include('inc', 'sql_parser', 'includes/sql_parser');
   module_load_include('inc', 'sql_parser', 'includes/sql_lexer');
@@ -237,10 +235,14 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   module_load_include('inc', 'sql_parser', 'includes/sql_object');
   module_load_include('inc', 'sql_parser', 'includes/sql_converter');
 
-  $sql_parser = new SqlParser(str_replace(array('{', '}'), array(), $sql));
+  // @todo Currently SqlParser doesn't like curly braces around table names so
+  // we need to strip them.
+  // @todo Need to also handle escaped quotes (/$delimiter).
+  $sql = str_replace(array('{', '}'), array(), $sql);
+  $sql_parser = new SqlParser($sql);
   $sql_object = $sql_parser->parse();
 
-  if (strpos($sql, 'SELECT') === 0) {
+  if ($sql_object instanceof SqlSelect) {
     /*
     // @todo If $sql is defined outside of db_query(), then this approach will
     // replace the variable with the new string and leave the assignment alone.
@@ -250,16 +252,22 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
     $sql_converter = new SqlStringConverter($sql_object);
     $sql = $sql_converter->convert();
 
-    // Get the function call object.
-    $item = &$node->data;
+    // Replace SQL string parameter with new SQL string.
     $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
+
+    // Arrayitize the values array.
+    $string = $editor->arrayitize($item, 1, $sql_object->placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
+    cdp($string, '$string');
+    $temp = $editor->expressionToStatement($string);
+    $temp->getElement(0)->multiline = 0;
+    $item->setParameter(1, $temp);
   }
   elseif ($sql_object) {
     // Check if replacement values is an array, and if so, populate new 
     // replacement values with array indexes.
-    if (count($values) == 1 && $sql_object->placeholders > 1) {
+    if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
       $value_array = $values[0];
-      for ($i = 0; $i < count($sql_object->placeholders); $i++) {
+      for ($i = 0; $i < $sql_object->numPlaceholders(); $i++) {
         $values[$i] = $value_array . "[$i]";
       }
     }
@@ -343,143 +351,4 @@ function coder_upgrade_parse_select_query_string($node, $sql, $values, $delimite
     $temp->getElement(0)->multiline = 0;
     $item->setParameter(1, $temp);
 //  }
-}
-
-/**
- * Replaces values with array of indexed items.
- *
- * @param array $values
- *   The replacement values.
- */
-function coder_upgrade_next_replacement_value(&$values) {
-  global $replacement_values_is_array, $replacement_index;
-
-  if ($replacement_values_is_array) {
-    $value = $values[0] . "['$replacement_index']";
-    $replacement_index++;
-  }
-  else {
-    $value = array_shift($values);
-  }
-  return $value;
-}
-
-/**
- * Returns count of sql fields that need a replacement value.
- *
- * @param array fields
- *   Array of sql fields.
- *
- * @return integer
- *   Count of fields.
- */
-function coder_upgrade_count_sql_fields($fields) {
-  $count = 0;
-  foreach ($fields as $field) {
-    list($field, $value) = explode("=", $field);
-    if (is_null($value)) {
-      cdp($field, '$field');
-    }
-    if (preg_match('/%[sdbf]/', $value)) {
-      // Value is a placeholder.
-      $count++;
-    }
-  }
-  return $count;
-}
-
-/**
- * Returns count of sql values that need a replacement value.
- *
- * @param array values
- *   Array of sql values.
- *
- * @return integer
- *   Count of values.
- */
-function coder_upgrade_count_sql_values($values) {
-  $count = 0;
-  foreach ($values as $value) {
-    if (preg_match('/%[sdbf]/', $value)) {
-      // Value is a placeholder.
-      $count++;
-    }
-  }
-  return $count;
-}
-
-/**
- * Returns count of sql conditions that need a replacement value.
- *
- * @param string $string
- *   String of sql conditions.
- *
- * @return integer
- *   Count of conditions.
- */
-function coder_upgrade_count_sql_conditions($string) {
-  // Check for inner conditionals or function calls.  For now, we'll just use
-  // where() instead of conditionals, given the complexity of inner conditionals.
-  if (preg_match("/\((.*)\)/", $string, $matches)) {
-    return 1; // return "\t\t->where('$string', " . var_dump($values) . ")";
-  }
-
-  $count = 0;
-  // TODO Handle other conjunctions besides AND.
-  $conditions = preg_split('/AND|OR|XOR|&&|\|\|/', $string);
-  if (!is_array($conditions)) {
-    $conditions = array($string);
-  }
-  foreach ($conditions as $condition) {
-    // TODO Handle other functions like IN, BETWEEN
-    list($condition, $operator, $value) = preg_split('/([!=><]+|LIKE|IN|BETWEEN)/', $condition, -1, PREG_SPLIT_DELIM_CAPTURE);
-    if (preg_match('/%[sbdf]/', trim($value))) {
-      $count++;
-    }
-  }
-  return $count;
-}
-
-/**
- * Parses sql conditions into conditional object strings.
- *
- * @param string $string
- *   String of sql conditions.
- * @param array $values
- *
- * @return string
- *   String of conditions in DBTNG syntax.
- */
-function coder_upgrade_parse_sql_conditions($string, $values) {
-  // Check for inner conditionals or function calls.  For now, we'll just use
-  // where() instead of conditionals, given the complexity of inner conditionals.
-  if (preg_match("/\((.*)\)/", $string, $matches)) {
-    return "\t\t->where('$string', " . var_dump($values) . ")";
-  }
-  // TODO Handle other conjunctions besides AND.
-  $conditions = preg_split('/AND|OR|XOR|&&|\|\|/', $string);
-  if (!is_array($conditions)) {
-    $conditions = array($string);
-  }
-
-  foreach ($conditions as $condition) {
-    list($condition, $operator, $value) = preg_split('/([!=><]+|LIKE)/', $condition, -1, PREG_SPLIT_DELIM_CAPTURE);
-    if (preg_match('/%[sbdf]/', trim($value))) {
-      $value = coder_upgrade_next_replacement_value($values);
-    }
-    // Trim the condition for whitespace.
-    $condition = trim($condition);
-    $value = trim($value);
-    // TODO handle IN and BETWEEN conditions
-    // TODO Handle function conditions such as LIKE, MIN, SUM
-    switch ($operator) {
-      case '=':
-        $parsed_conditions[] = "\t\t->condition('$condition', $value)";
-        break;
-      default:
-        $parsed_conditions[] = "\t\t->condition('$condition', $value, '$operator')";
-        break;
-    }
-  }
-  return implode("\n", $parsed_conditions);
 }
