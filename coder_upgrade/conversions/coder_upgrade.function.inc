@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.function.inc,v 1.23 2010/07/30 00:13:40 solotandem Exp $
+// $Id: coder_upgrade.function.inc,v 1.24 2010/08/12 01:05:28 solotandem Exp $
 
 /**
  * @file
@@ -354,7 +354,7 @@ function coder_upgrade_upgrade_hook_load_alter(&$node, &$reader) {
   global $_coder_upgrade_module_name;
 
   // Save name of first parameter.
-  $p0 = $item->getParameter()->stripComments()->toString();
+  $p0 = $item->getParameterVariable()->toString();
   $p0_new = $p0 . 's';
   // Add 's' to name of first parameter.
   $editor = PGPEditor::getInstance();

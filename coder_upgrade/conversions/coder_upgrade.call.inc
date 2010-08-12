@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.call.inc,v 1.27 2010/07/30 00:13:40 solotandem Exp $
+// $Id: coder_upgrade.call.inc,v 1.28 2010/08/12 01:05:28 solotandem Exp $
 
 /**
  * @file
@@ -1189,6 +1189,11 @@ function coder_upgrade_upgrade_call_drupal_set_header_alter(&$node, &$reader) { 
   $name = &$item->name;
   // http://drupal.org/node/224333#drupal_set_header_renamed
   $name['value'] = 'drupal_add_http_header';
+
+  if (!$item->parameterCount()) {
+    // Nothing else to do.
+    return;
+  }
 
   $temp = $item->printParameter();
   $p0 = $item->getParameter();
