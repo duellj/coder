@@ -198,7 +198,6 @@ function coder_upgrade_locate_query_string(&$node) { // NEEDS WORK
  *   The number of records to return from the result set.
  */
 function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0, $count = 0) {
-  global $replacement_values_is_array, $replacement_index;
   $replacement_index = 0;
 
   // Create helper objects.
@@ -232,26 +231,43 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   // Assume there is no literal string containing any new lines or commas.
 //  $sql = preg_replace("@\n@", ' ', $sql);
 
+  module_load_include('inc', 'sql_parser', 'includes/sql_parser');
+  module_load_include('inc', 'sql_parser', 'includes/sql_lexer');
+  module_load_include('inc', 'sql_parser', 'includes/sql_dialect');
+  module_load_include('inc', 'sql_parser', 'includes/sql_object');
+  module_load_include('inc', 'sql_parser', 'includes/sql_converter');
+
+  $sql_parser = new SqlParser(str_replace(array('{', '}'), array(), $sql));
+  $sql_object = $sql_parser->parse();
+
   if (strpos($sql, 'SELECT') === 0) {
+    /*
     // @todo If $sql is defined outside of db_query(), then this approach will
     // replace the variable with the new string and leave the assignment alone.
     $new = coder_upgrade_parse_select_query_string($node, $sql, $values, $delimiter);
-//    coder_upgrade_insert_dbtng_statement($node, $new); // ???
-  }
+    */
 
-  // Assume there is no literal string containing any new lines or commas.
-  $sql = preg_replace("@\n@", ' ', $sql);
+    $sql_converter = new SqlStringConverter($sql_object);
+    $sql = $sql_converter->convert();
 
-  if (strpos($sql, 'INSERT') === 0) {
-    $new = coder_upgrade_parse_insert_query_string($sql, $values);
-    coder_upgrade_insert_dbtng_statement($node, $new);
+    // Get the function call object.
+    $item = &$node->data;
+    $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
   }
-  elseif (strpos($sql, 'UPDATE') === 0) {
-    $new = coder_upgrade_parse_update_query_string($sql, $values);
-    coder_upgrade_insert_dbtng_statement($node, $new);
-  }
-  elseif (strpos($sql, 'DELETE') === 0) {
-    $new = coder_upgrade_parse_delete_query_string($sql, $values);
+  elseif ($sql_object) {
+    // Check if replacement values is an array, and if so, populate new 
+    // replacement values with array indexes.
+    if (count($values) == 1 && $sql_object->placeholders > 1) {
+      $value_array = $values[0];
+      for ($i = 0; $i < count($sql_object->placeholders); $i++) {
+        $values[$i] = $value_array . "[$i]";
+      }
+    }
+
+    $sql_converter = new SqlDBTNGConverter($sql_object);
+    $sql_converter->setQueryArguments($values);
+    $new = $sql_converter->convert();
+
     coder_upgrade_insert_dbtng_statement($node, $new);
   }
 }
@@ -327,238 +343,6 @@ function coder_upgrade_parse_select_query_string($node, $sql, $values, $delimite
     $temp->getElement(0)->multiline = 0;
     $item->setParameter(1, $temp);
 //  }
-}
-
-/**
- * Replaces D6 database API call with D7 equivalent.
- *
- * @todo Fill in this with unhandled items.
- *
- * @param string $sql
- *   The SQL query string to parse.
- * @param array $values
- *   List of replacement values passed to db_query().
- */
-function coder_upgrade_parse_insert_query_string($sql, $values) {
-  global $replacement_values_is_array;
-
-  $new = array();
-  // Look for query with a WHERE clause.
-  // INSERT INTO {mytable_longer_name} (intvar, stringvar, floatvar) VALUES (%d, '%s', %f)
-  // TODO How does DBTNG handle multiple rows to insert?
-  $find = '@INSERT INTO\s+{(\w+)}\s+\((.*?)\)\s+VALUES\s+\((.*?)\)@s';
-  preg_match($find, $sql, $matches);
-  cdp($matches);
-  if (empty($matches) /*|| !isset($matches[2])*/) {
-    cdp($sql, '$sql');
-    clp('ERROR: could not parse sql INSERT statement.');
-    return array('NULL'); // $new;
-  }
-
-  // Parse fields to be updated.
-  if (count($matches[2]) != count($matches[3])) {
-    clp('ERROR: could not parse field names and replacements on sql INSERT statement.');
-    return array('NULL'); // $new;
-  }
-  $fields = preg_split("@,\s*@", $matches[2]);
-  $holders = preg_split("@,\s*@", $matches[3]);
-  $fields = array_combine($fields, $holders);
-  cdp($fields);
-  $replacement_count = coder_upgrade_count_sql_values($holders);
-  $replacement_values_is_array = count($values) == 1 && ($replacement_count > 1 /*|| count($values) != $replacement_count*/);
-
-  // Build DBTNG syntax string.
-  // TODO Values could be literals not placeholders.
-  $new[] = "\$id = db_insert('{$matches[1]}')";
-  $new[] = "\t->fields(array(";
-  foreach ($fields as $field => $value) {
-    if (preg_match('/%[sdbf]/', $value)) {
-      // Value is a placeholder.
-      $value = coder_upgrade_next_replacement_value($values);
-    }
-    else {
-      // Value is a literal (assume so).
-    }
-    $new[] = "\t\t'$field' => $value,";
-  }
-  $new[] = "\t))";
-  $new[] = "\t->execute();";
-
-  return $new;
-}
-
-/**
- * Replaces D6 database API call with D7 equivalent.
- *
- * @todo Fill in this with unhandled items.
- *
- * @param string $sql
- *   The SQL query string to parse.
- * @param array $values
- *   List of replacement values passed to db_query().
- */
-function coder_upgrade_parse_update_query_string($sql, $values) {
-  cdp(__FUNCTION__);
-  global $replacement_values_is_array;
-
-  // Regex needs to handle multi-line strings. The parsing and exploding of
-  // fields and conditions fails on this.
-  // Also, if there are multiple values to be replaced and only a single value
-  // as parameter to drupal_query, then assume it is an array and apply it in
-  // order by index to the substitutions.
-  // db_update('quotes_blocks')->fields(array('name' => $vals[0], 'block_type' => $vals[1], ...)
-
-  $new = array();
-  // Look for query with both SET and WHERE clauses.
-  // UPDATE {node} SET title='%s', status=%d WHERE uid=%d
-  $find = '@^UPDATE\s+{(\w+)}\s+SET\s+(.*?)\s+WHERE\s+(.*?)$@s';
-  // TODO Check for WHERE and use a different regex.
-  preg_match($find, $sql, $matches);
-  cdp($matches, '$matches');
-  if (empty($matches)) {
-    // Look for query with only a SET clause.
-    $find = '@^UPDATE\s+{(\w+)}\s+SET\s+(.*?)$@s';
-    preg_match($find, $sql, $matches);
-    cdp($matches, '$matches');
-    if (empty($matches) /*|| !isset($matches[2])*/) {
-      cdp($sql, '$sql');
-      clp('ERROR: could not parse sql UPDATE statement.');
-      return array('NULL'); // $new;
-    }
-  }
-
-  // Parse fields to be updated.
-  // TODO This will fail on a literal string with a comma.
-  $fields = preg_split("@,\s*@", $matches[2]); // $fields = explode(', ', $matches[2]);
-  cdp($fields, '$fields');
-  $condition_count = isset($matches[3]) && $matches[3] ? coder_upgrade_count_sql_conditions($matches[3]) : 0;
-  $replacement_count = coder_upgrade_count_sql_fields($fields) + $condition_count;
-  cdp($replacement_count, '$replacement_count');
-  if (/*count($values) > 1 &&*/ count($values) != $replacement_count) {
-    clp('ERROR: number of replacement values to db_query does not equal number of items needing replacement.');
-    clp($sql);
-  }
-  $replacement_values_is_array = count($values) == 1 && ($replacement_count > 1 /*|| count($values) != $replacement_count*/);
-
-  // Build DBTNG syntax string.
-  $new[] = "db_update('{$matches[1]}')";
-  $new[] = "\t->fields(array(";
-  foreach ($fields as $field) {
-    list($field, $value) = explode("=", $field);
-    // Value is a placeholder
-    if (preg_match('/%[sdbf]/', $value)) {
-      $value = coder_upgrade_next_replacement_value($values);
-    }
-    // Trim the field for whitespace.
-    $field = trim($field);
-    $new[] = "\t\t'$field' => $value,";
-  }
-  $new[] = "\t))";
-  if (isset($matches[3]) && $matches[3]) {
-    $new[] = coder_upgrade_parse_sql_conditions($matches[3], $values);
-  }
-  $new[] = "\t->execute();";
-  cdp($new, '$new');
-
-  return $new;
-}
-
-/**
- * Replaces D6 database API call with D7 equivalent.
- *
- * @todo Fill in this with unhandled items.
- *
- * @param string $sql
- *   The SQL query string to parse.
- * @param array $values
- *   List of replacement values passed to db_query().
- */
-function coder_upgrade_parse_delete_query_string($sql, $values) {
-  global $replacement_values_is_array;
-
-  $new = array();
-  // Look for query with a WHERE clause.
-  // DELETE FROM {node} WHERE uid=%d AND created < %d
-  $find = '@^DELETE\s+FROM\s+{(\w+)}\s+WHERE\s+(.*?)$@s';
-  preg_match($find, $sql, $matches);
-  cdp($matches);
-  if (empty($matches)) {
-    // Look for query without a WHERE clause.
-    $find = '@^DELETE\s+FROM\s+{(\w+)}$@s';
-    preg_match($find, $sql, $matches);
-    cdp($matches, '$matches');
-    if (empty($matches)) {
-      cdp($sql, '$sql');
-      clp('ERROR: could not parse sql DELETE statement.');
-      return array('NULL'); // $new;
-    }
-  }
-
-  // Parse condition for rows to be deleted.
-  $condition_count = isset($matches[2]) && $matches[2] ? coder_upgrade_count_sql_conditions($matches[2]) : 0;
-  $replacement_count = $condition_count;
-  cdp($replacement_count, '$replacement_count');
-  if (/*count($values) > 1 &&*/ count($values) != $replacement_count) {
-    clp('ERROR: number of replacement values to db_query does not equal number of items needing replacement.');
-    clp($sql);
-  }
-  $replacement_values_is_array = count($values) == 1 && ($replacement_count > 1 /*|| count($values) != $replacement_count*/);
-
-  // Build DBTNG syntax string.
-  $new[] = "db_delete('{$matches[1]}')";
-  if (isset($matches[2]) && $matches[2]) {
-    $new[] = coder_upgrade_parse_sql_conditions($matches[2], $values);
-  }
-  $new[] = "\t->execute();";
-  cdp($new, '$new');
-
-  return $new;
-}
-
-/**
- * Inserts (or replaces) D6 database API call with D7 call.
- *
- * @param PGPNode $node
- *   The node containing the function call object to be replaced.
- * @param array $new
- *   The array of strings of the new database API call.
- *
- * @return unknown_type
- */
-function coder_upgrade_insert_dbtng_statement(&$node, $new) {
-  cdp(__FUNCTION__);
-  // Create helper objects.
-  $editor = PGPEditor::getInstance();
-
-  // Get the function call object.
-  $item = &$node->data;
-
-//  cdp($node->data, '$node');
-  // TODO Handle the indentation of the output string in the toString() routine.
-  cdp($new, '$new');
-  $new = implode("\n", $new);
-  $new = str_replace("\t", '  ', $new);
-  cdp($new, '$new');
-
-  if ($new == 'NULL') {
-    clp("ERROR: Could not parse the SQL string");
-    $comment = '// TODO Please convert this statement to the D7 database API syntax.';
-  }
-  else {
-    $comment = '// TODO Please review the conversion of this statement to the D7 database API syntax.';
-  }
-  $item->insertStatementBefore($editor->commentToStatement($comment));
-
-  // Replace function call with array().
-  // This is an example of deleting a function call reference.
-  $string = str_replace(array('/*', '*/'), '', $item->toString());
-  $temp = $editor->expressionToStatement("/* $string */\n$new");
-//  cdp($temp, '$temp');
-//  return;
-  $node->container->insertListBefore($node, $temp);
-  $parent = &$item->parent; // TEMP for debug printing
-  $node->container->delete($node);
-  cdp($parent->data, '$parent->data');
 }
 
 /**
