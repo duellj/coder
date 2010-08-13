@@ -201,7 +201,7 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   $replacement_index = 0;
 
   // Create helper objects.
-//  $editor = PGPEditor::getInstance();
+  $editor = PGPEditor::getInstance();
 
   // Get the function call object.
   $item = &$node->data;
@@ -229,55 +229,86 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   // Trim won't work here, since it'll trim off the last ' if the string ends in '%s'
   $sql = substr($sql, 1, -1);
 
-  module_load_include('inc', 'sql_parser', 'includes/sql_parser');
-  module_load_include('inc', 'sql_parser', 'includes/sql_lexer');
-  module_load_include('inc', 'sql_parser', 'includes/sql_dialect');
-  module_load_include('inc', 'sql_parser', 'includes/sql_object');
-  module_load_include('inc', 'sql_parser', 'includes/sql_converter');
-
-  // @todo Currently SqlParser doesn't like curly braces around table names so
-  // we need to strip them.
-  // @todo Need to also handle escaped quotes (/$delimiter).
-  $sql = str_replace(array('{', '}'), array(), $sql);
-  $sql_parser = new SqlParser($sql);
-  $sql_object = $sql_parser->parse();
-
-  if ($sql_object instanceof SqlSelect) {
-    /*
+  if (strpos($sql, 'SELECT') === 0) {
     // @todo If $sql is defined outside of db_query(), then this approach will
     // replace the variable with the new string and leave the assignment alone.
     $new = coder_upgrade_parse_select_query_string($node, $sql, $values, $delimiter);
-    */
-
-    $sql_converter = new SqlStringConverter($sql_object);
-    $sql = $sql_converter->convert();
-
-    // Replace SQL string parameter with new SQL string.
-    $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
-
-    // Arrayitize the values array.
-    $string = $editor->arrayitize($item, 1, $sql_object->placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
-    cdp($string, '$string');
-    $temp = $editor->expressionToStatement($string);
-    $temp->getElement(0)->multiline = 0;
-    $item->setParameter(1, $temp);
   }
-  elseif ($sql_object) {
-    // Check if replacement values is an array, and if so, populate new 
-    // replacement values with array indexes.
-    if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
-      $value_array = $values[0];
-      for ($i = 0; $i < $sql_object->numPlaceholders(); $i++) {
-        $values[$i] = $value_array . "[$i]";
+  else {
+    module_load_include('inc', 'sql_parser', 'includes/sql_parser');
+    module_load_include('inc', 'sql_parser', 'includes/sql_lexer');
+    module_load_include('inc', 'sql_parser', 'includes/sql_dialect');
+    module_load_include('inc', 'sql_parser', 'includes/sql_object');
+    module_load_include('inc', 'sql_parser', 'includes/sql_converter');
+
+    // @todo Currently SqlParser doesn't like curly braces around table names so
+    // we need to strip them.
+    // @todo Need to also handle escaped quotes (/$delimiter).
+    $sql = str_replace(array('{', '}'), array(), $sql);
+    $sql_parser = new SqlParser($sql);
+    $sql_object = $sql_parser->parse();
+
+    if ($sql_object) {
+      // Check if replacement values is an array, and if so, populate new 
+      // replacement values with array indexes.
+      if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
+        $value_array = $values[0];
+        for ($i = 0; $i < $sql_object->numPlaceholders(); $i++) {
+          $values[$i] = $value_array . "[$i]";
+        }
       }
+
+      $sql_converter = new SqlDBTNGConverter($sql_object);
+      $sql_converter->setQueryArguments($values);
+      $new = $sql_converter->convert();
+
+      coder_upgrade_insert_dbtng_statement($node, $new);
     }
-
-    $sql_converter = new SqlDBTNGConverter($sql_object);
-    $sql_converter->setQueryArguments($values);
-    $new = $sql_converter->convert();
-
-    coder_upgrade_insert_dbtng_statement($node, $new);
   }
+}
+
+/**
+ * Inserts (or replaces) D6 database API call with D7 call.
+ *
+ * @param PGPNode $node
+ *   The node containing the function call object to be replaced.
+ * @param array $new
+ *   The array of strings of the new database API call.
+ *
+ * @return unknown_type
+ */
+function coder_upgrade_insert_dbtng_statement(&$node, $new) {
+  cdp(__FUNCTION__);
+  // Create helper objects.
+  $editor = PGPEditor::getInstance();
+
+  // Get the function call object.
+  $item = &$node->data;
+
+//  cdp($node->data, '$node');
+  // TODO Handle the indentation of the output string in the toString() routine.
+  cdp($new, '$new');
+  cdp($new, '$new');
+
+  if ($new == 'NULL') {
+    clp("ERROR: Could not parse the SQL string");
+    $comment = '// TODO Please convert this statement to the D7 database API syntax.';
+  }
+  else {
+    $comment = '// TODO Please review the conversion of this statement to the D7 database API syntax.';
+  }
+  $item->insertStatementBefore($editor->commentToStatement($comment));
+
+  // Replace function call with array().
+  // This is an example of deleting a function call reference.
+  $string = str_replace(array('/*', '*/'), '', $item->toString());
+  $temp = $editor->expressionToStatement("/* $string */\n$new");
+//  cdp($temp, '$temp');
+//  return;
+  $node->container->insertListBefore($node, $temp);
+  $parent = &$item->parent; // TEMP for debug printing
+  $node->container->delete($node);
+  cdp($parent->data, '$parent->data');
 }
 
 /**
