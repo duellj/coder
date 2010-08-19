@@ -2,10 +2,10 @@
 /coder_upgrade.install.inc/1.5/Thu Apr 29 22:36:01 2010//
 /coder_upgrade.other.inc/1.43/Mon Jun 28 17:17:36 2010//
 /coder_upgrade.begin.inc/1.5/Tue Aug 10 22:13:53 2010//
-/coder_upgrade.call.inc/1.28/Thu Aug 12 18:02:08 2010//
-/coder_upgrade.db.inc/1.7/Wed Aug 11 23:55:25 2010//
-/coder_upgrade.function.inc/1.24/Thu Aug 12 18:02:08 2010//
-/coder_upgrade.list.inc/1.15/Thu Aug 12 18:02:08 2010//
-/coder_upgrade.main.inc/1.27/Thu Aug 12 18:02:08 2010//
 /coder_upgrade.regex.inc/1.8/Tue Aug 10 22:13:54 2010//
+/coder_upgrade.call.inc/1.28/Thu Aug 19 21:15:11 2010//
+/coder_upgrade.db.inc/1.8/Thu Aug 19 21:18:38 2010//
+/coder_upgrade.function.inc/1.25/Thu Aug 19 21:18:38 2010//
+/coder_upgrade.list.inc/1.15/Thu Aug 12 18:09:03 2010//
+/coder_upgrade.main.inc/1.28/Thu Aug 19 21:18:38 2010//
 D
