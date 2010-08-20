@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review_security.inc,v 1.22 2010/08/19 20:08:57 snpower Exp $
+// $Id: coder_review_security.inc,v 1.24 2010/08/20 09:41:19 snpower Exp $
 
 /**
  * @file
@@ -149,7 +149,7 @@ function coder_review_security_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '.*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}',
-      '#never' => '([\s\(]db_rewrite_sql\s*\(|\s\$\w+\s*=\s*[\'"]SELECT)',
+      '#never' => '([\s\(]db_rewrite_sql\s*\(|\s\$\w+\s*=\s*[\'"]SELECT|[\'"]SELECT\s+COUNT\(|[\s\.]nid\s*=\s*%d)',
       '#source' => 'allphp',
       '#warning_callback' => '_coder_review_security_db_rewrite_sql_warning',
       '#function-not' => '_cron$',
@@ -157,7 +157,7 @@ function coder_review_security_reviews() {
     array(
       '#type' => 'regex',
       '#value' => '[\s\(]db_rewrite_sql\(\s*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}([,\'"]+|\s+(ON|WHERE|HAVING|LIMIT|ORDER|GROUP)\s+)',
-      '#never' => '[\s\(]db_rewrite_sql\(\s*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}([,\'"]+|\s+(ON|WHERE|HAVING|LIMIT|ORDER|GROUP)\s+).*?,\s*[\'"]{node}[\'"]',
+      '#never' => '[\s\(]db_rewrite_sql\(\s*[\'"]SELECT\s+(COUNT\([^\)]+\))*.*\s+(FROM|JOIN)\s+\{node\}([,\'"]+|\s+(ON|WHERE|HAVING|LIMIT|ORDER|GROUP)\s+).*?,\s*[\'"]\{node\}[\'"]',
       '#source' => 'allphp',
       '#warning_callback' => '_coder_review_security_db_rewrite_sql_warning',
       '#function-not' => '_cron$',
@@ -356,8 +356,8 @@ function _coder_review_security_callback(&$coder_args, $review, $rule, $lines, &
       }
     }
     // db_rewrite_sql()
-    $regex = '/\$(\w+)\s*=\s*[\'"]SELECT\s+.*\s+(FROM|JOIN)\s+\{node\}/';
-    if (preg_match($regex, $line, $matches)) {
+    $regex = '/\$(\w+)\s*=\s*[\'"]SELECT\s+(.*)\s+(FROM|JOIN)\s+\{node\}(.*)?/';
+    if (preg_match($regex, $line, $matches) && !preg_match('/COUNT\s*\(/', $matches[2]) && !preg_match('/[\s\.]nid\s*=\s*%d/', $matches[4])) {
       $forward_matches['db_rewrite_sql'] = $matches[1];
     }
     // FAPI #title and #description
