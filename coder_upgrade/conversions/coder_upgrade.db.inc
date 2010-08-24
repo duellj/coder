@@ -239,6 +239,15 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   $sql_parser = new SqlParser($sql);
   $sql_object = $sql_parser->parse();
 
+  // Check if replacement values is an array, and if so, populate new 
+  // replacement values with array indexes.
+  if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
+    $value_array = $values[0];
+    for ($i = 0; $i < $sql_object->numPlaceholders(); $i++) {
+      $values[$i] = $value_array . "[$i]";
+    }
+  }
+
   if ($sql_object instanceof SqlSelect) {
     /*
     // @todo If $sql is defined outside of db_query(), then this approach will
@@ -247,6 +256,7 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
     */
 
     $sql_converter = new SqlStringConverter($sql_object);
+    $sql_converter->setQueryArguments($values);
     $sql = $sql_converter->convert();
     $arguments = $sql_converter->getQueryArguments();
     $placeholders = $sql_converter->getPlaceholders();
@@ -255,22 +265,20 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
     $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
 
     // Arrayitize the values array.
-    $string = $editor->arrayitize($item, 1, $placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
-    cdp($string, '$string');
+    // $string = $editor->arrayitize($item, 1, $placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
+    // New values are inserted in SqlStringConverter, which doesn't have access 
+    // to the original item object, so we have to arrayitize the array ourselves.
+    $new_values = array();
+    for ($i = 0; $i < count($placeholders); $i++) {
+      $new_values[] = "'" . $placeholders[$i] . "' => " . $arguments[$i];
+      $item->deleteParameter($i + 1);
+    }
+    $string = 'array(' . implode(', ', $new_values) . ')';
     $temp = $editor->expressionToStatement($string);
     $temp->getElement(0)->multiline = 0;
     $item->setParameter(1, $temp);
   }
-  elseif ($sql_object) {
-    // Check if replacement values is an array, and if so, populate new 
-    // replacement values with array indexes.
-    if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
-      $value_array = $values[0];
-      for ($i = 0; $i < $sql_object->numPlaceholders(); $i++) {
-        $values[$i] = $value_array . "[$i]";
-      }
-    }
-
+  else if ($sql_object) {
     $sql_converter = new SqlDBTNGConverter($sql_object);
     $sql_converter->setQueryArguments($values);
     $new = $sql_converter->convert();
@@ -280,74 +288,45 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
 }
 
 /**
- * Replaces D6 database API call with D7 equivalent.
- *
- * @todo Fill in this with unhandled items.
+ * Inserts (or replaces) D6 database API call with D7 call.
  *
  * @param PGPNode $node
  *   The node containing the function call object to be replaced.
- * @param string $sql
- *   The SQL query string to parse.
- * @param array $values
- *   List of replacement values passed to db_query().
+ * @param array $new
+ *   The array of strings of the new database API call.
+ *
+ * @return unknown_type
  */
-function coder_upgrade_parse_select_query_string($node, $sql, $values, $delimiter) {
+function coder_upgrade_insert_dbtng_statement(&$node, $new) {
+  cdp(__FUNCTION__);
   // Create helper objects.
   $editor = PGPEditor::getInstance();
 
   // Get the function call object.
   $item = &$node->data;
 
-  $find = '@^(SELECT.*?WHERE\s+)(.*?)$@s';
-  preg_match($find, $sql, $matches);
-  cdp($matches, '$matches');
-  if (empty($matches) /*|| !isset($matches[2])*/) {
-    cdp($sql, '$sql');
-    clp('ERROR: could not parse sql SELECT statement.');
-    return array('NULL'); // $new;
-  }
-  // Convert conditions to use named placeholders (i.e., from field = '%s' to
-  // field = :field).
-  // TODO handle more complex conditions
-//  if (isset($matches[2]) && $matches[2]) {
-    preg_match_all('/
-      (\S*)\s*([!=<>]+)\s*[\'"]?%[sdfb][\'"]? # Match field = %d
-      |
-      (\S*)\s*([!=<>]+)\s*([\'"].*?[\'"]|\S*) # Match field literals
-      |
-      (\S*)\s+IN\s?\([\'"]%s[\'"]?\) # Match field IN(%s)
-    /x', $matches[2], $conditions);
-    cdp($conditions, '$conditions');
-    $condition_keys = array();
-    foreach ($conditions[0] as $key => $condition) {
-      if ($conditions[1][$key]) {
-        // field = %d condition
-        $condition_keys[] = ':'. $conditions[1][$key];
-        $sql /*$operand['value']*/ = str_replace($condition, $conditions[1][$key] . ' ' . $conditions[2][$key] . ' :' . $conditions[1][$key], $sql /*$operand['value']*/);
-      }
-      else if ($conditions[3][$key]) {
-        // field = literal condition
-        $condition_keys[] = ':'. $conditions[3][$key];
-        $sql /*$operand['value']*/ = str_replace($condition, $conditions[3][$key] . ' ' . $conditions[4][$key] . ' :' . $conditions[3][$key], $sql /*$operand['value']*/);
-        $item->insertParameter($key + 1, $editor->expressionToStatement($conditions[5][$key]));
-      }
-      else if ($conditions[6][$key]) {
-        // field IN (%s) condition
-        $condition_keys[] = ':'. $conditions[6][$key];
-        $sql /*$operand['value']*/ = str_replace($condition, $conditions[6][$key] . ' IN (:' . $conditions[6][$key] . ')', $sql /*$operand['value']*/);
-        // D6 convention was to use implode(",", $array).  Now we can just pass in the array.
-        $param = $item->getParameter($key + 1)->getElement()->getParameter(1);
-        $item->setParameter($key + 1, $param);
-      }
-    }
-    // Replace the $sql parameter.
-    $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
+//  cdp($node->data, '$node');
+  // TODO Handle the indentation of the output string in the toString() routine.
+  cdp($new, '$new');
+  cdp($new, '$new');
 
-    // Arrayitize the values array.
-    $string = $editor->arrayitize($item, 1, $condition_keys, array_fill(0, count($condition_keys), "'XXX_YYY'"));
-    cdp($string, '$string');
-    $temp = $editor->expressionToStatement($string);
-    $temp->getElement(0)->multiline = 0;
-    $item->setParameter(1, $temp);
-//  }
+  if ($new == 'NULL') {
+    clp("ERROR: Could not parse the SQL string");
+    $comment = '// TODO Please convert this statement to the D7 database API syntax.';
+  }
+  else {
+    $comment = '// TODO Please review the conversion of this statement to the D7 database API syntax.';
+  }
+  $item->insertStatementBefore($editor->commentToStatement($comment));
+
+  // Replace function call with array().
+  // This is an example of deleting a function call reference.
+  $string = str_replace(array('/*', '*/'), '', $item->toString());
+  $temp = $editor->expressionToStatement("/* $string */\n$new");
+//  cdp($temp, '$temp');
+//  return;
+  $node->container->insertListBefore($node, $temp);
+  $parent = &$item->parent; // TEMP for debug printing
+  $node->container->delete($node);
+  cdp($parent->data, '$parent->data');
 }
