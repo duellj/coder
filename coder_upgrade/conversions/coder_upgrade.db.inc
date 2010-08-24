@@ -201,7 +201,7 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   $replacement_index = 0;
 
   // Create helper objects.
-//  $editor = PGPEditor::getInstance();
+  $editor = PGPEditor::getInstance();
 
   // Get the function call object.
   $item = &$node->data;
@@ -235,10 +235,7 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   module_load_include('inc', 'sql_parser', 'includes/sql_object');
   module_load_include('inc', 'sql_parser', 'includes/sql_converter');
 
-  // @todo Currently SqlParser doesn't like curly braces around table names so
-  // we need to strip them.
   // @todo Need to also handle escaped quotes (/$delimiter).
-  $sql = str_replace(array('{', '}'), array(), $sql);
   $sql_parser = new SqlParser($sql);
   $sql_object = $sql_parser->parse();
 
@@ -251,12 +248,14 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
 
     $sql_converter = new SqlStringConverter($sql_object);
     $sql = $sql_converter->convert();
+    $arguments = $sql_converter->getQueryArguments();
+    $placeholders = $sql_converter->getPlaceholders();
 
     // Replace SQL string parameter with new SQL string.
     $editor->setParameter($item, 0, $delimiter . $sql . $delimiter /*$operand['value']*/);
 
     // Arrayitize the values array.
-    $string = $editor->arrayitize($item, 1, $sql_object->placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
+    $string = $editor->arrayitize($item, 1, $placeholders, array_fill(0, $sql_object->numPlaceholders, "'XXX_YYY'"));
     cdp($string, '$string');
     $temp = $editor->expressionToStatement($string);
     $temp->getElement(0)->multiline = 0;
