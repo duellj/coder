@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_upgrade.db.inc,v 1.7 2010/07/30 00:13:40 solotandem Exp $
+// $Id: coder_upgrade.db.inc,v 1.8 2010/08/13 13:54:39 solotandem Exp $
 
 /**
  * @file
@@ -239,6 +239,9 @@ function coder_upgrade_parse_query_string(&$node, /*&$operand*/ $sql, $from = 0,
   $sql_parser = new SqlParser($sql);
   $sql_object = $sql_parser->parse();
 
+  // Convert any table names, if necessary.
+  coder_upgrade_convert_table_names($sql_object);
+
   // Check if replacement values is an array, and if so, populate new 
   // replacement values with array indexes.
   if (count($values) == 1 && $sql_object->numPlaceholders() > 1) {
@@ -305,10 +308,11 @@ function coder_upgrade_insert_dbtng_statement(&$node, $new) {
   // Get the function call object.
   $item = &$node->data;
 
-//  cdp($node->data, '$node');
+  // Create the expression text to be inserted.
   // TODO Handle the indentation of the output string in the toString() routine.
   cdp($new, '$new');
-  cdp($new, '$new');
+  $new = implode("\n", $new);
+  $new = str_replace("\t", '  ', $new);
 
   if ($new == 'NULL') {
     clp("ERROR: Could not parse the SQL string");
@@ -317,16 +321,50 @@ function coder_upgrade_insert_dbtng_statement(&$node, $new) {
   else {
     $comment = '// TODO Please review the conversion of this statement to the D7 database API syntax.';
   }
+  // Insert a comment before the statement containing the function call.
   $item->insertStatementBefore($editor->commentToStatement($comment));
 
-  // Replace function call with array().
-  // This is an example of deleting a function call reference.
+  // Insert a multiline-safe comment with the original function call.
   $string = str_replace(array('/*', '*/'), '', $item->toString());
-  $temp = $editor->expressionToStatement("/* $string */\n$new");
-//  cdp($temp, '$temp');
-//  return;
+  $item->insertStatementBefore($editor->commentToStatement("/* $string */"));
+
+  // Create a new DBTNG expression (of chained operations).
+  $temp = $editor->expressionToStatement($new);
+  // Insert the expression in the containing statement before the function call.
   $node->container->insertListBefore($node, $temp);
-  $parent = &$item->parent; // TEMP for debug printing
+  // Delete the function call.
+  // NOTE: This is an example of deleting a function call reference.
   $node->container->delete($node);
-  cdp($parent->data, '$parent->data');
+  // NOTE: If the replacement was another function call, then we could write:
+  //   $temp->parent = $item->parent;
+  //   $item = $temp;
+}
+
+/**
+ * Converts D6 tables to new D7 tables, if necessary.
+ *
+ * @param SqlObject $sql_object
+ *   The parsed sql object.
+ */
+function coder_upgrade_convert_table_names(&$sql_object) {
+  $table_conversion = array(
+    'boxes' => 'block_custom',
+    'blocks' => 'block',
+    'blocks_roles' => 'block_role',
+    'term_data' => 'taxonomy_term_data',
+    'term_hierarchy' => 'taxonomy_term_hierarch',
+    'term_node' => 'taxonomy_term_node',
+    'term_relation' => 'taxonomy_term_relation',
+    'term_synonym' => 'taxonomy_term_synonym',
+    'vocabulary' => 'taxonomy_vocabulary',
+    'vocabulary_node_types' => 'taxonomy_vocabulary_node_type',
+    'file' => 'file_managed',
+  );
+
+  foreach ($sql_object->tables as $key => $table) {
+    if (key_exists($table->name, $table_conversion)) {
+      $table->name = $table_conversion[$table->name];
+      $sql_object->tables[$key] = $table;
+    }
+  }
 }

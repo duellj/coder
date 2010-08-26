@@ -1,5 +1,5 @@
 <?php
-// $Id: coder_review.module,v 1.32 2010/08/11 21:44:53 snpower Exp $
+// $Id: coder_review.module,v 1.36 2010/08/15 22:27:59 snpower Exp $
 
 if (module_exists('drush')) {
   include(drupal_get_path('module', 'coder_review') . '/coder_review.drush.inc');
@@ -1028,7 +1028,7 @@ function _coder_review_modified() {
   static $_coder_mtime;
   if (!isset($_coder_mtime)) {
     $path = drupal_get_path('module', 'coder_review');
-    $includefiles = drupal_system_listing('/.*\.(inc|module)$/', $path . '/includes', 'filepath', 0);
+    $includefiles = drupal_system_listing('/.*\.(inc|module|coder_review_ignores.txt)$/', $path . '/includes', 'filepath', 0);
     $_coder_mtime = filemtime(realpath($path . '/coder_review.module'));
     foreach ($includefiles as $file) {
       $mtime = filemtime(realpath($path . '/includes/' . $file->filename));
@@ -1957,18 +1957,20 @@ function coder_review_parse_ignores($filepath) {
   // Ensure the file exists.
   if (!is_file($filepath) || !is_readable($filepath)) {
     drupal_set_message(t("File %file doesn't exist or isn't readable.", array('%file' => $filepath)));
-    return array();+  }
+    return array();
+  }
 
   // Read in the file contents.
   $lines = file($filepath);
 
   // Parse the contents.
   foreach ($lines as $line) {
+    $line = trim($line);
     if (empty($line) || preg_match('/^;/', $line, $matches)) {
       continue;
     }
     // filename:lineo:review
-    $parts = explode(':', trim($line));
+    $parts = explode(':', $line);
     // $ignores[filename][review][] = lineno
     $ignores[$parts[0]][$parts[2]][] = $parts[1];
   }
@@ -2176,5 +2178,5 @@ function theme_drupalapi($variables) {
  */
 function theme_phpapi($variables) {
   $function = $variables['function'];
-  return l($function, "http://us.php.net/$function");
+  return l($function, "http://php.net/$function");
 }
