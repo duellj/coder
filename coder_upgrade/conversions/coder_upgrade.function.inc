@@ -499,6 +499,36 @@ function coder_upgrade_upgrade_hook_user_alter(&$node, &$reader) {
 }
 
 /**
+ * Implements hook_upgrade_hook_footer_alter().
+ */
+function coder_upgrade_upgrade_hook_footer_alter(&$node, &$reader) {
+  global $_coder_upgrade_module_name;
+  
+  // Create helper objects.
+  $editor = PGPEditor::getInstance();
+
+  $item = &$node->data;
+
+  // Rename function.
+  $item->name = $_coder_upgrade_module_name . '_page_alter';
+
+  // Change parameter.
+  $editor->setParameter($item, 0, '&$page');
+
+  // Get the function body.
+  $body = &$item->body;
+
+  // Find return statement.
+  if (!($return = &$body->find(T_RETURN, 'reverse'))) {
+  }
+
+  $value = &$return->getParameter();
+  $new = $editor->expressionToStatement("array(\r\t'#type' => 'markup',\r\t,'#markup' => " . $value->toString() . ",\r)");
+  $new->getElement()->multiline = 1;
+  $return->setParameter(0, $new);
+}
+
+/**
  * Updates hook_access().
  *
  * Replace hook_access() with hook_node_access().
